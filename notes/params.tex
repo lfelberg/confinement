@@ -1,0 +1,78 @@
+\documentclass[12pt]{article}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage[margin=1.0in]{geometry}
+\usepackage{color}
+\usepackage{tabularx}
+%Times New Roman 12 pt
+\usepackage[T1]{fontenc}
+\usepackage{mathptmx}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{authblk}
+\usepackage[backend=bibtex,style=phys]{biblatex}
+
+
+
+\title{}
+\author[1]{Lisa E. Felberg}
+\author[2]{Luis A. Ruiz Pestana} 
+\author[1-4]{Teresa Head-Gordon} 
+
+\addbibresource{references}
+
+\affil[1]{Department of Chemical and Biomolecular Engineering, University of California Berkeley, 
+Berkeley, California 94720, USA}
+\affil[2]{Chemical Sciences Division, Lawrence Berkeley National Labs
+Berkeley, California 94720, USA}
+\affil[3]{Department of Chemistry, University of California Berkeley, 
+Berkeley, California 94720, USA}
+\affil[4]{Department of Bioengineering, University of California Berkeley, 
+Berkeley, California 94720, USA}
+
+
+\date{}                     %% if you don't need date to appear
+\setcounter{Maxaffil}{0}
+\renewcommand\Affilfont{\itshape\small}
+
+\begin{document}
+	\maketitle
+	
+\section{Abstract}
+
+
+\section{Introduction}
+
+\section{Methods and models}
+
+\subsection{Models}
+
+\subsection{Force fields}
+
+The benzene parameters were taken from the OPLS-AA force field \cite{Jorgensen1996}.
+
+The atom type #145 was used for benzene carbons and #146 was used for benzene
+hydrogens.
+
+Nonbonded parameters
+#   AN AT   CHARGE     SIGMA    EPSILON 
+145 06 CA   -0.115     3.550     0.070     Benzene C - 12 site JACS,112,4768-90
+146 01 HA    0.115     2.420     0.030     Benzene H - 12 site
+
+Bonds
+CA-CA 469.       1.40         TRP,TYR,PHE
+CA-HA 367.       1.080        PHE, etc. 
+
+Angles
+CA-CA-CA    63.        120.     PHE(OL)
+CA-CA-HA     35.       120.
+
+
+Torsions
+#      v1        v2        v3       v4         notes
+165   0.0       7.250     0.0       0.0        CA-CA-CA-CA                           
+165   0.0       7.250     0.0       0.0        CA-CA-CA-HA                           
+165   0.0       7.250     0.0       0.0        HA-CA-CA-HA 
+
+The benezene partial charges were 
+ 
