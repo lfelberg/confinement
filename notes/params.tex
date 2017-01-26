@@ -52,12 +52,18 @@ Berkeley, California 94720, USA}
 The benzene parameters were taken from the OPLS-AA force field \cite{Jorgensen1996}.
 
 The atom type #145 was used for benzene carbons and #146 was used for benzene
-hydrogens.
+hydrogens. This is from the papers: # J. Am. Chem. SOC. 1990, 112, 4168-4114 \cite{Jorgensen1990}.
+and J. Am. Chem. Soc. 1996, 118, 11225-11236  \cite{Jorgensen1996}.  
 
 Nonbonded parameters
 #   AN AT   CHARGE     SIGMA    EPSILON 
 145 06 CA   -0.115     3.550     0.070     Benzene C - 12 site JACS,112,4768-90
-146 01 HA    0.115     2.420     0.030     Benzene H - 12 site
+146 01 HA    0.115     2.420     0.030     Benzene H - 12 site  "
+
+
+For bonds and angles, the following parameters were taken from AMBER all-atom
+\cite{Weiner1986} (also from http://zarbi.chem.yale.edu/doc/par_opls_aam.inp)
+Which has different CA-HA, and angle params.
 
 Bonds
 CA-CA 469.       1.40         TRP,TYR,PHE
