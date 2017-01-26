@@ -2,8 +2,6 @@ import sys
 import re
 import numpy as np
 from numpy import linalg as LA
-#from scipy import stats
-
 
 def main():
     filename=sys.argv[1]

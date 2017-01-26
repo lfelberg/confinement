@@ -15,13 +15,14 @@ def get_coords(filename, tim_xyz, coords, types, dims):
     '''Method to get the distances between graphene and all other particles
        from lammps xyz file'''
     grap = types == BENZENE
-    print(grap)
     other = types != BENZENE
-    for i in range(2) : #len(tim_xyz)):
-        grp = np.array(coords[i][grap])
-        print(grp.shape)
-        for ot in range(2): #range(len(other)): #finding closest graphene
-            atomGd = np.repeat(coords[np.newaxis,other[ot],:],len(grap),axis=0)
+    for i in range(len(tim_xyz)):
+        grpC = coords[i,grap,:]
+        othC = coords[i,other,:]
+        print("Dims shape", dims.shape)
+        print(grpC.shape, othC.shape)
+        for ot in range(2): #range(len(othC)): #finding closest graphene
+            atomGd = np.repeat(othC[np.newaxis,i,:],len(grpC),axis=0)
             print(atomGd.shape)
     
     return time, dims
@@ -45,8 +46,8 @@ def main():
     itr = sys.argv[3]
     time, dims = get_box_dim("run"+str(sep)+"_"+str(itr)+".vol")
     tim_xyz, coords, types = xyz_reader(xyzname, time, dims)
-    get_coords("run"+str(sep)+"_"+str(itr)+".dist", tim_xyz, coords,
-               np.array(types), dims)
+    get_coords("run"+str(sep)+"_"+str(itr)+".dist", tim_xyz, np.array(coords),
+               np.array(types), np.array(dims))
 
 
 if __name__=="__main__":

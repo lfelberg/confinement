@@ -5,8 +5,15 @@ boundary        p p p
 atom_style      full
 
 timestep	2.0
+# force-field terms
+pair_style hybrid/overlay lj/cut/tip4p/long 1 2 1 1 0.125 9.5 9 lj/cut 9
+kspace_style pppm/tip4p 0.0001
 
-read_data all.data
+bond_style harmonic
+angle_style harmonic
+dihedral_style harmonic
+
+read_data dsep_nobenzene.data
 
 # Groups
 group oxy type 1
@@ -19,11 +26,6 @@ group watgraph union water graph
 # O=1, H=2 charges
 set group oxy charge -1.0484
 set group hyd charge 0.5242
-
-# force-field terms
-pair_style hybrid/overlay lj/cut/tip4p/long 1 2 1 1 0.125 9.5 9 lj/cut 9
-
-kspace_style pppm/tip4p 0.0001
 
 # non-bonded interactions
 pair_coeff 2 2 lj/cut/tip4p/long 0.00000 0.00000
@@ -38,17 +40,17 @@ pair_coeff 2 3 lj/cut 0.046 2.93 # H-C
 pair_modify pair lj/cut mix geometric
 
 # bonded interactions; need definition but tip4p/ew is a rigid model!
-bond_style harmonic
-bond_coeff 1 450 0.9572
-bond_coeff 2 470 1.4200
+# the columns are #, k [ energy/Dist^2 = kCal/mole/A^2], r0 [dist = A]
+bond_coeff 1 450 0.9572  # TIP4P/ew water O-H
+bond_coeff 2 938 1.4000  # C-C bonds graphene Nature, 2001, 414, 188
 
-angle_style harmonic
-angle_coeff 1 55  104.52
-angle_coeff 2 85 120.00
+# angle: #, k [ energy/rad^2 = kCal/mole/rad^2], theta0 [rad]
+angle_coeff 1 55  104.52 # Tip4P/ew water H-O-H
+angle_coeff 2 126 120.00  # C-C-C angles graphene Nature, 2001, 414, 188
 
-dihedral_style harmonic
-dihedral_coeff 1 6.0 -1 1  
-dihedral_coeff 2 6.0 1 1
+# dihedral: #, k [energy = kCal/mole], d (+1 or -1), n (integer >= 0)
+dihedral_coeff 1 3.15 -1 1 # C-C-C-C graphene Nano Letters, 2009, 9, 3766 
+dihedral_coeff 2 3.15 1 1  # C-C-C-C graphene Nano Letters, 2009, 9, 3766
 
 # SETTINGS
 neighbor 2.0 bin
@@ -56,8 +58,11 @@ neigh_modify every 10 delay 0 check no
 
 # OUTPUT
 thermo          500
-thermo_style    custom step temp pxx pyy pzz ebond eangle epair edihed etotal lx ly lz
-dump            11 all dcd 100 trajectory.dcd
+thermo_style    custom step time temp press pe ke etotal evdwl ecoul epair ebond eangle edihed vol density lx ly lz xlo xhi ylo yhi zlo zhi pxx pyy pzz pxy pxz pyz
+#thermo_style    custom step temp pxx pyy pzz ebond eangle epair edihed etotal lx ly lz
+#dump            11 all dcd 500 trajectory.dcd
+dump            11 all xyz 500 traj_sep_iter.xyz
+restart         5000 restart.sep.iter.water
 
 # RUNS
 fix 1 all momentum 10 linear 1 1 1 angular
@@ -67,7 +72,7 @@ run 5000
 unfix 2
 unfix 3
 
-fix 11 water shake 0.0001 20 10 b 1 a 1
+fix 11 water shake 0.0001 20 1000 b 1 a 1
 fix 12 all nvt temp 298 298 100
 run 5000
 unfix 11
@@ -75,4 +80,4 @@ unfix 12
 
 fix 20 water shake 0.0001 20 10 b 1 a 1
 fix 21 all npt temp 298 298 100 x 1 1 1000
-run 15000
+run 1000000

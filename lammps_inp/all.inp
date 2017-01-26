@@ -4,7 +4,7 @@ dimension       3
 boundary        p p p
 atom_style      full
 
-timestep	2.0
+timestep	1.0
 
 # force-field terms
 pair_style hybrid/overlay lj/cut/tip4p/long 1 2 1 1 0.125 9.5 9 lj/cut 9
@@ -40,7 +40,7 @@ pair_coeff 1 2 lj/cut/tip4p/long 0.00000 0.00000
 pair_coeff 1 1 lj/cut/tip4p/long 0.16275 3.16435
 
 pair_coeff 3 3 lj/cut 0.07000 3.5500 # graphene
-# J. Am. Chem. SOC. 1990, 11 2, 4168-4114 
+# J. Am. Chem. SOC. 1990, 112, 4168-4114 
 # J. Am. Chem. Soc. 1996, 118, 11225-11236
 pair_coeff 4 4 lj/cut 0.07000 3.5500 # Benzene Carbon 
 pair_coeff 5 5 lj/cut 0.03000 2.4200 # Benzene Hydrogen
@@ -53,21 +53,25 @@ pair_coeff 2 5 lj/cut 0.03 2.4200 # H-H
 pair_modify pair lj/cut mix geometric
 
 # bonded interactions; need definition but tip4p/ew is a rigid model!
-bond_coeff 1 450 0.9572
-bond_coeff 2 470 1.4200
+# bonded interactions; need definition but tip4p/ew is a rigid model!              
+# the columns are #, k [ energy/Dist^2 = kCal/mole/A^2], r0 [dist = A]             
+bond_coeff 1 450 0.9572  # TIP4P/ew water O-H                                      
+bond_coeff 2 938 1.4000  # C-C bonds graphene Nature, 2001, 414, 188               
 bond_coeff 3 469 1.4000 # CA-CA bond
 bond_coeff 4 367 1.0800 # CA-HA bond
-
-angle_coeff 1 55 104.52
-angle_coeff 2 85 120.00
+                                                                                   
+# angle: #, k [ energy/rad^2 = kCal/mole/rad^2], theta0 [rad]                   
+angle_coeff 1 55  104.52 # Tip4P/ew water H-O-H                                    
+angle_coeff 2 126 120.00  # C-C-C angles graphene Nature, 2001, 414, 188           
 angle_coeff 3 63 120.00  # CA-CA-CA
 angle_coeff 4 35 120.00  # CA-CA-HA
-
-dihedral_coeff 1 harmonic 3.0 -1 1  
-dihedral_coeff 2 harmonic 3.0 1 1
+                                                                                   
+# dihedral: #, k [energy = kCal/mole], d (+1 or -1), n (integer >= 0)           
+dihedral_coeff 1 harmonic 3.15 -1 1 # C-C-C-C graphene Nano Letters, 2009, 9, 3766          
+dihedral_coeff 2 harmonic 3.15 1 1  # C-C-C-C graphene Nano Letters, 2009, 9, 3766          
 dihedral_coeff 3 charmm 3.625 2 180 0.0 # CA-CA-CA-CA
 
-improper_coeff 1 1.1 -1 1
+improper_coeff 1 1.1 -1 1  # CA-CA-CA-HA for benzene
 
 # SETTINGS
 neighbor 2.0 bin
@@ -76,7 +80,7 @@ neigh_modify every 10 delay 0 check no
 thermo          500
 thermo_style    custom step time temp press pe ke etotal evdwl ecoul epair ebond eangle edihed vol density lx ly lz xlo xhi ylo yhi zlo zhi pxx pyy pzz pxy pxz pyz
 #thermo_style    custom step temp pxx pyy pzz ebond eangle epair edihed etotal lx ly lz
-dump            11 all dcd 500 trajectory.dcd
+#dump            11 all dcd 500 trajectory.dcd
 dump            11 all xyz 500 traj_sep_iter.xyz
 restart         5000 restart.sep.iter.benzene
 
@@ -88,7 +92,7 @@ run 5000
 unfix 2
 unfix 3
 
-fix 11 water shake 0.0001 20 10 b 1 a 1
+fix 11 water shake 0.0001 20 1000 b 1 a 1
 fix 12 all nvt temp 298 298 100
 run 5000
 unfix 11

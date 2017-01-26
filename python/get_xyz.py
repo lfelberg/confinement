@@ -9,8 +9,8 @@ def xyz_reader(filename, times = [], dims = []):
     f.readline()
     line = f.readline()
     if times == [] or times[0][0] == int(line.split()[-1]):
-        grab_snap = 1
         time.append(int(line.split()[-1]))
+        t_ct += 1; grab_snap = 1
                                                                                    
     '''First, we read in the coordinates from the trajectory file and
        save them into atom=[[coords],[coords]...,[coords]]'''
@@ -20,20 +20,19 @@ def xyz_reader(filename, times = [], dims = []):
         #Gets past # and atoms lines
         if line[0]=="A":
             if grab_snap == 1:
-                atom+=[atoms] #; typ += [types]
-                atoms, types = [], []
+                atom+=[atoms]
+                atoms = []
 
             if times == [] or times[t_ct][0] == int(line.split()[-1]):
-                t_ct += 1
                 print(line.split()[-1])
                 time.append(int(line.split()[-1]))
-            else:
-                grab_snap = 0
+                t_ct += 1; grab_snap = 1
+            else: grab_snap = 0
         # Only grab snapshots that have volume data
         elif len(line.split()) > 1 and grab_snap == 1:
             #crds is a list of the coordinates in string formats
             crds=line.split()
-            if t_ct == 0: types.append(int(crds[0]))
+            if t_ct == 1: types.append(int(crds[0]))
             if dims == []:
                 atoms.append([float(crds[1]),float(crds[2]),float(crds[3])])
             else: # Move coords so that box is from 0 -> xmin
@@ -41,8 +40,7 @@ def xyz_reader(filename, times = [], dims = []):
                               float(crds[2])-dims[t_ct][2],
                               float(crds[3])-dims[t_ct][4]])
     #For last timestep, since it doesn't have a line about Atoms after it.
-    if grab_snap == 1:
-        atom=atom+[atoms] #; typ = typ+[types]
-    print(len(time), len(times))
+    if grab_snap == 1: atom=atom+[atoms]
+   #print(len(time), time, len(types)); print( len(atom), len(atom[0]))
     f.close()
     return time, atom, types
