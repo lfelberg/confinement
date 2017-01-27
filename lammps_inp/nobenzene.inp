@@ -67,7 +67,7 @@ restart         5000 restart.sep.iter.water
 # RUNS
 fix 1 all momentum 10 linear 1 1 1 angular
 fix 2 all nve/limit 0.1
-fix 3 all langevin 298 298 100.0 88474
+fix 3 all langevin 298 298 100.0 iter
 run 5000
 unfix 2
 unfix 3

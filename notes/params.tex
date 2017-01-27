@@ -43,14 +43,26 @@ Berkeley, California 94720, USA}
 
 \section{Introduction}
 
-\section{Methods and models}
+\section{Methods}
 
 \subsection{Models}
 
+For this study, simulations of systems with parallel graphene plates with
+separations of 12, 16, 20 and 24 \r A respectively in the x-cartesian dimension.
+Simulations with solute molecules include 2 solute molecules, one for each solvent
+layer.
+
 \subsection{Force fields}
 
-The benzene parameters were taken from the OPLS-AA force field \cite{Jorgensen1996}.
+The graphene parameters used were k\textsubscript{bond} = 938 \(kCal/mol/\AA^2\)
+and k\textsubscript{angle} = 126 \(kCal/mol/rad^2\) with equilibrium bond and 
+angle lengths of 1.4 \r A and 120 degrees respectively \cite{Hummer2001}. The
+dihedral potential is harmonic with the functional form: \(E = K [ 1 + d cos(\phi)]\),
+where k = 3.15 kCal/mol, and \(d = \pm 1\) \cite{Patra2009}. The carbon partial charge 
+is 0.0 e, and the 6-12 Lennard-Jones pairwise potential coefficients are \(\sigma=0.070\)
+and \(r_0 = 3.55 \AA\).
 
+The benzene parameters were taken from the OPLS-AA force field \cite{Jorgensen1996}.
 The atom type #145 was used for benzene carbons and #146 was used for benzene
 hydrogens. This is from the papers: # J. Am. Chem. SOC. 1990, 112, 4168-4114 \cite{Jorgensen1990}.
 and J. Am. Chem. Soc. 1996, 118, 11225-11236  \cite{Jorgensen1996}.  
@@ -59,7 +71,6 @@ Nonbonded parameters
 #   AN AT   CHARGE     SIGMA    EPSILON 
 145 06 CA   -0.115     3.550     0.070     Benzene C - 12 site JACS,112,4768-90
 146 01 HA    0.115     2.420     0.030     Benzene H - 12 site  "
-
 
 For bonds and angles, the following parameters were taken from AMBER all-atom
 \cite{Weiner1986} (also from http://zarbi.chem.yale.edu/doc/par_opls_aam.inp)
@@ -77,8 +88,34 @@ CA-CA-HA     35.       120.
 Torsions
 #      v1        v2        v3       v4         notes
 165   0.0       7.250     0.0       0.0        CA-CA-CA-CA                           
-165   0.0       7.250     0.0       0.0        CA-CA-CA-HA                           
-165   0.0       7.250     0.0       0.0        HA-CA-CA-HA 
 
-The benezene partial charges were 
- 
+Improper
+improper_coeff 1 1.1 -1 1  # CA-CA-CA-HA for benzene 
+
+The water model chosen is TIP4P-Ew \cite{Horn2004} was used to represent explicit 
+solvent.
+
+\subsection{Simulation protocols}
+
+The system was built with force field parameters described, and the density was
+chosen with %%%%%%%%%%%%%%%.
+The simulation was perfomed with the LAMMPS software package \cite{Plimpton1995}. 
+Equilibration of initial configurations were performed as follows. Systems were run in 
+the NVE ensemble with a Langevin Thermostat at 298 Kelvin
+for 10 ps. The water was then fixed with the SHAKE protocol \cite{Andersen1983} with a tolerance
+of 10\textsuperscript{-5}, and the system was run for 10 ps in the NVT ensemble.
+Finally, data was saved for analysis in a production run in the NpT ensemble,
+during which all cartesian coordinates were stored every 500 timesteps. 
+Systems were run in the NpT ensemble for 10 ns. Each system was run with 4 different 
+replicas, initialized from identical configurations, but velocities were initialized with
+different random seeds. Reported values were averaged across the ensemble.  The 
+pressure in the direction orthogonal to the graphene walls was maintained at 1 atm.
+Thermal control was implemented using a Nos\' e-Hoover extended Lagrangian procedure \cite{Martyna1994},
+and the dynamical integration scheme was velocity-Verlet \cite{Swope1982}.
+For systems containing only graphene and water, the dynamics timestep was set at 2.0 
+femtoseconds. For simulations containing solute molecules, the timestep was set
+at 1.0 fs. 
+
+\subsection{Analysis}
+
+
