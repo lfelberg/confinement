@@ -13,6 +13,13 @@ def d_pbc(c1, c2, rng):
     ds = (d * d).sum(axis=1)
     return ds
 
+def find_closest(dist):
+    '''Given an array of distances, return the smallest dist value
+       and the argmin'''
+    closest = np.argmin(dist)
+    d_sqrt = np.sqrt(dist[closest])
+    return closest, d_sqrt
+
 def get_dist_to_c(tim_xyz, coords, types, dims):
     '''Method to get the distances between graphene and all other particles
        from lammps xyz file'''
@@ -26,16 +33,34 @@ def get_dist_to_c(tim_xyz, coords, types, dims):
         for ot in range(len(othC)): #finding closest graphene
             atomGd = np.repeat(othC[np.newaxis,ot,:],len(grpC),axis=0)
             dist = d_pbc(grpC, atomGd, rng)
-            clos_C = np.argmin(dist)
-            closestC = np.where(grap)[0][clos_C]
-           #print(clos_C, np.min(dist), closestC)
-            dis.append([np.sqrt(dist[clos_C]), closestC])
+            clos_C, dis_c = find_closest(dist)
+            dis.append([dis_c, np.where(grap)[0][clos_C]])
         dist_to_C.append(dis)
     return dist_to_C
 
-def get_dist_btw_cs():
+def get_dist_btw_cs(tim_xyz, coords, types, dims):
     '''Method to get the distance for each graphene carbon to other wall'''
-    return 0.0
+    grap = types == GRAPHENE; other = types != GRAPHENE; dist_to_C = []
+
+    # Finding atoms with x values LT/GT half the box
+    x_hlf = (dims[0][1]-dims[0][0])/2.0 # Half of box divides 2 walls
+    x_less  = coords[0,:,0] < x_hlf
+    x_great = coords[0,:,0] > x_hlf
+    g_less = graph and x_less
+    g_grat = graph and x_great
+    for i in range(len(tim_xyz)):
+        hlf_c = coords[i,g_less,:]
+        oth_c = coords[i,g_grat,:]
+        rng = np.array([dims[i][1]-dims[i][0], dims[i][3]-dims[i][2],
+                        dims[i][5]-dims[i][4]])
+        dis = np.zeros((len(hlf_c), 2))
+        for ot in range(len(oth_c)): #finding closest graphene
+            atomGd = np.repeat(oth_c[np.newaxis,ot,:],len(hlf_c),axis=0)
+            dist = d_pbc(hlf_c, atomGd, rng)
+            clos_C, dis_c = find_closest(dist)
+            dis[oth][0] = dis_c; dis[oth][1] =  np.where(grap)[0][clos_C]])
+        dist_to_C.append(dis)
+    return dist_to_C
 
 def print_dist_to_c(fname, time, dists, types):
     '''Print distances to carbon wall in xyz like format'''
