@@ -31,11 +31,19 @@ def dist_btw(frm, to, rang, cond ):
         dt.append([dis_at, np.where(cond)[0][clos_at]])
     return dt
         
+
+def dev_frm_avg(points):
+    '''Given a list of 1D coords, calc the mean and then the signed dev from 
+       that'''
+    mean = np.mean(points)
+    mean_ar = np.repeat(mean, len(points))
+    return (points - mean_ar)
+
 def get_all_dist(tim_xyz, coords, types, dims):
     '''Method to get the distance between graphene walls, and graphene
        and all other atoms in the system'''
     grap = types == GRAPHENE; other = types != GRAPHENE; dist_to_C = []
-    dist_btw_C = []
+    dist_btw_C, dv_g = [], []
 
     # Finding atoms with x values LT/GT half the box
     x_hlf = (dims[0][1]-dims[0][0])/2.0 # Half of box divides 2 walls
@@ -44,7 +52,9 @@ def get_all_dist(tim_xyz, coords, types, dims):
     g_grat = np.all(np.array([grap, x_great]), axis=0)
     
     for i in range(len(tim_xyz)):
+        # for the graphene wall-to-wall distance
         hlf_c = coords[i,g_less,:]; oth_c = coords[i,g_grat,:]
+        # for the other to graphene distance
         grpC = coords[i,grap,:]; othC = coords[i,other,:]
         rng = np.array([dims[i][1]-dims[i][0], dims[i][3]-dims[i][2],
                         dims[i][5]-dims[i][4]]) # pbc range
@@ -52,24 +62,8 @@ def get_all_dist(tim_xyz, coords, types, dims):
         dist_other = dist_btw(othC, grpC, rng, grap)
         dist_cs = dist_btw(hlf_c, oth_c, rng, g_grat)
         dist_to_C.append(dist_other); dist_btw_C.append(dist_cs)
-    return dist_to_C, dist_btw_C
-
-def get_dist_to_c(tim_xyz, coords, types, dims):
-    '''Method to get the distances between graphene and all other particles
-       from lammps xyz file'''
-    grap = types == GRAPHENE; other = types != GRAPHENE; dist_to_C = []
-    for i in range(len(tim_xyz)):
-        grpC = coords[i,grap,:]; othC = coords[i,other,:]
-        rng = np.array([dims[i][1]-dims[i][0], dims[i][3]-dims[i][2],
-                        dims[i][5]-dims[i][4]])
-        dis = []
-        for ot in range(len(othC)): #finding closest graphene
-            atomGd = np.repeat(othC[np.newaxis,ot,:],len(grpC),axis=0)
-            dist = d_pbc(grpC, atomGd, rng)
-            clos_C, dis_c = find_closest(dist)
-            dis.append([dis_c, np.where(grap)[0][clos_C]])
-        dist_to_C.append(dis)
-    return dist_to_C
+        dv_g.append([dev_frm_avg(hlf_c[:,0]), dev_frm_avg(oth_c[:,0])])
+    return dist_to_C, dist_btw_C, dv_g
 
 def print_dist_to_c(fname, time, dists, dists_C, types):
     '''Print distances to carbon wall in xyz like format'''
@@ -80,12 +74,32 @@ def print_dist_to_c(fname, time, dists, dists_C, types):
         f.write("Atoms. Timestep {0}\n".format(time[i]))
         for j in range(len(types)):
             if types[j] == GRAPHENE and cct < len(dists_C[i]):
-                clo = dists_C[i][cct][0]; di = dists_C[i][cct][1]; cct += 1
+                clo = dists_C[i][cct][1]; di = dists_C[i][cct][0]; cct += 1
             elif types[j] == GRAPHENE: clo = j; di = 0.0
             else:
                 clo = dists[i][ctr][1]; di = dists[i][ctr][0]; ctr += 1
             f.write("{0} {1} {2:.4f}\n".format(types[j], clo, di))
     f.close()
+
+def print_dev_of_c(fname, coords, dev_g, boxl_x, types, sep = False):
+   '''Print deviation of carbon wall to xyz like file'''
+   grap = types == GRAPHENE;
+   x_less=coords[0,:,0] < boxl_x/2.0; x_great=coords[0,:,0] > boxl_x/2.0
+   g_less = np.all(np.array([grap, x_less]), axis=0)                              
+   g_grat = np.all(np.array([grap, x_great]), axis=0) 
+   ct = 1 if sep == True else 2
+
+   for f in range(ct):
+       fn = open(fname+str(f)+".dat", 'w')
+       wall = g_less if f == 1 else g_grat
+       for i in range(len(coords)): # for each timestep
+           step = coords[i, wall, :] # find wall coords
+           fn.write("{0}\nAtoms. Timestep {1}\n".format(len(step), i))
+           for j in range(len(step)):
+               sep_d = dev_g[i][j][0] if sep == True else dev_g[i][f][j]
+               fn.write("{0} {1:.3f} {2:.3f} {3:.3f}\n".format(1, *tuple(
+                       step[j,1:]), sep_d)) 
+       fn.close()
 
 def get_box_dim(vol_out):
     '''For all times in run file, get timestamp, x, y, z min and max'''
@@ -105,11 +119,15 @@ def main():
     itr = sys.argv[3]
     time, dims = get_box_dim("run"+str(sep)+"_"+str(itr)+".vol")
     tim_xyz, coords, types = xyz_reader(xyzname, time, dims)
-    dists, dists_C = get_all_dist(tim_xyz, np.array(coords), np.array(types), 
-                                  np.array(dims))
+    coords = np.array(coords); types = np.array(types); dims = np.array(dims)
+    dists, dists_C, grp_st = get_all_dist(tim_xyz, coords, types, dims)
 
     print_dist_to_c("run"+str(sep)+"_"+str(itr)+".dist",
                     tim_xyz,dists, dists_C,types)
+    print_dev_of_c("run"+str(sep)+"_"+str(itr)+"_graph", coords, grp_st, 
+                   dims[0][1]-dims[0][0], types)
+    print_dev_of_c("run"+str(sep)+"_"+str(itr)+"_graph_sep", coords, dists_C, 
+                   dims[0][1]-dims[0][0], types, sep = True)
 
 if __name__=="__main__":
     main()
