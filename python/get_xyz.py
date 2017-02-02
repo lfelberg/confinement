@@ -41,6 +41,6 @@ def xyz_reader(filename, times = [], dims = []):
                               float(crds[3])-dims[t_ct][4]])
     #For last timestep, since it doesn't have a line about Atoms after it.
     if grab_snap == 1: atom=atom+[atoms]
-   #print(len(time), time, len(types)); print( len(atom), len(atom[0]))
+    print(len(time), time, len(types)); print( len(atom), len(atom[0]))
     f.close()
     return time, atom, types

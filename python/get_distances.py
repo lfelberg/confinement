@@ -2,6 +2,7 @@ import sys
 import re
 import numpy as np
 from get_xyz import xyz_reader
+from get_box_dim import get_box_dim_from_vol
 
 GRAPHENE = 3
 
@@ -31,7 +32,6 @@ def dist_btw(frm, to, rang, cond ):
         dt.append([dis_at, np.where(cond)[0][clos_at]])
     return dt
         
-
 def dev_frm_avg(points):
     '''Given a list of 1D coords, calc the mean and then the signed dev from 
        that'''
@@ -47,6 +47,7 @@ def get_all_dist(tim_xyz, coords, types, dims):
 
     # Finding atoms with x values LT/GT half the box
     x_hlf = (dims[0][1]-dims[0][0])/2.0 # Half of box divides 2 walls
+    print(coords.shape)
     x_less  = coords[0,:,0] < x_hlf; x_great = coords[0,:,0] > x_hlf
     g_less = np.all(np.array([grap, x_less]), axis=0)
     g_grat = np.all(np.array([grap, x_great]), axis=0)
@@ -97,29 +98,18 @@ def print_dev_of_c(fname, coords, dev_g, boxl_x, types, sep = False):
            fn.write("{0}\nAtoms. Timestep {1}\n".format(len(step), i))
            for j in range(len(step)):
                sep_d = dev_g[i][j][0] if sep == True else dev_g[i][f][j]
-               fn.write("{0} {1:.3f} {2:.3f} {3:.3f}\n".format(1, *tuple(
-                       step[j,1:]), sep_d)) 
+               fn.write("{0} {1:.3f} {2:.3f} {l:.3f}\n".format(1, 
+                        *step[j,1:], l=sep_d)) 
        fn.close()
-
-def get_box_dim(vol_out):
-    '''For all times in run file, get timestamp, x, y, z min and max'''
-    f = open(vol_out, "r")
-    time, dims = [], []
-    for line in f:
-        tmp = line.split()
-        time.append([int(tmp[0]), int(tmp[1])])
-        dims.append([float(tmp[2]),float(tmp[3]),float(tmp[4]),
-                     float(tmp[5]),float(tmp[6]),float(tmp[7])])
-    f.close()
-    return time, dims
 
 def main():
     xyzname = sys.argv[1]
     sep = sys.argv[2]
     itr = sys.argv[3]
-    time, dims = get_box_dim("run"+str(sep)+"_"+str(itr)+".vol")
+    time, dims = get_box_dim_from_vol("run"+str(sep)+"_"+str(itr)+".vol")
     tim_xyz, coords, types = xyz_reader(xyzname, time, dims)
     coords = np.array(coords); types = np.array(types); dims = np.array(dims)
+    print(coords.shape)
     dists, dists_C, grp_st = get_all_dist(tim_xyz, coords, types, dims)
 
     print_dist_to_c("run"+str(sep)+"_"+str(itr)+".dist",
