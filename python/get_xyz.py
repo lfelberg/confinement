@@ -1,4 +1,4 @@
-
+import numpy as np
 
 def xyz_reader(filename, times = [], dims = []):
     ''' Method to create array of atom coordinates in xyz file'''
@@ -8,6 +8,7 @@ def xyz_reader(filename, times = [], dims = []):
     f=open(filename, "r")
     f.readline()
     line = f.readline()
+    nat = 0
     if times == [] or times[0][0] == int(line.split()[-1]):
         time.append(int(line.split()[-1]))
         t_ct += 1; grab_snap = 1
@@ -21,10 +22,11 @@ def xyz_reader(filename, times = [], dims = []):
         if line[0]=="A":
             if grab_snap == 1:
                 atom+=[atoms]
+                if nat == 0: nat = len(atoms)
                 atoms = []
 
             if times == [] or times[t_ct][0] == int(line.split()[-1]):
-                print(line.split()[-1])
+               #print(line.split()[-1])
                 time.append(int(line.split()[-1]))
                 t_ct += 1; grab_snap = 1
             else: grab_snap = 0
@@ -39,8 +41,26 @@ def xyz_reader(filename, times = [], dims = []):
                 atoms.append([float(crds[1])-dims[t_ct][0],
                               float(crds[2])-dims[t_ct][2],
                               float(crds[3])-dims[t_ct][4]])
+            if len(atoms[-1]) != 3: print(crds)
     #For last timestep, since it doesn't have a line about Atoms after it.
-    if grab_snap == 1: atom=atom+[atoms]
-    print(len(time), time, len(types)); print( len(atom), len(atom[0]))
+   #if grab_snap == 1: atom=atom+[atoms]
+   #print(len(time), time, len(types))
+    print("in get_xyz", len(atom))
+    print( len(atom[-1]))
+    print( len(atom[-1][-1]))
+
+    at_ar = np.zeros((len(atom),len(atom[0]), len(atom[0][0])))
+    ti_ar = np.array(time)
+    at_ar = np.array(atom)
+    print("In xyz, arr shape", at_ar.shape)
+ 
+   #for i in range(at_ar.shape[0]):
+   #    for j in range(at_ar.shape[1]):
+   #        print(atom[i][j])
+   #        for k in range(at_ar.shape[2]):
+   #            at_ar[i][j][k] = atom[i][j][k]
+
+    ty_ar = np.array(types)
+    print("in xyz", at_ar.shape, ty_ar.shape)
     f.close()
-    return time, atom, types
+    return ti_ar, at_ar, ty_ar

@@ -47,12 +47,12 @@ def get_all_dist(tim_xyz, coords, types, dims):
 
     # Finding atoms with x values LT/GT half the box
     x_hlf = (dims[0][1]-dims[0][0])/2.0 # Half of box divides 2 walls
-    print(coords.shape)
+    print("In get_all_dist", coords.shape)
     x_less  = coords[0,:,0] < x_hlf; x_great = coords[0,:,0] > x_hlf
     g_less = np.all(np.array([grap, x_less]), axis=0)
     g_grat = np.all(np.array([grap, x_great]), axis=0)
     
-    for i in range(len(tim_xyz)):
+    for i in range(len(coords)):
         # for the graphene wall-to-wall distance
         hlf_c = coords[i,g_less,:]; oth_c = coords[i,g_grat,:]
         # for the other to graphene distance
@@ -107,17 +107,17 @@ def main():
     sep = sys.argv[2]
     itr = sys.argv[3]
     time, dims = get_box_dim_from_vol("run"+str(sep)+"_"+str(itr)+".vol")
-    tim_xyz, coords, types = xyz_reader(xyzname, time, dims)
-    coords = np.array(coords); types = np.array(types); dims = np.array(dims)
-    print(coords.shape)
-    dists, dists_C, grp_st = get_all_dist(tim_xyz, coords, types, dims)
+    tim_xyz, coords_ar, types_ar = xyz_reader(xyzname, time, dims)
+    dims_ar = np.array(dims)
+    print("Arry shape", coords_ar.shape)
+    dists, dists_C, grp_st = get_all_dist(tim_xyz,coords_ar,types_ar,dims_ar)
 
     print_dist_to_c("run"+str(sep)+"_"+str(itr)+".dist",
-                    tim_xyz,dists, dists_C,types)
-    print_dev_of_c("run"+str(sep)+"_"+str(itr)+"_graph", coords, grp_st, 
-                   dims[0][1]-dims[0][0], types)
-    print_dev_of_c("run"+str(sep)+"_"+str(itr)+"_graph_sep", coords, dists_C, 
-                   dims[0][1]-dims[0][0], types, sep = True)
+                    tim_xyz,dists, dists_C, types_ar)
+    print_dev_of_c("run"+str(sep)+"_"+str(itr)+"_graph", coords_ar, grp_st, 
+                   dims[0][1]-dims[0][0], types_ar)
+    print_dev_of_c("run"+str(sep)+"_"+str(itr)+"_graph_sep",coords_ar,dists_C, 
+                   dims[0][1]-dims[0][0], types_ar, sep = True)
 
 if __name__=="__main__":
     main()
