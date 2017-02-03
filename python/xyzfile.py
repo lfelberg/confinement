@@ -6,13 +6,10 @@ class XYZFile:
      '''A class for xyz files'''
      xyzfname = ''
          
-     def __init__(self, fname, time = [], dims = []):
-          self.xyzfname = fname
-          self.get_coords_types(fname, time, dims)
-
      def __init__(self, fname, VolFile):
           self.xyzfname = fname
-          self.get_coords_types(fname, VolFile.time, VolFile.dims)
+          if VolFile.volfname == '': self.get_coords_types(fname, [], [])
+          else: self.get_coords_types(fname, VolFile.time, VolFile.dims)
 
 
      def get_coords_types(self, filename, times, dims):

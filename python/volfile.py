@@ -15,7 +15,7 @@ class VolFile:
 
          if '.vol' in fname:   self.get_dim_from_vol(fname)
          elif '.out' in fname: self.get_dim_from_out(fname)
-         else:                 print("Error, file ext not recognized!")
+         else:                 self.volfname = ""
 
 
     def get_dim_from_vol(self, fname):
