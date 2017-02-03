@@ -1,5 +1,7 @@
 import numpy as np
 
+from volfile import VolFile
+
 class XYZFile:
      '''A class for xyz files'''
      xyzfname = ''
@@ -7,6 +9,10 @@ class XYZFile:
      def __init__(self, fname, time = [], dims = []):
           self.xyzfname = fname
           self.get_coords_types(fname, time, dims)
+
+     def __init__(self, fname, VolFile):
+          self.xyzfname = fname
+          self.get_coords_types(fname, VolFile.time, VolFile.dims)
 
 
      def get_coords_types(self, filename, times, dims):

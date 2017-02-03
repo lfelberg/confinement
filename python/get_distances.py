@@ -1,9 +1,8 @@
 import sys
 import re
 import numpy as np
-#from get_xyz import xyz_reader
 from xyzfile import XYZFile
-from get_box_dim import get_box_dim_from_vol
+from volfile import VolFile
 
 GRAPHENE = 3
 
@@ -104,22 +103,17 @@ def print_dev_of_c(fname, xyz, dev_g, boxl_x, sep = False):
        fn.close()
 
 def main():
-    xyzname = sys.argv[1]
-    sep = sys.argv[2]
-    itr = sys.argv[3]
-    time, dims = get_box_dim_from_vol("run"+str(sep)+"_"+str(itr)+".vol")
-    xyz_cl = XYZFile(xyzname, time, dims)
-   #tim_xyz, coords_ar, types_ar = xyz_reader(xyzname, time, dims)
-    dims_ar = np.array(dims)
+    xyzname = sys.argv[1]; sep = sys.argv[2]; itr = sys.argv[3]                    
+    volC = VolFile("run"+str(sep)+"_"+str(itr)+".vol")                             
+    xyz_cl = XYZFile(xyzname, volC)
     print("Arry shape", xyz_cl.atom.shape)
-    dists, dists_C, grp_st = get_all_dist( xyz_cl,dims_ar)
+    dists, dists_C, grp_st = get_all_dist( xyz_cl, volC.dims)
 
-    print_dist_to_c("run"+str(sep)+"_"+str(itr)+".dist",
-                    xyz_cl, dists, dists_C)
+    print_dist_to_c("run"+str(sep)+"_"+str(itr)+".dist",xyz_cl,dists,dists_C)
     print_dev_of_c("run"+str(sep)+"_"+str(itr)+"_graph", xyz_cl, grp_st, 
-                   dims[0][1]-dims[0][0])
+                   volC.get_x_rng())
     print_dev_of_c("run"+str(sep)+"_"+str(itr)+"_graph_sep", xyz_cl, dists_C, 
-                   dims[0][1]-dims[0][0], sep = True)
+                   volC.get_x_rng(), sep = True)
 
 if __name__=="__main__":
     main()
