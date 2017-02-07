@@ -9,8 +9,8 @@ from volfile import VolFile
 
 def plot_graph_dev(plt_nm, coords):
     '''For each time snapshot, plot a 2D heatmap of deviation of x dim'''
-    mn = np.mean(coords[0,:,2])
-    rng = np.std(coords[0,:,2])
+    mn = np.mean(np.mean(coords[:,:,2]))
+    rng = np.std(coords[:,:,2])
     xrn = [np.amin(coords[:,:,0]), np.amax(coords[:,:,0])]
     yrn = [np.amin(coords[:,:,1]), np.amax(coords[:,:,1])]
     print(xrn, yrn)

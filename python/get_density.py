@@ -1,9 +1,11 @@
 import sys
+import csv
 import numpy as np
 import matplotlib.pyplot as plt  
 
 from xyzfile import XYZFile
 from volfile import VolFile
+from csvfile import CSVFile
 
 GRAPHENE = 3
 A3_TO_CM3 = 1.e-24     # 1 A^3 = 1.0e-24  cm^3
@@ -48,33 +50,52 @@ def histog_dist(hist_out, xyzC, volC):
     f.close()
 
 
-def plot_density_hist(fname):
-    d_sums = np.zeros((3,dens_mn.shape[1]))
-    d_sums[0] = dens_mn[0]+dens_mn[1]
-    d_sums[1] = dens_mn[2]
-    d_sums[2] = dens_mn[3]+dens_mn[4]
+def plot_density_hist(csvC):
+    '''Plot densities for each atom type'''
+    type_lst = list(type_wt.keys())
+    ty_ln = len(type_lst)
 
-    for t in range(ty_ln):
+    d_sums = np.zeros((3,csvC.dat.shape[1]))
+    d_sums[0] = csvC.dat[1]+csvC.dat[2]
+    d_sums[1] = csvC.dat[3]
+   #d_sums[2] = csvC.dat[3]+csvC.dat[4]
+
+    for t in range(csvC.dat.shape[0]-1):
         f = plt.figure(1, figsize = (3.0, 3.0))                                    
         ax = f.add_subplot(111)    
-        ax.plot(benz[:-1], dens_mn[t])
+        ax.plot(csvC.dat[0], csvC.dat[t+1])
+       #print(csvC.dat[0], csvC.dat[t+1])
         plt.savefig('dens'+str(type_lst[t])+'.png', format='png',                            
                             bbox_inches = 'tight', dpi=300) 
         plt.close()
 
     f = plt.figure(1, figsize = (3.0, 3.0))                                    
     ax = f.add_subplot(111)    
-    ax.plot(benz[:-1], d_sums[0])
+    ax.plot(csvC.dat[0], d_sums[0])
     plt.savefig('dens_wat'+'.png', format='png',                            
                             bbox_inches = 'tight', dpi=300) 
     plt.close()
 
 def main():                                                                        
+    '''Uses volume file and XYZ file'''
     xyzname = sys.argv[1]; sep = sys.argv[2]; itr = sys.argv[3]                    
     volC = VolFile("run"+str(sep)+"_"+str(itr)+".vol")                             
-    xyzC = XYZFile(xyzname, volC)
+    if 'xyz' in xyzname:
+        xyzC = XYZFile(xyzname, volC)
+        histog_dist(xyzname[:-3]+"dens_hist", xyzC, volC)
+    else:
+        with open(xyzname) as csvfile:                                               
+            reader, rw_ct, rw, dt = csv.DictReader(csvfile), 0, 0, []
+            rw = 0                                                                 
+            for row in reader:                                                     
+                dat, rk = [], row.keys()
+                print(row, rk)
+                for key in sorted(rk): 
+                    dat.append(float(row[key]))
+                dt.append(dat)
+                rw += 1   
+        csvC = CSVFile(xyzname)
+        plot_density_hist(csvC)
 
-    histog_dist(xyzname[:-3]+"dens_hist", xyzC, volC)
-                                                                                   
 if __name__=="__main__":                                                           
     main() 

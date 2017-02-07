@@ -46,7 +46,9 @@ class XYZFile:
                  crds=line.split()                                                      
                  if t_ct == 1: types.append(int(crds[0]))                               
                  if dims == []:                                                         
-                     atoms.append([float(crds[1]),float(crds[2]),float(crds[3])])       
+                     tmp = []
+                     for i in range(1,len(crds)): tmp.append(float(crds[i]))
+                     atoms.append(tmp)
                  else: # Move coords so that box is from 0 -> xmin                      
                      atoms.append([float(crds[1])-dims[t_ct][0],                        
                                    float(crds[2])-dims[t_ct][2],                        
