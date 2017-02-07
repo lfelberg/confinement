@@ -1,5 +1,4 @@
 # Python analysis scripts for confinement project
-================================================
 
 This file contains an overview of files used for the confinement project.
 
@@ -10,6 +9,26 @@ A class for reading in CSV files.
 usage: `cC = CSVFile(csvname)`
 
 Saves the filename as `csvfname` and the data as an array, `dat`.
+
+
+## get_density.py
+
+
+## get_distances.py
+
+
+## g_of_r.py
+
+
+## hbonanza.py
+
+
+## hbond_stats.py
+
+
+## plot_2d_heat.py
+
+## plot_vs_x.py
 
 
 ## volfile.py
@@ -25,6 +44,8 @@ usage as class: `vC = VolFile(volname)`
 
 Will create an instance of a VolFile class where vC reads in a \*.out or \*.vol
 file and can operate on it.
+
+## write_pdb.py
 
 
 ## xyzfile.py
