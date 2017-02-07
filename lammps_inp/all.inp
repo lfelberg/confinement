@@ -12,9 +12,9 @@ kspace_style pppm/tip4p 0.0001
 bond_style harmonic
 angle_style harmonic
 dihedral_style hybrid harmonic charmm
-improper_style cvff
+improper_style hybrid harmonic cvff
 
-read_data dsep_all.data
+read_data dsepLlen.data
 
 # Groups
 group oxy type 1
@@ -67,11 +67,14 @@ angle_coeff 3 63 120.00  # CA-CA-CA
 angle_coeff 4 35 120.00  # CA-CA-HA
                                                                                    
 # dihedral: #, k [energy = kCal/mole], d (+1 or -1), n (integer >= 0)           
-dihedral_coeff 1 harmonic 3.15 -1 1 # C-C-C-C graphene Nano Letters, 2009, 9, 3766          
-dihedral_coeff 2 harmonic 3.15 1 1  # C-C-C-C graphene Nano Letters, 2009, 9, 3766          
+dihedral_coeff 1 harmonic 3.15 -1 2 # C-C-C-C graphene Nano Letters, 2009, 9, 3766          
+dihedral_coeff 2 harmonic 3.15 1 2  # C-C-C-C graphene Nano Letters, 2009, 9, 3766          
 dihedral_coeff 3 charmm 3.625 2 180 0.0 # CA-CA-CA-CA
 
-improper_coeff 1 1.1 -1 1  # CA-CA-CA-HA for benzene
+# improper: #, k [energy = kCal/mole/rad^2], X0                                    
+improper_coeff 1 harmonic 15.0 0.0 # C-C-C-C graphene Soft Matter, 2014, 10, 4067
+# improper: #, k [energy = kCal/mole], d (+1 or -1), n (integer >= 0)  
+improper_coeff 2 cvff 1.1 -1 2  # CA-CA-CA-HA for benzene from Bill
 
 # SETTINGS
 neighbor 2.0 bin
@@ -81,8 +84,8 @@ thermo          500
 thermo_style    custom step time temp press pe ke etotal evdwl ecoul epair ebond eangle edihed vol density lx ly lz xlo xhi ylo yhi zlo zhi pxx pyy pzz pxy pxz pyz
 #thermo_style    custom step temp pxx pyy pzz ebond eangle epair edihed etotal lx ly lz
 #dump            11 all dcd 500 trajectory.dcd
-dump            11 all xyz 500 traj_sep_iter.xyz
-restart         5000 restart.sep.iter.benzene
+dump            11 all xyz 500 traj_sep_len_iter.xyz
+restart         5000 restart.sep.len.iter.benzene
 
 # RUNS
 fix 1 all momentum 10 linear 1 1 1 angular

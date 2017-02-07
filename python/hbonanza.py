@@ -852,7 +852,7 @@ def identify_hydrogen_bonds_from_trajectory(pdb_filenames):
     # first, write out the header
     program_output = program_output + "#\tWriting frame-by-frame hydrogen bond analysis to the file " + arguments['OUTPUT_BASENAME'] + "frame_by_frame_hbonds.csv\n"
     file = open(arguments['OUTPUT_BASENAME'] + "frame_by_frame_hbonds.csv",'w')
-    file.write('H_HD_HA,')
+    file.write('aH_HD_HA,')
     for frame_index in used_frame_indices: file.write("frame_" + str(frame_index) + ",")
     file.write(",Average")
     file.write("\n")

@@ -6,11 +6,12 @@ from volfile import VolFile
 
 GRAPHENE = 3
 
-def d_pbc(c1, c2, rng):
+def d_pbc(c1, c2, rng, pbcs):
     '''Compute distance between points with PBCS
        c1 and c2 are an array of coordinates, rng is PBC range in x,y,z'''
+    pbcs = np.array(pbcs) # use this array to remove pbcs in any dimension
     boxl = np.round((c1-c2)/rng) # find what is rounded distance
-    d = c1-c2 - boxl*rng # add that rounded distance to actual dist
+    d = c1-c2 - boxl*rng*pbcs # add that rounded distance to actual dist
     ds = (d * d).sum(axis=1)
     return ds
 
@@ -21,13 +22,13 @@ def find_closest(dist):
     d_sqrt = np.sqrt(dist[closest])
     return closest, d_sqrt
 
-def dist_btw(frm, to, rang, cond ):
+def dist_btw(frm, to, rang, cond, pbcs = [1.0,1.0,1.0]):
     '''Given an array of molecules you would like to compute the distance 
        between, find the atom closest in the to list, given pbc range'''
     dt = []
     for fm in range(len(frm)):
         frm_ar = np.repeat(frm[np.newaxis,fm,:],len(to),axis=0)
-        dist = d_pbc(to, frm_ar, rang)
+        dist = d_pbc(to, frm_ar, rang, pbcs)
         clos_at, dis_at = find_closest(dist)
         dt.append([dis_at, np.where(cond)[0][clos_at]])
     return dt
@@ -59,9 +60,9 @@ def get_all_dist(xyz, dims):
         grpC = xyz.atom[i,grap,:]; othC = xyz.atom[i,other,:]
         rng = np.array([dims[i][1]-dims[i][0], dims[i][3]-dims[i][2],
                         dims[i][5]-dims[i][4]]) # pbc range
-
         dist_other = dist_btw(othC, grpC, rng, grap)
-        dist_cs = dist_btw(hlf_c, oth_c, rng, g_grat)
+        dist_cs = dist_btw(hlf_c, oth_c, rng, g_grat, [0.0,1.0,1.0])
+
         dist_to_C.append(dist_other); dist_btw_C.append(dist_cs)
         dv_g.append([dev_frm_avg(hlf_c[:,0]), dev_frm_avg(oth_c[:,0])])
     return dist_to_C, dist_btw_C, dv_g

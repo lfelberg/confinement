@@ -19,7 +19,6 @@ type_wt = {
             5:  1.01,
           }
 
-
 def histog_dist(hist_out, xyzC, volC):
     ''' Get a histogram of distances and transform into distance from plate'''
     xr, bns = volC.get_x_len(), 100
