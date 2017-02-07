@@ -64,8 +64,6 @@ def oxygenfinder(filename):
 	with open("thisone", "w") as text_file:
 		text_file.write(histosum)
 
-
-
 def distancefinder(arry):
 	global length
 	length=len(arry)

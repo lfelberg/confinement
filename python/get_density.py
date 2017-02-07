@@ -83,7 +83,7 @@ def main():
     if 'xyz' in xyzname:
         xyzC = XYZFile(xyzname, volC)
         histog_dist(xyzname[:-3]+"dens_hist", xyzC, volC)
-    else:
+    else: # plotting
         with open(xyzname) as csvfile:                                               
             reader, rw_ct, rw, dt = csv.DictReader(csvfile), 0, 0, []
             rw = 0                                                                 

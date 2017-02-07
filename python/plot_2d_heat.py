@@ -34,7 +34,7 @@ def plot_graph_dev(plt_nm, coords):
         plt.close()
 
 def main():                                                                        
-    xyzname = sys.argv[1]; #sep = sys.argv[2]; itr = sys.argv[3]
+    xyzname = sys.argv[1]; 
     volF = VolFile("")
     xyzF = XYZFile(xyzname, volF)
     plot_graph_dev(xyzname[:-3], xyzF.atom)
