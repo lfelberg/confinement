@@ -82,38 +82,16 @@ def print_dist_to_c(fname, xyz, dists, dists_C):
             f.write("{0} {1} {2:.4f}\n".format(xyz.types[j], clo, di))
     f.close()
 
-def print_dev_of_c(fname, xyz, dev_g, boxl_x, sep = False):
-   '''Print deviation of carbon wall to xyz like file'''
-   grap = xyz.types == GRAPHENE;
-   x_less=xyz.atom[0,:,0] < boxl_x/2.0; x_great=xyz.atom[0,:,0] > boxl_x/2.0
-   g_less = np.all(np.array([grap, x_less]), axis=0)                              
-   g_grat = np.all(np.array([grap, x_great]), axis=0) 
-   ct = 1 if sep == True else 2
-
-   for f in range(ct):
-       fn = open(fname+str(f)+".dat", 'w')
-       wall = g_less if f == 1 else g_grat
-       for i in range(len(xyz.atom)): # for each timestep
-           step = xyz.atom[i, wall, :] # find wall coords
-           fn.write("{0}\nAtoms. Timestep {1}\n".format(len(step), i))
-           for j in range(len(step)):
-               sep_d = dev_g[i][j][0] if sep == True else dev_g[i][f][j]
-               fn.write("{0} {1:.3f} {2:.3f} {l:.3f}\n".format(1, 
-                        *step[j,1:], l=sep_d)) 
-       fn.close()
-
 def main():
-    xyzname = sys.argv[1]; sep = sys.argv[2]; itr = sys.argv[3]                    
-    volC = VolFile("run"+str(sep)+"_"+str(itr)+".vol")                             
+    ''' Given a list of pairs for g(r) calcs, do this as a function as 
+        distance from wall, but only 2D and only for your wall side '''
+    xyzname=sys.argv[1]; sep=sys.argv[2]; ln=sys.argv[3]; itr=sys.argv[4]
+    nm = str(sep)+"_"+str(ln)+"_"+str(itr)
+    volC = VolFile("run"+nm+".vol") 
     xyz_cl = XYZFile(xyzname, volC)
+
     print("Arry shape", xyz_cl.atom.shape)
     dists, dists_C, grp_st = get_all_dist( xyz_cl, volC.dims)
-
-    print_dist_to_c("run"+str(sep)+"_"+str(itr)+".dist",xyz_cl,dists,dists_C)
-    print_dev_of_c("run"+str(sep)+"_"+str(itr)+"_graph", xyz_cl, grp_st, 
-                   volC.get_x_rng())
-    print_dev_of_c("run"+str(sep)+"_"+str(itr)+"_graph_sep", xyz_cl, dists_C, 
-                   volC.get_x_rng(), sep = True)
 
 if __name__=="__main__":
     main()

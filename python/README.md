@@ -93,6 +93,12 @@ This will plot a 2D heatmap of either:
 
 ## plot_vs_x.py
 
+Plot multiple csv files of data for a versus X coord plot.
+
+**usage**: `python plot_vs_x.py csvStart nsep nlen niter sep1 sep2... len1 len2... iter1 iter2... ext datLoc`
+
+Should output a plot of the multiple datasets.
+
 
 ## volfile.py
 
