@@ -31,8 +31,9 @@ def write_to_pdb(fname, xyz):
     f.close()
 
 def main():
-    xyzname = sys.argv[1]; sep = sys.argv[2]; itr = sys.argv[3]
-    volC = VolFile("run"+str(sep)+"_"+str(itr)+".vol")
+    xyzname=sys.argv[1]; sep=sys.argv[2]; ln=sys.argv[3]; itr=sys.argv[4]
+    nm = str(sep)+"_"+str(ln)+"_"+str(itr)
+    volC = VolFile("run"+nm+".vol")
     xyzC = XYZFile(xyzname, volC)
 
     write_to_pdb(xyzname[:-3]+"pdb", xyzC)

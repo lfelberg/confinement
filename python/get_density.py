@@ -77,16 +77,16 @@ def plot_density_hist(csvC):
 
 def main():                                                                        
     '''Uses volume file and XYZ or CSV (ext: *.dens_hist) file'''
-    xyzname = sys.argv[1]; sep = sys.argv[2]; itr = sys.argv[3]                    
-    volC = VolFile("run"+str(sep)+"_"+str(itr)+".vol")                             
+    xyzname=sys.argv[1]; sep=sys.argv[2]; ln=sys.argv[3]; itr=sys.argv[4]                    
+    volC = VolFile("run"+str(sep)+"_"+str(ln)+"_"+str(itr)+".vol")
     if 'xyz' in xyzname:
         xyzC = XYZFile(xyzname, volC)
         histog_dist(xyzname[:-3]+"dens_hist", xyzC, volC)
     else: # plotting
-        with open(xyzname) as csvfile:                                               
+        with open(xyzname) as csvfile:
             reader, rw_ct, rw, dt = csv.DictReader(csvfile), 0, 0, []
-            rw = 0                                                                 
-            for row in reader:                                                     
+            rw = 0
+            for row in reader:
                 dat, rk = [], row.keys()
                 print(row, rk)
                 for key in sorted(rk): 
@@ -96,5 +96,5 @@ def main():
         csvC = CSVFile(xyzname)
         plot_density_hist(csvC)
 
-if __name__=="__main__":                                                           
+if __name__=="__main__":
     main() 

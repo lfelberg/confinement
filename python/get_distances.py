@@ -87,7 +87,7 @@ def print_dev_of_c(fname, xyz, dev_g, boxl_x, sep = False):
    '''Print deviation of carbon wall to xyz like file'''
    grap = xyz.types == GRAPHENE;
    x_less=xyz.atom[0,:,0] < boxl_x/2.0; x_great=xyz.atom[0,:,0] > boxl_x/2.0
-   g_less = np.all(np.array([grap, x_less]), axis=0)                              
+   g_less = np.all(np.array([grap, x_less]), axis=0)
    g_grat = np.all(np.array([grap, x_great]), axis=0) 
    ct = 1 if sep == True else 2
 
@@ -105,16 +105,16 @@ def print_dev_of_c(fname, xyz, dev_g, boxl_x, sep = False):
 
 def main():
     ''' usage: ''''
-    xyzname = sys.argv[1]; sep = sys.argv[2]; itr = sys.argv[3]                    
-    volC = VolFile("run"+str(sep)+"_"+str(itr)+".vol")                             
+    xyzname=sys.argv[1]; sep=sys.argv[2]; ln=sys.argv[3]; itr=sys.argv[4]
+    nm = str(sep)+"_"+str(ln)+"_"+str(itr)
+    volC = VolFile("run"+nm+".vol") 
     xyz_cl = XYZFile(xyzname, volC)
     print("Arry shape", xyz_cl.atom.shape)
     dists, dists_C, grp_st = get_all_dist( xyz_cl, volC.dims)
 
-    print_dist_to_c("run"+str(sep)+"_"+str(itr)+".dist",xyz_cl,dists,dists_C)
-    print_dev_of_c("run"+str(sep)+"_"+str(itr)+"_graph", xyz_cl, grp_st, 
-                   volC.get_x_rng())
-    print_dev_of_c("run"+str(sep)+"_"+str(itr)+"_graph_sep", xyz_cl, dists_C, 
+    print_dist_to_c("run"+nm+".dist",xyz_cl,dists,dists_C)
+    print_dev_of_c("run"+nm+"_graph", xyz_cl, grp_st, volC.get_x_rng())
+    print_dev_of_c("run"+nm+"_graph_sep", xyz_cl, dists_C, 
                    volC.get_x_rng(), sep = True)
 
 if __name__=="__main__":

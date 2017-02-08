@@ -54,9 +54,10 @@ def get_hbond_v_dist(xyzC, sep, csvC):
 
 def main():
     ''' usage: exe *.xyz sep iter '''
-    xyzname = sys.argv[1]; sep = sys.argv[2]; itr = sys.argv[3]
-    volC = VolFile("run"+str(sep)+"_"+str(itr)+".vol")
-    xyzC = XYZFile("run"+str(sep)+"_"+str(itr)+".dist", VolFile(''))
+    xyzname=sys.argv[1]; sep=sys.argv[2]; ln=sys.argv[3]; itr=sys.argv[4]
+    nm = str(sep)+"_"+str(ln)+"_"+str(itr)
+    volC = VolFile("run"+nm+".vol")  
+    xyzC = XYZFile("run"+nm+".dist", VolFile(''))
     print("Arry shape", xyzC.atom.shape)
     csvC = CSVFile(xyzname[:-3]+'frame_by_frame_hbonds.csv')
     

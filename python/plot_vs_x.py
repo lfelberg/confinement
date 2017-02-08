@@ -7,7 +7,7 @@ from pylab import *
 from xyzfile import XYZFile
 from volfile import VolFile
 
-color = [[0,0,0], [0,0,1], [1, 0,0], [.93, .53, .18]]
+colorL = [[0,0,0], [0,0,1], [1, 0,0], [.93, .53, .18]]
 
 def plot_scatter(plt_nm, csvL, loc):
     '''Using data from a histogram, plot several'''
@@ -21,9 +21,11 @@ def plot_scatter(plt_nm, csvL, loc):
 
     for i in range(len(csvL)):
         for j in range(len(csvL[i])):
-            shft = max(csvL[i][j].dat[0])/2.0
-            ax.scatter(csvL[i][j].dat[0]-shft, csvL[i][j].dat[loc], color[ct])
-            ct += 1
+            for k in range(len(csvL[i][k])):
+                shft = max(csvL[i][j][k].dat[0])/2.0
+                ax.scatter(csvL[i][j][k].dat[0]-shft, 
+                           csvL[i][j][k].dat[loc], color=colorL[ct])
+                ct += 1
     ax.set_xlim(xrn); ax.set_ylim(yrn)
     plt.savefig(plt_nm+str(j)+'.png', format='png',                       
                     bbox_inches = 'tight', dpi=300) 
@@ -31,26 +33,35 @@ def plot_scatter(plt_nm, csvL, loc):
 
 def main():                                                                        
     '''For a collection of data, get info from csv and then plot'''
-    csvname = sys.argv[1]
-    nsep = int(sys.argv[2])
-    niter = int(sys.argv[3])
-    sep, itr = [], [] 
+    csvname = sys.argv[1]; nsep = int(sys.argv[2]); nlen = int(sys.argv[3]);
+    niter = int(sys.argv[4]); st_other = 5
+    sep, ln, itr = [], [], []
+    print("This is nsep {0}, nlen {1}, niter {2}".format(nsep, nlen, niter))
 
-    for i in range(4,nsep+1):
+    for i in range(st_other,nsep+st_other+1):
        sep.append(int(sys.argv[i]))
 
-    for i in range(nsep+1,nsep+niter+1):
-       itr.append(int(sys.argv[i]))
+    for i in range(nsep+st_other+1,nsep+st_other+nlen+1):
+       ln.append(int(sys.argv[i]))
     
-    ext = sys.argv[nsep+niter+1]
-    loc = sys.argv[nsep+niter+2]
+    for i in range(nsep+st_other+nlen+1,nsep+st_other+niter+nlen+1):
+       itr.append(int(sys.argv[i]))
+    print(sep,ln, itr)
+    
+    ext = sys.argv[st_other+nsep+nlen+niter+1]
+    loc = sys.argv[st_other+nsep+nlen+niter+2]
+    print("Ext {0}, loc {1}".format(ext, loc))
     csvL = []
     for i in range(nsep):
-        cs = []
-        for j in range(niter):
-            cs.append(CSVFile(fname+str(sep[i])+"_"+str(itr[j])+ext))
-        csvL.append(cs)
+        csL = []
+        for j in range(nlen):
+            cs = []
+            for k in range(niter):
+                cs.append(CSVFile(fname+str(sep[i])+"_"+str(ln[j])+"_"
+                                  +str(itr[k])+ext))
+            csL.append(cs)
+        csvL.append(csL)
     plot_scatter(csvname[:-3], csvL, loc)
-                                                                                   
-if __name__=="__main__":                                                           
+
+if __name__=="__main__":
     main()
