@@ -9,11 +9,11 @@ GRAPHENE = 3
 WATER_OXY = 2
 
 ''' 
-H_HD_HA,frame_1,frame_2,frame_3,frame_4,frame_5,,Average
+aH_HD_HA,frame_1,frame_2,frame_3,frame_4,frame_5,,Average
 4817_4816_2584,1,1,1,1,1,,1.0
 1938_1936_4123,1,1,1,1,1,,1.0
 
-sorted: 'Average', 'H', HD, HA, 'frame_1', 'frame_2', 'frame_3', 'frame_4', 'frame_5'
+sorted: 'Average', 'aH', HD, HA, 'frame_1', 'frame_2', 'frame_3', 'frame_4', 'frame_5'
 so the frames start at 4
 '''
 

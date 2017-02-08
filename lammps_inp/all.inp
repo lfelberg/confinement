@@ -4,7 +4,7 @@ dimension       3
 boundary        p p p
 atom_style      full
 
-timestep	1.0
+timestep	2.0
 
 # force-field terms
 pair_style hybrid/overlay lj/cut/tip4p/long 1 2 1 1 0.125 9.5 9 lj/cut 9
@@ -14,7 +14,7 @@ angle_style harmonic
 dihedral_style hybrid harmonic charmm
 improper_style hybrid harmonic cvff
 
-read_data dsepLlen.data
+read_data dsepLlen_all.data
 
 # Groups
 group oxy type 1
@@ -96,11 +96,14 @@ unfix 2
 unfix 3
 
 fix 11 water shake 0.0001 20 1000 b 1 a 1
-fix 12 all nvt temp 298 298 100
-run 10000
+fix 12 water nvt temp 298 298 100
+fix 13 graph rigid/nvt molecule temp 298 298 100
+run 5000
 unfix 11
 unfix 12
+unfix 13
 
 fix 20 water shake 0.0001 20 1000 b 1 a 1
-fix 21 all npt temp 298 298 100 x 1 1 1000
-run 2000000
+fix 21 water npt temp 298 298 100 x 1 1 1000 dilate all
+fix 22 graph rigid/nvt molecule temp 298 298 100
+run 2500000

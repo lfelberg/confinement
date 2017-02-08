@@ -34,6 +34,7 @@ def plot_graph_dev(plt_nm, coords):
         plt.close()
 
 def main():                                                                        
+    ''' usage: python plot_d2_heat.py run*_*_graph*.dat'''
     xyzname = sys.argv[1]; 
     volF = VolFile("")
     xyzF = XYZFile(xyzname, volF)

@@ -82,6 +82,6 @@ run 5000
 unfix 11
 unfix 12
 
-fix 20 water shake 0.0001 20 10 b 1 a 1
+fix 20 water shake 0.0001 20 1000 b 1 a 1
 fix 21 all npt temp 298 298 100 x 1 1 1000
-run 1000000
+run 5000000

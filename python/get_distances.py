@@ -104,6 +104,7 @@ def print_dev_of_c(fname, xyz, dev_g, boxl_x, sep = False):
        fn.close()
 
 def main():
+    ''' usage: ''''
     xyzname = sys.argv[1]; sep = sys.argv[2]; itr = sys.argv[3]                    
     volC = VolFile("run"+str(sep)+"_"+str(itr)+".vol")                             
     xyz_cl = XYZFile(xyzname, volC)

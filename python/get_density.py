@@ -76,7 +76,7 @@ def plot_density_hist(csvC):
     plt.close()
 
 def main():                                                                        
-    '''Uses volume file and XYZ file'''
+    '''Uses volume file and XYZ or CSV (ext: *.dens_hist) file'''
     xyzname = sys.argv[1]; sep = sys.argv[2]; itr = sys.argv[3]                    
     volC = VolFile("run"+str(sep)+"_"+str(itr)+".vol")                             
     if 'xyz' in xyzname:
