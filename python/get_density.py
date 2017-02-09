@@ -41,8 +41,9 @@ def histog_dist(hist_out, xyzC, volC):
     dens *= (AMU_TO_GM/A3_TO_CM3)
     dens_mn = np.mean(dens, axis = 1)
 
-    f = open(hist_out, 'w')
-    f.write("Bin,type1,type2,type3,type4,type5\n")
+    f, headr = open(hist_out, 'w'), 'Bin,'
+    for i in range(ty_ln): headr += 'type'+str(i)+','
+    f.write(headr+"\n")
     for i in range(bns):
         f.write("{0:>5.3f},{1:.4f},{2:.4f},{3:.4f},{4:.4f}\n".format(
                  benz[i], *tuple(dens_mn[:,i])))
@@ -63,7 +64,6 @@ def plot_density_hist(csvC):
         f = plt.figure(1, figsize = (3.0, 3.0))                                    
         ax = f.add_subplot(111)    
         ax.plot(csvC.dat[0], csvC.dat[t+1])
-       #print(csvC.dat[0], csvC.dat[t+1])
         plt.savefig('dens'+str(type_lst[t])+'.png', format='png',                            
                             bbox_inches = 'tight', dpi=300) 
         plt.close()

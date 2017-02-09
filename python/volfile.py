@@ -55,9 +55,18 @@ class VolFile:
                     *(self.time[i].tolist()+ self.dims[i].tolist())))
         f.close()
 
+    def get_x_max(self):
+        '''Return range of x for first snap'''
+        xdif = self.dims[:,1] - self.dims[:,0]
+        return max(xdif)
+
     def get_x_rng(self):
         '''Return range of x for first snap'''
         return (self.dims[0][1] - self.dims[0][0])
+
+    def get_x_rng_i(self, i):
+        '''Return range of x for ith snap'''
+        return (self.dims[i][1] - self.dims[i][0])
 
     def get_y_rng_i(self, i):
         '''Return range of y for ith snap'''
@@ -72,6 +81,15 @@ class VolFile:
         xdif = self.dims[:,1] - self.dims[:,0]
         return np.mean(xdif)
 
+    def get_y_len(self):
+        '''Return average length of y dim'''
+        ydif = self.dims[:,3] - self.dims[:,2]
+        return np.mean(ydif)
+
+    def get_z_len(self):
+        '''Return average length of y dim'''
+        zdif = self.dims[:,5] - self.dims[:,4]
+        return np.mean(zdif)
 
 def main():
     filename=sys.argv[1]

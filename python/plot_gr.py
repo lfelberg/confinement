@@ -4,31 +4,33 @@ import matplotlib.pyplot as plt
 
 from csvfile import CSVFile
 
-colorL = [[0,0,0], [0,0,1], [1, 0,0], [.93, .53, .18]]
+colorL = [[0,0,0], [0,0,1], [1, 0,0], [.93, .53, .18],
+          [0.859, 0.078, 0.234], [0.801, 0.586, 0.047],                            
+            [0., 0.391, 0.], [0.289, 0.461, 1.],                                   
+            [0.289, 0., 0.508], [0.777, 0.441, 0.441],                             
+            [0.777, 0.379, 0.078], [0., 0.9297, 0.9297]]
 
-def plot_scatter(plt_nm, csvL, loc, sep, ln, itr):
+def plot_scatter(plt_nm, csvL, sep, ln):
     '''Using data from a histogram, plot several'''
     f = plt.figure(1, figsize = (3.0, 3.0))
     ax, ct, leg = f.add_subplot(111), 0, []
 
     for i in range(len(csvL)):
         for j in range(len(csvL[i])):
-            for k in range(len(csvL[i][j])):
-                shft = max(csvL[i][j][k].dat[0])/2.0
-                ax.plot(csvL[i][j][k].dat[0]-shft, 
-                        csvL[i][j][k].dat[loc], color=colorL[ct])
-                leg += [str(sep[i])+r'$\AA$ Sep, '+'L='+str(ln[j])+r'$\AA$']
+            for k in range(len(csvL[i][j].dat[:-1])):
+                ax.plot(csvL[i][j].dat[-1][2:], 
+                        csvL[i][j].dat[k][2:], color=colorL[ct])
+                leg += [r"{0}$\AA$ sep, x={1:.1f}$\AA$".format(sep[i], 
+                                         float(csvL[i][j].key[k]))]
                 ct += 1
-    ax.set_xlim([-9,9])
-    ax.legend(leg, loc = 9, ncol = 1,
+    ax.legend(leg, loc = 9, ncol = 2,
         columnspacing = 0.4,
-        fontsize =  7 ,
+        fontsize =  4 ,
         handletextpad = 0.2,
         handlelength = 1.3,
         borderaxespad = -0.9,
-       #bbox_to_anchor = bbox
         )
-    plt.savefig(plt_nm+str(loc)+'.png', format='png',                       
+    plt.savefig(plt_nm+'.png', format='png',                       
                     bbox_inches = 'tight', dpi=300) 
     plt.close()
 
@@ -37,27 +39,18 @@ def main():
        usage: plot_vs_x.py csvStart nsep nlen niter sep1 sep2... len1 len2... 
                            iter1 iter2... ext datLoc'''
     csvname = sys.argv[1]; nsep = int(sys.argv[2]); nlen = int(sys.argv[3]);
-    niter = int(sys.argv[4]); spS = 5;
-    spE = spS + nsep; lnE = spE + nlen; itE = lnE + niter
-    sep, ln, itr = [], [], []
+    spS = 4; spE = spS + nsep; lnE = spE + nlen; sep, ln = [], []
     
     for i in range(spS, spE): sep.append(int(sys.argv[i]))
     for i in range(spE, lnE): ln.append(int(sys.argv[i]))
-    for i in range(lnE, itE): itr.append(int(sys.argv[i]))
-    
-    ext = sys.argv[itE]; loc = int(sys.argv[itE+1])
-    print("Ext {0}, loc {1}".format(ext, loc))
+    ext = sys.argv[lnE]
     csvL = []
     for i in range(nsep):
         csL = []
         for j in range(nlen):
-            cs = []
-            for k in range(niter):
-                cs.append(CSVFile(csvname+str(sep[i])+"_"+str(ln[j])+"_"
-                                  +str(itr[k])+ext))
-            csL.append(cs)
+            csL.append(CSVFile(csvname+str(sep[i])+"_"+str(ln[j])+"_1"+ext))
         csvL.append(csL)
-    plot_scatter(ext[1:], csvL, loc, sep, ln, itr)
+    plot_scatter(csvname, csvL, sep, ln)
 
 if __name__=="__main__":
     main()

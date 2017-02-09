@@ -17,7 +17,9 @@ class CSVFile:
             rw = 0                                                                 
             for row in reader:                                                     
                 dat, rk = [], row.keys()                                           
-                if rw == 0: print(sorted(rk))
+                if rw == 0: 
+                    print(sorted(rk))
+                    self.key = sorted(rk)
                 for key in sorted(rk):                                             
                     if "_" in row[key]:
                         tmp = row[key].split('_')

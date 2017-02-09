@@ -48,7 +48,6 @@ def get_all_dist(xyz, dims):
 
     # Finding atoms with x values LT/GT half the box
     x_hlf = (dims[0][1]-dims[0][0])/2.0 # Half of box divides 2 walls
-    print("In get_all_dist", xyz.atom.shape)
     x_less  = xyz.atom[0,:,0] < x_hlf; x_great = xyz.atom[0,:,0] > x_hlf
     g_less = np.all(np.array([grap, x_less]), axis=0)
     g_grat = np.all(np.array([grap, x_great]), axis=0)
@@ -104,12 +103,11 @@ def print_dev_of_c(fname, xyz, dev_g, boxl_x, sep = False):
        fn.close()
 
 def main():
-    ''' usage: ''''
+    ''' usage: '''
     xyzname=sys.argv[1]; sep=sys.argv[2]; ln=sys.argv[3]; itr=sys.argv[4]
     nm = str(sep)+"_"+str(ln)+"_"+str(itr)
     volC = VolFile("run"+nm+".vol") 
     xyz_cl = XYZFile(xyzname, volC)
-    print("Arry shape", xyz_cl.atom.shape)
     dists, dists_C, grp_st = get_all_dist( xyz_cl, volC.dims)
 
     print_dist_to_c("run"+nm+".dist",xyz_cl,dists,dists_C)

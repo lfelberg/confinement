@@ -16,7 +16,6 @@ class XYZFile:
          '''Method to open xyz file and save coords and types'''
          time, atoms, atom, types = [], [], [], []                                      
          grab_snap, t_ct = 0, 0                                                         
-         print(filename, len(times))                                                    
          f=open(filename, "r")                                                          
          f.readline()                                                                   
          line = f.readline()                                                            
@@ -36,7 +35,6 @@ class XYZFile:
                      atoms = []                                                         
                                                                                         
                  if times == [] or times[t_ct][0] == int(line.split()[-1]):             
-                    #print(line.split()[-1])                                            
                      time.append(int(line.split()[-1]))                                 
                      t_ct += 1; grab_snap = 1                                           
                  else: grab_snap = 0                                                    
@@ -54,8 +52,8 @@ class XYZFile:
                                    float(crds[2])-dims[t_ct][2],                        
                                    float(crds[3])-dims[t_ct][4]])                       
          #For last timestep, since it doesn't have a line about Atoms after it.         
-         self.time  = np.array(time)                                                         
-         self.atom  = np.array(atom)                                                         
+         if atoms != []: atom += [atoms]
+         self.time  = np.array(time); self.atom = np.array(atom)                                                         
          self.types = np.array(types)                                                        
-         print("in xyz", self.atom.shape, self.types.shape)                                      
+         print("xyz", filename, len(times), self.atom.shape, self.types.shape)                                      
          f.close()                      
