@@ -29,23 +29,20 @@ def gr_cal(crd0, crd1, rang, xbins, dists):
     rd_rng = np.arange(0, LMAX, dr)
     rd_mu = 4.*math.pi*rd_rng*rd_rng*dr if dim == 3 else 2.*math.pi*rd_rng*dr
     rd_mu[0] = 1.0 # set norm of first pos to zero so no runtime errors
-   #print("Rang",rang, rd_mu, crd0.shape, crd1.shape)
 
     # For storing the data
     at_ct = np.zeros((len(xbins))); gr_ar = np.zeros((len(xbins), BIN_GR))
     for fm in range(len(crd0)): # for each of type 0, find dist to each type 1
         frm_ar = np.repeat(crd0[np.newaxis,fm,st:],len(crd1),axis=0)
         dist = d_pbc(crd1[:,st:], frm_ar, rang)
-       #print(frm_ar.shape, np.sort(dist)[0:16])
         his_den, benz = np.histogram(dist, BIN_GR, range=(0, LMAX))
-        x_loc = math.floor((dists[fm]/xmx)*float(len(xbins)-1)) # find idx of cor0[fm]
+        x_loc = math.floor((dists[fm]/xmx)*float(len(xbins))) # find idx of cor0[fm]
         at_ct[x_loc] += 1.0
         gr_ar[x_loc] += (his_den.astype(float)/rd_mu)
 
-    at_ct[at_ct==0] = 1.0
+    at_ct[at_ct==0] = 1.0 # if no at in bin, set to 1, for no div/0
     at_ar = np.repeat(at_ct[:,np.newaxis],gr_ar.shape[1],axis=1)
    #print("This is bins", benz)
-   #print(at_ct, gr_ar)
     return gr_ar/at_ar
         
 def get_gr(xyz, disC, dists, volC, grPair):
@@ -65,27 +62,30 @@ def get_gr(xyz, disC, dists, volC, grPair):
     for i in range(len(xyz.atom)):
         # for locations of graphene walls find average X value
         w0 = np.mean(xyz.atom[i,g_less,0]); w1 = np.mean(xyz.atom[i,g_grat,0])
+
+        rng = np.array([volC.get_x_rng_i(i), volC.get_y_rng_i(i),
+                        volC.get_z_rng_i(i)]) # pbc range
+        rng_m += rng # take average of range for printing
+
         # for the g(r) pairs, need to get groups on the same wall side
         x_m0  = xyz.atom[i,:,0] > w0; x_m1 = xyz.atom[i,:,0] < w1
         wall = np.all(np.array([x_m0, x_m1]), axis=0); nt_wl = wall == False
         ty00 = np.all(np.array([ty0, wall]), axis=0) # between 2 walls
         ty10 = np.all(np.array([ty1, wall]), axis=0)
         c00 = xyz.atom[i,ty00,:]; c10 = xyz.atom[i,ty10,:] # coords for them
-        rng = np.array([volC.get_x_rng_i(i), volC.get_y_rng_i(i),
-                        volC.get_z_rng_i(i)]) # pbc range
-        rng_m += rng # take average of range for printing
-        g_r_3.append(gr_cal(c00, c10, rng, x_binz, dists[i,ty00,-1]))
-       #g_r_2.append(gr_cal(c00, c10, rng[1:], x_binz, dists[i,ty00, -1]))
+       #g_r_3.append(gr_cal(c00, c10, rng, x_binz, dists[i,ty00,-1]))
+        g_r_2.append(gr_cal(c00, c10, rng[1:], x_binz, dists[i,ty00, -1]))
 
         ty01 = np.all(np.array([ty0, nt_wl]), axis=0) # outside of 2 walls
         ty11 = np.all(np.array([ty1, nt_wl]), axis=0)
         c01 = xyz.atom[i,ty01,:]; c11 = xyz.atom[i,ty11,:] # coords for them
-        g_r_3.append(gr_cal(c01, c11, rng, x_binz, dists[i,ty01,-1]))
+       #g_r_3.append(gr_cal(c01, c11, rng, x_binz, dists[i,ty01,-1]))
 
     # Time averages of histograms
     g_r_2 = np.array((g_r_2)); g_r_3 = np.array((g_r_3))
     g_r_2_m = g_r_2; #np.mean(g_r_2, axis = 0); 
-    g_r_3_m = np.mean(g_r_3, axis = 0)
+    g_r_2_m = np.mean(g_r_2, axis = 0); 
+    g_r_3_m = g_r_3; #np.mean(g_r_3, axis = 0)
 
     print(g_r_2.shape, g_r_3.shape)
     return g_r_3_m, g_r_2_m, x_binz, rng_m/float(len(xyz.atom))

@@ -30,6 +30,7 @@ def plot_scatter(plt_nm, csvL, sep, ln):
         handlelength = 1.3,
         borderaxespad = -0.9,
         )
+   #ax.set_ylim([0,0.5])
     plt.savefig(plt_nm+'.png', format='png',                       
                     bbox_inches = 'tight', dpi=300) 
     plt.close()
