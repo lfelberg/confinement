@@ -73,19 +73,23 @@ def get_gr(xyz, disC, dists, volC, grPair):
         ty00 = np.all(np.array([ty0, wall]), axis=0) # between 2 walls
         ty10 = np.all(np.array([ty1, wall]), axis=0)
         c00 = xyz.atom[i,ty00,:]; c10 = xyz.atom[i,ty10,:] # coords for them
-       #g_r_3.append(gr_cal(c00, c10, rng, x_binz, dists[i,ty00,-1]))
-        g_r_2.append(gr_cal(c00, c10, rng[1:], x_binz, dists[i,ty00, -1]))
+
+        print(c00.shape, c01.shape, x_binz.shape, dists[i,ty00,-1].shape)
+
+
+        g_r_3.append(gr_cal(c00, c10, rng, x_binz, dists[i,ty00,-1]))
+       #g_r_2.append(gr_cal(c00, c10, rng[1:], x_binz, dists[i,ty00, -1]))
 
         ty01 = np.all(np.array([ty0, nt_wl]), axis=0) # outside of 2 walls
         ty11 = np.all(np.array([ty1, nt_wl]), axis=0)
         c01 = xyz.atom[i,ty01,:]; c11 = xyz.atom[i,ty11,:] # coords for them
-       #g_r_3.append(gr_cal(c01, c11, rng, x_binz, dists[i,ty01,-1]))
+        g_r_3.append(gr_cal(c01, c11, rng, x_binz, dists[i,ty01,-1]))
 
     # Time averages of histograms
     g_r_2 = np.array((g_r_2)); g_r_3 = np.array((g_r_3))
     g_r_2_m = g_r_2; #np.mean(g_r_2, axis = 0); 
-    g_r_2_m = np.mean(g_r_2, axis = 0); 
-    g_r_3_m = g_r_3; #np.mean(g_r_3, axis = 0)
+   #g_r_2_m = np.mean(g_r_2, axis = 0); 
+    g_r_3_m = np.mean(g_r_3, axis = 0)
 
     print(g_r_2.shape, g_r_3.shape)
     return g_r_3_m, g_r_2_m, x_binz, rng_m/float(len(xyz.atom))
@@ -118,6 +122,7 @@ def main():
     xyz_cl = XYZFile(xyzname, volC)
 
     print("Arry shape", xyz_cl.atom.shape, disC.atom.shape)
+    print("Gr pairs", grPr)
 
     for i in range(n_gr):
         prNm = '_'+str(grPr[i][0])+'_'+str(grPr[i][1])+'.csv'

@@ -2,6 +2,25 @@
 
 This file contains an overview of files used for the confinement project.
 
+2. [count_wats.py](#count_wats.py)
+3. [csvfile.py](#csvfile.py)
+3. [get_density.py](#get_density.py)
+3. [get_distances.py](#get_distances.py)
+3. [g_of_r.py](#g_of_r.py)
+3. [hbonanza.py](#hbonanza.py)
+4. [hbond_stats.py](#hbond_stats.py)
+5. [plot_2d_heat.py](#plot_2d_heat.py)
+0. [plot_gr.py](#plot_gr.py)
+3. [plot_vs_x.py](#plot_vs_x.py)
+5. [volfile.py](#volfile.py)
+4. [write_pdb.py](#write_pdb.py)
+3. [xyzfile.py](#xyzfile.py)
+
+
+## count_wats.py
+
+A file to count the waters for something?
+
 ## csvfile.py
 
 A class for reading in CSV files.
@@ -53,6 +72,14 @@ of each atom in wall 0 to the closest point in wall 1 without PBCS.
 
 ## g_of_r.py
 
+A program to calculate the g(r) for a given pair of atom types. 
+
+**usage**: `python g_of_r.py *xyz sep len iter #Pairs Pr0_0 Pr0_1 Pr1_0 Pr1_1 ... `
+
+**Outputs**:
+1. g_r_3D__sep_len_iter_PrN0_PrN1.csv - a csv file with histogram as a function
+of x distance from graphene wall of 3D g(r) of pair.
+2. FUTURE: 2D g(r)
 
 ## hbonanza.py
 
@@ -90,6 +117,14 @@ This will plot a 2D heatmap of either:
 **usage**: `python plot_2d_heat.py runS_L_It_graph*.dat` 
 
 **Outputs**: Will produce a series of plots, one for each snapshot in the dat file.
+
+## plot_gr.py
+
+This will plot a series of curves for g(r). 
+
+**usage**: `python plot_gr.py csvStart nsep nlen niter sep1 sep2... len1 len2... iter1 iter2... ext datLoc`
+
+Should output a plot of the multiple datasets.
 
 ## plot_vs_x.py
 
