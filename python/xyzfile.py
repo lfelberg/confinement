@@ -2,15 +2,18 @@ import numpy as np
 
 from volfile import VolFile
 
+WOXY = 1; WHYD = 2; GRAPHENE = 3
+
 class XYZFile:
      '''A class for xyz files'''
      xyzfname = ''
          
      def __init__(self, fname, VolFile):
-          self.xyzfname = fname
-          if VolFile.volfname == '': self.get_coords_types(fname, [], [])
-          else: self.get_coords_types(fname, VolFile.time, VolFile.dims)
-
+         self.xyzfname = fname
+         if VolFile.volfname == '': self.get_coords_types(fname, [], [])
+         else: 
+             self.get_coords_types(fname, VolFile.time, VolFile.dims)
+             self.half_x = VolFile.get_x_max()/2.0
 
      def get_coords_types(self, filename, times, dims):
          '''Method to open xyz file and save coords and types'''
@@ -57,3 +60,46 @@ class XYZFile:
          self.types = np.array(types)                                                        
          print("xyz", filename, len(times), self.atom.shape, self.types.shape)                                      
          f.close()                      
+   
+
+     def get_type_i(self, i):
+         '''Get indices of type i'''
+         return self.types == i
+     
+     def get_graph_wall(self, wall_no=0):
+         '''Get the indices of graphene wall 0 or 1'''
+         grap = self.types == GRAPHENE
+     
+         if wall_no == 0:
+             xl = self.atom[0,:,0] < self.half_x
+             return np.all(np.array([grap, xl]), axis=0) # first wall
+         else: 
+             xg = self.atom[0,:,0] > self.half_x
+             return np.all(np.array([grap, xgr]), axis=0) # second wall
+     
+     def get_wall_i_xv(self, i=0):
+         '''Get the x location of graphene wall 0 or 1, from first snap'''
+         wall_idxs = self.get_graph_wall(i)
+         return np.mean(self.atom[0,wall_idxs,0])
+     
+     def get_inner_ats(self):
+         '''Get indices of atoms whose x values are btw the 2 walls'''
+     
+         w0 = self.get_wall_i_xv(0)
+         w1 = self.get_wall_i_xv(1)
+         x_m0  = self.atom[0,:,0] > w0; x_m1 = self.atom[0,:,0] < w1 
+     
+         return np.all(np.array([x_m0, x_m1]), axis=0)
+     
+     def get_outer_ats(self):
+         '''Get indices of atoms whose x values are outside the 2 walls'''
+     
+         w0 = self.get_wall_i_xv(0)
+         w1 = self.get_wall_i_xv(1)
+         x_m0  = self.atom[0,:,0] > w0; x_m1 = self.atom[0,:,0] < w1 
+     
+         wall = np.all(np.array([x_m0, x_m1]), axis=0)
+         return wall == False
+
+
+
