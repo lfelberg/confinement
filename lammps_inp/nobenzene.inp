@@ -61,10 +61,13 @@ neighbor 2.0 bin
 neigh_modify every 10 delay 0 check no
 
 # OUTPUT
+compute 1 water pe/atom pair kspace
+compute 2 water reduce sum c_1
+compute 3 watgraph pe/atom pair kspace
+compute 4 watgraph reduce sum c_3
+
 thermo          500
-thermo_style    custom step time temp press pe ke etotal evdwl ecoul epair ebond eangle edihed vol density lx ly lz xlo xhi ylo yhi zlo zhi pxx pyy pzz pxy pxz pyz
-#thermo_style    custom step temp pxx pyy pzz ebond eangle epair edihed etotal lx ly lz
-#dump            11 all dcd 500 trajectory.dcd
+thermo_style    custom step time temp press pe ke etotal evdwl ecoul epair ebond eangle edihed vol density lx ly lz xlo xhi ylo yhi zlo zhi pxx pyy pzz pxy pxz pyz c_2 c_4
 dump            11 all xyz 500 traj_sep_len_iter.xyz
 restart         5000 restart.sep.len.iter.water
 
