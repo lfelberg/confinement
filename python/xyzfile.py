@@ -60,7 +60,6 @@ class XYZFile:
          self.types = np.array(types)                                                        
          print("xyz", filename, len(times), self.atom.shape, self.types.shape)                                      
          f.close()                      
-   
 
      def get_type_i(self, i):
          '''Get indices of type i'''
@@ -75,7 +74,7 @@ class XYZFile:
              return np.all(np.array([grap, xl]), axis=0) # first wall
          else: 
              xg = self.atom[0,:,0] > self.half_x
-             return np.all(np.array([grap, xgr]), axis=0) # second wall
+             return np.all(np.array([grap, xg]), axis=0) # second wall
      
      def get_wall_i_xv(self, i=0):
          '''Get the x location of graphene wall 0 or 1, from first snap'''
@@ -84,7 +83,6 @@ class XYZFile:
      
      def get_inner_ats(self):
          '''Get indices of atoms whose x values are btw the 2 walls'''
-     
          w0 = self.get_wall_i_xv(0)
          w1 = self.get_wall_i_xv(1)
          x_m0  = self.atom[0,:,0] > w0; x_m1 = self.atom[0,:,0] < w1 
@@ -93,7 +91,6 @@ class XYZFile:
      
      def get_outer_ats(self):
          '''Get indices of atoms whose x values are outside the 2 walls'''
-     
          w0 = self.get_wall_i_xv(0)
          w1 = self.get_wall_i_xv(1)
          x_m0  = self.atom[0,:,0] > w0; x_m1 = self.atom[0,:,0] < w1 
