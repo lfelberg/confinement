@@ -21,48 +21,65 @@ def unit_vector(vector):
     """ Returns the unit vector of the vector.  """
     return vector / np.linalg.norm(vector)
 
-def angle_between(v1, v2):
+def angle_between(v1, v2, v1nrm = False, v2nrm = False):
     """ Returns the angle in radians between vectors 'v1' and 'v2'::
-            >>> angle_between((1, 0, 0), (0, 1, 0))
-            1.5707963267948966
-            >>> angle_between((1, 0, 0), (1, 0, 0))
-            0.0
-            >>> angle_between((1, 0, 0), (-1, 0, 0))
-            3.141592653589793
+        >>> angle_between(np.array((1,0,0))[np.newaxis,:],
+                          np.array((0,1,0))[np.newaxis,:])
+        1.5707963267948966
+        >>> angle_between(np.array((1, 0, 0))[np.newaxis,:],
+                          np.array((1, 0, 0))[np.newaxis,:])
+        0.0
+        >>> angle_between(np.array((1, 0, 0))[np.newaxis,:],
+                          np.array((-1, 0, 0))[np.newaxis,:])
+        3.141592653589793
     """
-    v1_u = unit_vector(v1)
-    v2_u = unit_vector(v2)
-    return np.arccos(np.clip(np.sum(v1_u*v2_u, axis = 1), -1.0, 1.0))
-   #return np.arccos(np.clip(np.dot(v1_u, v2_u), -1.0, 1.0)) # orig online
+    if v1nrm == True: v1_u = v1   #Normalize if needed
+    else:             v1_u = unit_vector(v1)
+    if v2nrm == True: v2_u = v2
+    else:             v2_u = unit_vector(v2)
 
+    return np.arccos(np.clip(np.sum(v1_u*v2_u, axis = 1), -1.0, 1.0))
 
 def plane_eq(c1, c2, c3):
-    '''Given three points, calculate a normal to the plane made by those 
-       points'''
+    '''Given three points, calculate a unit normal to the plane made by those 
+       points: c1 = c2 = c3 = [dim, nwat] = cp, v1, v2, return
+       Math: norm = (c2-c1) x (c3-c1) / || (c2-c1) x (c3-c1) ||
+             where x=cross prod(a,b) = [a[1]b[2]-a[2]b[1], a[2]b[0]-a[0]b[2],
+                                        a[0]b[1]-a[1]b[0]] ::
+       >>> plane_eq(np.array(1,2,3)[:,np.newaxis],np.array(4,6,9)[:,np.newaxis],
+                    np.array(12,11,9)[:,np.newaxis])
+       np.array([-0.5076004073, 0.8121606517, -0.2876402308])
+       >>> plane_eq(np.array(0,0,0)[:,np.newaxis],np.array(1,0,0)[:,np.newaxis],
+                    np.array(0,11,0)[:,np.newaxis])
+       np.array([0.0, 0.0, -1.0])
+    '''
     v1 = c2 - c1; v2 = c3 - c1
-    print(c2.shape)
     cp = np.array([v1[1]*v2[2]-v1[2]*v2[1], 
                    -1*(v1[0]*v2[2]-v1[2]*v2[0]), 
                     v1[0]*v2[1]-v1[1]*v2[0]])
 
-    print(v1.shape, c1.shape, cp.shape)
-
-    return - (cp[0]*c1 + cp[1]*c2 + cp[2]*c3)
-
+    return cp / np.sqrt(np.sum(cp*cp, axis = 0))
 
 def calc_dip(crd):
     '''Given an array of coords, dim = [nwat, dim=3], cal the dipole moment
-        mu = sum(vh1_o*(qo-qh)+vh2_o(qo-qh))'''
-    dif_q = QOXY - QHYD
-    dip = (crd[1]-crd[0] + crd[2]-crd[0]) * dif_q
+        mu = sum(vh1_o*(qh)+vh2_o(qh)), where vh1_o = r_hi - r_o'''
+    dip = (crd[1]-crd[0] + crd[2]-crd[0]) * QHYD
    #if crd.shape[1] < 2:
    #    dip_v = dip+crd[0]
-   #    print("draw line {{ {0} {1} {2} }} {{ {3} {4} {5} }}".format(crd[0][0][0],
+   #    print("draw color red\ndraw cylinder {{ {0} {1} {2} }} {{ {3} {4} {5} }} radius 0.2".format(crd[0][0][0],
    #           crd[0][0][1], crd[0][0][2], dip_v[0][0],dip_v[0][1], dip_v[0][2]))
-    return dip+crd[0]
+    return dip # vec frm org = oxy, e.g. dip has oxy position subtracted frm it
+
+def project_plane(vec, norm):
+    '''Method to project given vector onto plane described by normal
+       vec = [nwat, dim], norm = [nwat, dim]
+       Math: proj(u onto n) = u - [ (u * n)/ ||n||^2 ] n 
+             where u, n are vectors, * is dot product
+    '''
+    return vec - (np.sum(vec*norm, axis=0)/np.sum(norm*norm, axis=0))*norm
 
 def cal_ang(w_coords, rng):
-    '''Given a list of coords (dimensions: nat=3, nwat, ndim = 3), 
+    '''Given a list of coords (dimensions: [nat = 3, nwat, ndim = 3]), 
        move the coords into the nearest image of water of interest,
        calculate the dipole moments and angles''' 
        
@@ -78,7 +95,8 @@ def cal_ang(w_coords, rng):
    #volC = VolFile("")
    #xyzC = XYZFile("test.xyz", volC, w_rshp, typ)
 
-    for i in range(2): #w_coords.shape[1]-1):
+    for i in range(2): 
+   #for i in range(w_coords.shape[1]-1):
         curr = w_coords[:,i]; 
         others = w_coords[:,i+1:]; ot_wr = np.zeros(others.shape)
         cur_ar = np.repeat(curr[np.newaxis,0,:], others.shape[1], axis = 0) 
@@ -88,21 +106,26 @@ def cal_ang(w_coords, rng):
         ot_wr[2] = translate_pbc(ot_wr[0], others[2], rng)
 
         inter_mol_ax = ot_wr[0] - curr[0]
+       #print("draw color blue\ndraw cylinder {{ {0} {1} {2} }} {{ {3} {4} {5} }} radius 0.2".format(ot_wr[0][0][0],
+       #       ot_wr[0][0][1], ot_wr[0][0][2], curr[0][0][0], curr[0][0][1], curr[0][0][2]))
 
-        mu_cur = calc_dip(curr)
-        mu_oth = calc_dip(ot_wr)
+        mu_cur = calc_dip(curr); mu_oth = calc_dip(ot_wr)
         
         the_1 = angle_between(mu_cur, inter_mol_ax)
         the_2 = angle_between(mu_oth, inter_mol_ax)
-        print(inter_mol_ax.shape, mu_cur.shape, the_1.shape, the_2.shape)
+       #print("Inside cal_angle", inter_mol_ax.shape, mu_cur.shape, mu_oth.shape, the_1.shape, the_2.shape)
 
         w1_nrm = plane_eq(curr[0,:,:].T,curr[1,:,:].T,curr[2,:,:].T).T
-        chi1 = angle_between(w1_nrm, inter_mol_ax)
+        chi1 = angle_between(w1_nrm, inter_mol_ax, True, False)
         
-        w2_nrm = plane_eq(ot_wr[0,:,:],ot_wr[1,:,:],ot_wr[2,:,:])
-        chi2 = angle_between(w2_nrm, inter_mol_ax)
+        w2_nrm = plane_eq(ot_wr[0,:,:].T,ot_wr[1,:,:].T,ot_wr[2,:,:].T).T
+        chi2 = angle_between(w2_nrm, inter_mol_ax, True, False)
+        print("Cal angle", curr[0,:,:].T.shape, w1_nrm.shape, chi1.shape, " and other: ",w2_nrm.shape, chi2.shape)
         
-        
+        mu_cur_proj = project_plane(mu_cur, inter_mol_ax)
+        mu_oth_proj = project_plane(mu_oth, inter_mol_ax)
+        phi = angle_between(mu_cur_proj, mu_oth_proj)
+
 
 def get_angles(xyz, disC, dists, volC):
     '''Method to get various angles between two waters'''
@@ -131,7 +154,7 @@ def get_angles(xyz, disC, dists, volC):
     x_hlf = volC.get_x_max()/2.0 # Half of box divides 2 walls
     x_binz = np.arange(0.5, x_hlf, x_hlf/float(bnz)); 
 
-    for i in range(1,len(xyz.atom)): # for each time snapshot, except first
+    for i in range(3,len(xyz.atom)): # for each time snapshot, except first
         rng = np.array([volC.get_x_rng_i(i), volC.get_y_rng_i(i),
                         volC.get_z_rng_i(i)]) # pbc range
         rng_m += rng # take average of range for printing
