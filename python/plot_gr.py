@@ -37,10 +37,10 @@ def plot_scatter(plt_nm, csvL, sep, ln):
 
 def main():                                                                        
     '''For a collection of data, get info from csv and then plot,
-       usage: plot_vs_x.py csvStart nsep nlen niter sep1 sep2... len1 len2... 
-                           iter1 iter2... ext datLoc'''
+       usage: plot_vs_x.py csvStart nsep nlen iter sep1 sep2... len1 len2... 
+                           ext datLoc'''
     csvname = sys.argv[1]; nsep = int(sys.argv[2]); nlen = int(sys.argv[3]);
-    spS = 4; spE = spS + nsep; lnE = spE + nlen; sep, ln = [], []
+    itr=int(sys.argv[4]); spS=5; spE=spS+nsep; lnE=spE+nlen; sep,ln = [], []
     
     for i in range(spS, spE): sep.append(int(sys.argv[i]))
     for i in range(spE, lnE): ln.append(int(sys.argv[i]))
@@ -49,7 +49,7 @@ def main():
     for i in range(nsep):
         csL = []
         for j in range(nlen):
-            csL.append(CSVFile(csvname+str(sep[i])+"_"+str(ln[j])+"_1"+ext))
+            csL.append(CSVFile(csvname+str(sep[i])+"_"+str(ln[j])+"_"+str(itr)+ext))
         csvL.append(csL)
     plot_scatter(csvname, csvL, sep, ln)
 
