@@ -2,22 +2,16 @@ import sys
 import re
 import math
 import numpy as np
+
 from xyzfile import XYZFile
 from volfile import VolFile
+from util    import d_pbc
 
 '''TODO: Find out if doing 2D g(r) is worth it?'''
 
 GRAPHENE = 3
 BIN_GR = 80
 LMAX = 12.0
-
-def d_pbc(c1, c2, rng):
-    '''Compute distance between points with PBCS
-       c1 and c2 are an array of coordinates, rng is PBC range in x,y,z'''
-    boxl = np.round((c1-c2)/rng) # find what is rounded distance
-    d = c1-c2 - boxl*rng # add that rounded distance to actual dist
-    ds = (d * d).sum(axis=1)
-    return np.sqrt(ds)
 
 def gr_cal(crd0, crd1, rang, xbins, dists):
     '''Given an array of molecules you would like to compute the distance 

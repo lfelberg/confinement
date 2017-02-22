@@ -2,8 +2,11 @@ import sys
 import re
 import math
 import numpy as np
+import itertools
+
 from xyzfile import XYZFile
 from volfile import VolFile
+from util    import d_pbc
 
 WOXY = 1; WHYD = 2; GRAPHENE = 3
 BIN_GR = 80; LMAX = 12.0
@@ -19,10 +22,11 @@ def translate_pbc(c1, c2, rng):
 
 def unit_vector(vector):
     """ Returns the unit vector of the vector.  """
-    return vector / np.linalg.norm(vector)
+    return vector / np.sqrt(np.sum(vector*vector,axis=1)[:,np.newaxis])
 
 def angle_between(v1, v2, v1nrm = False, v2nrm = False):
-    """ Returns the angle in radians between vectors 'v1' and 'v2'::
+    """ Returns the angle in radians between vectors 'v1' and 'v2'
+        v1 and v2 have the dimensions = [dim, nwat]::
         >>> angle_between(np.array((1,0,0))[np.newaxis,:],
                           np.array((0,1,0))[np.newaxis,:])
         1.5707963267948966
@@ -66,7 +70,7 @@ def calc_dip(crd):
     dip = (crd[1]-crd[0] + crd[2]-crd[0]) * QHYD
    #if crd.shape[1] < 2:
    #    dip_v = dip+crd[0]
-   #    print("draw color red\ndraw cylinder {{ {0} {1} {2} }} {{ {3} {4} {5} }} radius 0.2".format(crd[0][0][0],
+   #    print("draw cylinder {{ {0} {1} {2} }} {{ {3} {4} {5} }} radius 0.2".format(crd[0][0][0],
    #           crd[0][0][1], crd[0][0][2], dip_v[0][0],dip_v[0][1], dip_v[0][2]))
     return dip # vec frm org = oxy, e.g. dip has oxy position subtracted frm it
 
@@ -74,20 +78,28 @@ def project_plane(vec, norm):
     '''Method to project given vector onto plane described by normal
        vec = [nwat, dim], norm = [nwat, dim]
        Math: proj(u onto n) = u - [ (u * n)/ ||n||^2 ] n 
-             where u, n are vectors, * is dot product
+             where u, n are vectors, * is dot product::
+       >>> project_plane(np.array((10.,11.,23.))[np.newaxis,:], 
+                         np.array((0,1,0))[np.newaxis,:])
+       array([[ 10.,   0.,  23.]])
+       >>> project_plane(np.array((10.,11.,23.))[np.newaxis,:], 
+                         np.array((1,1,1))[np.newaxis,:])
+       array([[-4.66666667, -3.66666667,  8.33333333]])
     '''
-    return vec - (np.sum(vec*norm, axis=0)/np.sum(norm*norm, axis=0))*norm
+    return (vec-(np.sum(vec*norm,axis=1)/
+                 np.sum(norm*norm,axis=1))[:,np.newaxis]*norm)
 
 def cal_ang(w_coords, rng):
     '''Given a list of coords (dimensions: [nat = 3, nwat, ndim = 3]), 
        move the coords into the nearest image of water of interest,
        calculate the dipole moments and angles''' 
-       
+    t1, t2, c1, c2, ph, r = [], [], [], [], [], []
     # mve hyds to be w/in L/2 of their oxy
     w_coords[1] = translate_pbc(w_coords[0],w_coords[1],rng)
     w_coords[2] = translate_pbc(w_coords[0],w_coords[2],rng)
 
-   #w_rshp = np.zeros((1,w_coords.shape[1]*3, 3)); typ = np.zeros((w_coords.shape[1]*3),dtype=int)
+   #w_rshp = np.zeros((1,w_coords.shape[1]*3, 3))
+   #typ = np.zeros((w_coords.shape[1]*3),dtype=int)
    #w_rshp[0,0:w_coords.shape[1],:] = w_coords[0]
    #w_rshp[0,w_coords.shape[1]:w_coords.shape[1]*2,:] = w_coords[1]
    #w_rshp[0,w_coords.shape[1]*2:w_coords.shape[1]*3,:] = w_coords[2]
@@ -95,8 +107,8 @@ def cal_ang(w_coords, rng):
    #volC = VolFile("")
    #xyzC = XYZFile("test.xyz", volC, w_rshp, typ)
 
-    for i in range(2): 
-   #for i in range(w_coords.shape[1]-1):
+   #for i in range(2): 
+    for i in range(w_coords.shape[1]-1):
         curr = w_coords[:,i]; 
         others = w_coords[:,i+1:]; ot_wr = np.zeros(others.shape)
         cur_ar = np.repeat(curr[np.newaxis,0,:], others.shape[1], axis = 0) 
@@ -106,33 +118,39 @@ def cal_ang(w_coords, rng):
         ot_wr[2] = translate_pbc(ot_wr[0], others[2], rng)
 
         inter_mol_ax = ot_wr[0] - curr[0]
-       #print("draw color blue\ndraw cylinder {{ {0} {1} {2} }} {{ {3} {4} {5} }} radius 0.2".format(ot_wr[0][0][0],
-       #       ot_wr[0][0][1], ot_wr[0][0][2], curr[0][0][0], curr[0][0][1], curr[0][0][2]))
-
         mu_cur = calc_dip(curr); mu_oth = calc_dip(ot_wr)
         
         the_1 = angle_between(mu_cur, inter_mol_ax)
         the_2 = angle_between(mu_oth, inter_mol_ax)
-       #print("Inside cal_angle", inter_mol_ax.shape, mu_cur.shape, mu_oth.shape, the_1.shape, the_2.shape)
 
         w1_nrm = plane_eq(curr[0,:,:].T,curr[1,:,:].T,curr[2,:,:].T).T
         chi1 = angle_between(w1_nrm, inter_mol_ax, True, False)
         
         w2_nrm = plane_eq(ot_wr[0,:,:].T,ot_wr[1,:,:].T,ot_wr[2,:,:].T).T
         chi2 = angle_between(w2_nrm, inter_mol_ax, True, False)
-        print("Cal angle", curr[0,:,:].T.shape, w1_nrm.shape, chi1.shape, " and other: ",w2_nrm.shape, chi2.shape)
         
         mu_cur_proj = project_plane(mu_cur, inter_mol_ax)
         mu_oth_proj = project_plane(mu_oth, inter_mol_ax)
         phi = angle_between(mu_cur_proj, mu_oth_proj)
+        
+        dists = d_pbc(curr[0], ot_wr[0], rng) # cal O-O distance
 
+        t1.append(the_1); t2.append(the_2); c1.append(chi1); c2.append(chi2); 
+        ph.append(phi); r.append(dists)
+
+       #print(min(the_1), max(the_1), min(the_2), max(the_2),min(chi1),max(chi1),min(chi2),max(chi2), inter_mol_ax.shape, mu_oth.shape)
+    t1 = list(itertools.chain(*t1)); t2 = list(itertools.chain(*t2));
+    c1 = list(itertools.chain(*c1)); c2 = list(itertools.chain(*c2));
+    ph = list(itertools.chain(*ph)); r  = list(itertools.chain(*r));
+
+    return t1, t2, c1, c2, ph, r
 
 def get_angles(xyz, disC, dists, volC):
     '''Method to get various angles between two waters'''
     # find water oxys, hyds
     oo = xyz.get_type_i(WOXY); hh = xyz.get_type_i(WHYD); bnz = 5; rng_m = 0
     oi,hi = xyz.get_inner_wat(); oou,hou = xyz.get_outer_wat() # outside walls
-    wat_angles = []
+    t1s, t2s, c1s, c2s, phs, rs, wat_angles = [],[],[],[],[],[],[] 
 
     n_w_in = sum(oi.astype(int)); n_w_ou = sum(oou.astype(int))
     in_wat = np.zeros((3, n_w_in, 3)); ou_wat = np.zeros((3, n_w_ou, 3))
@@ -154,33 +172,43 @@ def get_angles(xyz, disC, dists, volC):
     x_hlf = volC.get_x_max()/2.0 # Half of box divides 2 walls
     x_binz = np.arange(0.5, x_hlf, x_hlf/float(bnz)); 
 
-    for i in range(3,len(xyz.atom)): # for each time snapshot, except first
+    for i in range(1,len(xyz.atom)): # for each time snapshot, except first
+        th1, th2, ch1, ch2, phi, rr = [],[],[],[],[],[]
         rng = np.array([volC.get_x_rng_i(i), volC.get_y_rng_i(i),
                         volC.get_z_rng_i(i)]) # pbc range
         rng_m += rng # take average of range for printing
 
         in_wat[0] = xyz.atom[i,oi,:]; in_wat[1] = xyz.atom[i,hs_i[0],:]
         in_wat[2] = xyz.atom[i,hs_i[1],:]
-        wat_angles.append(cal_ang(in_wat, rng))
+        t1, t2, c1, c2, ph, r = cal_ang(in_wat, rng)
+        th1 += t1; th2 += t2; ch1 += c1; ch2 += c2; phi += ph; rr += r
 
         ou_wat[0] = xyz.atom[i,oou,:]; ou_wat[1] = xyz.atom[i,hs_o[0],:]
         ou_wat[2] = xyz.atom[i,hs_o[1],:]
-        
+        t1, t2, c1, c2, ph, r = cal_ang(ou_wat, rng)
+        th1 += t1; th2 += t2; ch1 += c1; ch2 += c2; phi += ph; rr += r
 
-    return rng_m/float(len(xyz.atom))
+        t1s += [th1];t2s += [th2];c1s += [ch1];c2s += [ch2];phs += [phi];
+        rs += [rr]
+    return list([t1s, t2s, c1s, c2s, phs, rs]), rng_m/float(len(xyz.atom))
 
-def print_gr(x, grs, fname):
-    '''Print distances to carbon wall in xyz like format'''
-    print(grs.shape)
+def print_angles(angls, fname):
+    '''Print file of data in csv-like format, angls is a list of values:
+       angls = [ [thet1],[thet2], [chi1], [chi2], [phi], [rs] ]'''
     f = open(fname, 'w'); 
-    f.write("Bin,"); st = ""
-    dimbins = np.arange(0, LMAX, LMAX/float(BIN_GR))
-    for i in range(len(x)): st += "{0:.5f},".format(x[i])
-    f.write("{0}\n".format(st[:-1]))
-    for i in range(BIN_GR):
-        st = ""
-        for j in range(len(grs[i])): st += "{0:.5f},".format(grs[i][j])
-        f.write("{0:.4f},{1}\n".format(dimbins[i], st[:-1]))
+    nsnap, stn = len(angls[0]), ''
+    vals = ['the1_', 'the2_','chi1_', 'chi2_','phi_', 'dis_',]
+    for i in range(nsnap):  # writing header
+        for j in range(len(vals)):
+            stn += "{0}{1},".format(vals[j],i)
+    f.write(stn[:-1]+'\n')
+
+    for k in range(len(angls[0][0])):
+        st = ''
+        for j in range(nsnap):
+            for i in range(len(vals)):
+                st += "{0:.5f},".format(angls[i][j][k])
+        f.write("{0}\n".format(st[:-1]))
     f.close()
 
 def main():
@@ -193,8 +221,10 @@ def main():
     disC = XYZFile("run"+nm+".dist", VolFile("")) 
     xyz_cl = XYZFile(xyzname, volC)
 
-    print("Arry shape", xyz_cl.atom.shape, disC.atom.shape)
-    rng_m = get_angles(xyz_cl, disC, disC.atom, volC)
+    angs, rng_m = get_angles(xyz_cl, disC, disC.atom, volC)
+   #print("Arry shape", xyz_cl.atom.shape, disC.atom.shape, len(angs))
+    print(max(max(angs[0])), min(min(angs[0])), max(max(angs[1])), min(min(angs[1])))
+    print_angles(angs, "run"+nm+"_angles.csv")
 
 if __name__=="__main__":
     main()

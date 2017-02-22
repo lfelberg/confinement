@@ -1,19 +1,12 @@
 import sys
 import re
 import numpy as np
+
 from xyzfile import XYZFile
 from volfile import VolFile
+from util    import d_pbc
 
 GRAPHENE = 3
-
-def d_pbc(c1, c2, rng, pbcs):
-    '''Compute distance between points with PBCS
-       c1 and c2 are an array of coordinates, rng is PBC range in x,y,z'''
-    pbcs = np.array(pbcs) # use this array to remove pbcs in any dimension
-    boxl = np.round((c1-c2)/rng) # find what is rounded distance
-    d = c1-c2 - boxl*rng*pbcs # add that rounded distance to actual dist
-    ds = (d * d).sum(axis=1)
-    return ds
 
 def find_closest(dist):
     '''Given an array of distances, return the smallest dist value
