@@ -16,17 +16,17 @@ def plot_scatter(plt_nm, csvL, loc, sep, ln, itr):
     for i in range(len(csvL)):
         for j in range(len(csvL[i])):
             for k in range(len(csvL[i][j])):
-                shft = max(csvL[i][j][k].dat[0])/2.0
                 X = csvL[i][j][k].dat[8]; Y = csvL[i][j][k].dat[loc]
                 nbins = 70
-                xbins = np.linspace(min(X), max(X), nbins)
+                xbins = np.linspace(min(X), max(X), 50)
                 ybins = np.linspace(min(Y), max(Y), nbins)
                 heatmap, xedges, yedges = np.histogram2d(X, Y, bins=(xbins,ybins))
+                print(heatmap.shape)
+                heatmap = heatmap.astype(float)
+                dat, bns = np.histogram(X, bins=xbins)
+                print(dat)
                 extent = [min(X), max(X), min(Y), max(Y)]
-                ax.imshow(heatmap.T,aspect='auto', extent=extent)
-               #ax.plot(csvL[i][j][k].dat[0]-shft, 
-               #ax.scatter(csvL[i][j][k].dat[8],
-               #        csvL[i][j][k].dat[loc], color=colorL[ct], s=1)
+                ax.imshow((heatmap/dat.astype(float)[:,np.newaxis]).T,aspect='auto', extent=extent)
                 leg += [str(sep[i])+r'$\AA$ Sep, '+'L='+str(ln[j])+r'$\AA$']
                 ct += 1
    #ax.set_xlim([-9,9])
@@ -40,9 +40,8 @@ def plot_scatter(plt_nm, csvL, loc, sep, ln, itr):
    #    borderaxespad = -0.9,
    #   #bbox_to_anchor = bbox
    #    )
-   #plt.savefig(plt_nm+str(loc)+'.png', format='png',
     plt.savefig(csvL[0][0][0].key[loc]+'.png', format='png',
-                    bbox_inches = 'tight', dpi=300) 
+                    bbox_inches = 'tight', dpi=200) 
     plt.close()
 
 def main():                                                                        
