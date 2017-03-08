@@ -30,3 +30,8 @@ class CSVFile:
                 rw += 1 
         self.dat = np.array((dt)).T
         print(self.dat.shape)
+
+    def find_keyword(self, word):
+        '''Find locations of key dim, where given word is found'''
+        locs = [ x for x in range(len(self.key)) if word in self.key[x]]
+        return locs
