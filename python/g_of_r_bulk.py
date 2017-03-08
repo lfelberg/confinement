@@ -9,7 +9,7 @@ from util    import d_pbc
 
 DR = 0.5
 BNS = np.arange( 0., 30., DR)
-RADI = dr/2.+BNS[:-1] # center of each histogram bin
+RADI = DR/2.+BNS[:-1] # center of each histogram bin
 
 def gr_cal(crd0, crd1, rang):
     '''Given an array of molecules you would like to compute the distance 
@@ -21,8 +21,8 @@ def gr_cal(crd0, crd1, rang):
     for d in range(st, 3): vl *= rang[d]
     num_dens = float(len(crd0)) / vl
     upp, low = BNS[1:], BNS[:-1]
-    if dim == 3: nrm = (4.0/3.0*np.pi*(np.power(upp, 3.) - np.power(low,3.))
-    else:        nrm = (2.0*np.pi*(np.power(upp, 2.) - np.power(low,2.))
+    if dim == 3: nrm = 4.0/3.0*np.pi*(np.power(upp, 3.) - np.power(low,3.))
+    else:        nrm = 2.0*np.pi*(np.power(upp, 2.) - np.power(low,2.))
 
     # For storing the data
     his_all = np.zeros(len(RADI))
@@ -40,7 +40,6 @@ def get_gr(xyz, volC, grPair):
     ty0 = xyz.get_type_i(grPair[0]); ty1 = xyz.get_type_i(grPair[1])
     g_r_3, g_r_2_m, rng_m = [], [], np.zeros((3))
 
-   #for i in range(1,len(xyz.atom)):
     for i in range(len(xyz.atom)):
         rng = np.array([volC.get_x_rng_i(i), volC.get_y_rng_i(i),
                         volC.get_z_rng_i(i)]) # pbc range

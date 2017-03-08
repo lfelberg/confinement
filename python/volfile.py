@@ -39,7 +39,7 @@ class VolFile:
         for line in f:
            if (len(line) > 200) and bool(re.search(r'\d', line)) == True:
                tmp = line.split()
-               if ((float(tmp[0])>=3500000) and (float(tmp[0])%1000==0)) or \
+               if ((float(tmp[0])>=1500000) and (float(tmp[0])%1000==0)) or \
                     int(tmp[0])==0: 
                    time.append([int(tmp[0]), int(tmp[1])])
                    dim = [float(tmp[x]) for x in range(18, 24)]
