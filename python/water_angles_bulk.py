@@ -140,7 +140,7 @@ def get_angles(xyz, volC):
         if hh[i] == True:
             if h_ct == 0:
                 h[0][hidx] = i; h_ct = 1
-            elif hi_ct == 1:
+            elif h_ct == 1:
                 h[1][hidx] = i; h_ct = 0; hidx +=1
 
     for i in range(1,len(xyz.atom)): # for each time snapshot, except first
@@ -149,7 +149,7 @@ def get_angles(xyz, volC):
 
         wat[0] = xyz.atom[i,oo,:]; wat[1] = xyz.atom[i,h[0],:]
         wat[2] = xyz.atom[i,h[1],:]
-        t1, t2, c1, c2, ph, r, w = cal_ang(wat, rng)
+        t1, t2, c1, c2, ph, r = cal_ang(wat, rng)
         t1s += [t1];t2s += [t2];c1s += [c1];c2s += [c2];phs += [ph];
         rs += [r];
     return list([t1s, t2s, c1s, c2s, phs, rs]) 
