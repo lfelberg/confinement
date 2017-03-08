@@ -22,6 +22,7 @@ def gr_cal(rang, crd0, crd1 = []):
     num_dens = float(len(crd0)) / vl; upp, low = BNS[1:], BNS[:-1]
     if dim == 3: nrm = 4.0/3.0*np.pi*(np.power(upp, 3.) - np.power(low,3.))
     else:        nrm = 2.0*np.pi*(np.power(upp, 2.) - np.power(low,2.))
+    print(nrm)
 
     # For storing the data
     his_all = np.zeros(len(RADI))
@@ -32,9 +33,9 @@ def gr_cal(rang, crd0, crd1 = []):
         dist = d_pbc(to_arr, frm_ar, rang)
         his_den, benz = np.histogram(dist, bins=BNS)
         his_all += his_den
-        print(len(dist), to_arr.shape, frm_ar.shape, benz)
+       #print(len(dist), to_arr.shape, frm_ar.shape, benz)
     print(num_dens, BNS, len(crd0))
-    return his_all/ nrm / num_dens
+    return his_all/ nrm # / num_dens
         
 def get_gr(xyz, volC, grPair):
     '''Method to get the g(r) for two atom types'''
