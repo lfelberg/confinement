@@ -9,23 +9,29 @@ from csvfile import CSVFile
 from util    import d_pbc
 
 
+def g_of_r(bns, dist, ndensity = 1.0):
+    ''' Given an array of distances, histogram to compute g(r) '''
+    hist, bins = np.histogram(dist, bins = bns)
+    upp, low = bns[1:], bns[:-1]
+    gr = hist/(4.0/3.0*np.pi*(np.power(upp, 3.) - np.power(low,3.)))/ndensity
+    return gr
+
+
 def trans_entropy(dists):
     '''Compute the translational entropy from a list of pairwise distances
     '''
-    binsiz = 0.5
+    binsiz, grs = 0.5, []
     ent_t, bns = 0.0, np.arange( 0., 30., binsiz)
     radi = binsiz/2.+bns[:-1] # center of each histogram bin
-    upp, low = bns[1:], bns[:-1]
     ntimes, npairs = dists.shape[0], dists.shape[1]
     f = plt.figure(1, figsize = (3.0, 3.0))
     ax = f.add_subplot(111)
 
     for t in range(ntimes):
-        hist, bins = np.histogram(dists[t], bins = bns)
-        gr = hist/(4.0/3.0*np.pi*(np.power(upp, 3.) - np.power(low,3.)))
-        ax.plot(radi, gr)
+        grs.append(g_of_r(bns, dists[t]))
+        ax.plot(radi, grs[-1])
 
-    print(bins, radi)
+    print(bns,radi)
     plt.show()
 
     return ent_t
