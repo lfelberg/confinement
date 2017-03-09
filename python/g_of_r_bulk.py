@@ -7,8 +7,8 @@ from xyzfile import XYZFile
 from volfile import VolFile
 from util    import d_pbc
 
-DR = 0.5
-BNS = np.arange( 0., 30., DR)
+DR = 0.1
+BNS = np.arange( 0., 20., DR)
 RADI = DR/2.+BNS[:-1] # center of each histogram bin
 
 def gr_cal(rang, crd0, crd1 = []):
@@ -16,26 +16,29 @@ def gr_cal(rang, crd0, crd1 = []):
        between, find their distances, histogram them 
        If crd1 is empty, then we are G of R with the same type
     '''
-    gr, dim, vl = [], len(rang), 1.0; st = 3 - dim;
+    gr, dim, vl, n0 = [], len(rang), 1.0, float(len(crd0)); st = 3 - dim;
     # Normalization factors for g(r)
     for d in range(st, 3): vl *= rang[d]
-    num_dens = float(len(crd0)) / vl; upp, low = BNS[1:], BNS[:-1]
+    n1 = n0 if crd1 == [] else float(len(crd1))
+    num_dens = n0*n1 / vl; upp, low = BNS[1:], BNS[:-1]
+    
     if dim == 3: nrm = 4.0/3.0*np.pi*(np.power(upp, 3.) - np.power(low,3.))
     else:        nrm = 2.0*np.pi*(np.power(upp, 2.) - np.power(low,2.))
-    print(nrm)
+    print(nrm, vl, rang)
 
     # For storing the data
     his_all = np.zeros(len(RADI))
     end = len(crd0) if crd1 != [] else len(crd0)-1
     for fm in range(end): # for each of type 0, find dist to each type 1
-        to_arr = crd1[:,st:] if crd1 != [] else crd0[fm+1:,st:]
+        to_arr = crd1[:,st:] if crd1 != [] else np.delete(crd0[:,st:],fm,0)
         frm_ar = np.repeat(crd0[np.newaxis,fm,st:],len(to_arr),axis=0)
         dist = d_pbc(to_arr, frm_ar, rang)
         his_den, benz = np.histogram(dist, bins=BNS)
         his_all += his_den
        #print(len(dist), to_arr.shape, frm_ar.shape, benz)
     print(num_dens, BNS, len(crd0))
-    return his_all/ nrm # / num_dens
+
+    return his_all/ nrm / num_dens
         
 def get_gr(xyz, volC, grPair):
     '''Method to get the g(r) for two atom types'''
@@ -50,14 +53,14 @@ def get_gr(xyz, volC, grPair):
         c0 = xyz.atom[i,ty0,:]; # coords for each atom pair
         if grPair[0] == grPair[1]: c1 = []
         else: c1 = xyz.atom[i,ty1,:]
-
         g_r_3.append(gr_cal(rng, c0, c1))
+        
         print(len(c0), len(c1), )
 
     # Time averages of histograms
     g_r_3 = np.array((g_r_3))
     g_r_3_m = np.mean(g_r_3, axis = 0)
-    print(g_r_3_m.shape)
+    print(g_r_3.shape,g_r_3_m.shape)
     return g_r_3_m, 
 
 def print_gr(grs, fname):

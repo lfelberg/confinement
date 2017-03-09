@@ -17,12 +17,18 @@ def plot_scatter(plt_nm, csvL, sep, ln):
 
     for i in range(len(csvL)):
         for j in range(len(csvL[i])):
-            for k in range(len(csvL[i][j].dat[:-1])):
-                ax.plot(csvL[i][j].dat[-1][2:], 
-                        csvL[i][j].dat[k][2:], color=colorL[ct])
-                leg += [r"{0}$\AA$ sep, x={1:.1f}$\AA$".format(sep[i], 
-                                         float(csvL[i][j].key[k]))]
-                ct += 1
+           ax.plot(csvL[i][j].dat[0], 
+                   csvL[i][j].dat[1], color=colorL[ct])
+           leg += [r"{0}$\AA$ sep".format(sep[i])]
+           ct += 1
+           #for k in range(len(csvL[i][j].dat[:-1])):
+           #    ax.plot(csvL[i][j].dat[-1][2:], 
+           #            csvL[i][j].dat[k][2:], color=colorL[ct])
+           #    leg += [r"{0}$\AA$ sep, x={1:.1f}$\AA$".format(sep[i], 
+           #                             float(csvL[i][j].key[k]))]
+           #    ct += 1
+   #ax.plot(csvL[i][j].dat[0], 
+   #        np.repeat(864, len(csvL[i][j].dat[0])), color=colorL[ct])
     ax.legend(leg, loc = 9, ncol = 2,
         columnspacing = 0.4,
         fontsize =  4 ,
