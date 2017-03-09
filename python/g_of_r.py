@@ -10,8 +10,8 @@ from util    import d_pbc
 #TODO: Find out if doing 2D g(r) is worth it?
 
 GRAPHENE = 3
-BIN_GR = 80
 LMAX = 12.0
+dr = 0.05
 
 def gr_cal(crd0, crd1, rang, xbins, dists):
     '''Given an array of molecules you would like to compute the distance 
@@ -20,9 +20,10 @@ def gr_cal(crd0, crd1, rang, xbins, dists):
        length of the rang array.'''
     # Here x... is for a histogram of the type 0 particles dist from wall.
     gr, dim, vl = [], len(rang), 1.0; st = 3 - dim; xst = xbins[1]-xbins[0]
-    xmx = xbins[-1]+xst; dr = LMAX/float(BIN_GR)
+    xmx = xbins[-1]+xst; 
     # Normalization factors for g(r)
     rd_rng = np.arange(0, LMAX, dr); low, upp = rd_rng[:-1], rd_rng[1:]
+    bin_gr = len(rd_rng)
     if dim == 3: rd_mu = 4.0/3.0*np.pi*(np.power(upp,3.) - np.power(low,3.))
     else: rd_mu = 2.0*np.pi*(np.power(upp,2.) - np.power(low,2.)) 
 
@@ -33,13 +34,14 @@ def gr_cal(crd0, crd1, rang, xbins, dists):
     num_dens = n0*n1 / vl
 
     # For storing the data
-    at_ct = np.zeros((len(xbins))); gr_ar = np.zeros((len(xbins), BIN_GR))
+    at_ct = np.zeros((len(xbins))); gr_ar = np.zeros((len(xbins), bin_gr-1))
     for fm in range(len(crd0)): # for each of type 0, find dist to each type 1
         to_ar = crd1[:,st:] if crd1 != [] else np.delete(crd0[:,st:],fm,0)
         frm_ar = np.repeat(crd0[np.newaxis,fm,st:],len(to_ar),axis=0)
         dist = d_pbc(to_ar, frm_ar, rang)
-        his_den, benz = np.histogram(dist, BIN_GR, range=(0, LMAX))
+        his_den, benz = np.histogram(dist, bins=rd_rng)
         x_loc = math.floor((dists[fm]/xmx)*float(len(xbins))) # find idx of cor0[fm]
+        print(low.shape, rd_mu.shape, his_den.shape)
         at_ct[x_loc] += 1.0
         gr_ar[x_loc] += (his_den.astype(float)/rd_mu)
 
@@ -90,10 +92,10 @@ def print_gr(x, grs, fname):
     '''Print distances to carbon wall in xyz like format'''
     f = open(fname, 'w'); 
     f.write("Bin,"); st = ""
-    dimbins = np.arange(0, LMAX, LMAX/float(BIN_GR))
+    dimbins = np.arange(0, LMAX, dr)
     for i in range(len(x)): st += "{0:.5f},".format(x[i])
     f.write("{0}\n".format(st[:-1]))
-    for i in range(BIN_GR):
+    for i in range(len(dimbins)-1):
         st = ""
         for j in range(len(grs[i])): st += "{0:.5f},".format(grs[i][j])
         f.write("{0:.4f},{1}\n".format(dimbins[i], st[:-1]))
