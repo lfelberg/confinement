@@ -8,7 +8,7 @@ from xyzfile import XYZFile
 from volfile import VolFile
 from util    import d_pbc
 
-WOXY = 1; WHYD = 2; GRAPHENE = 3
+WOXY = 1; WHYD = 2
 
 QOXY = -1.0484
 QHYD =  0.5242

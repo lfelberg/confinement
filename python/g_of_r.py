@@ -7,7 +7,7 @@ from xyzfile import XYZFile
 from volfile import VolFile
 from util    import d_pbc
 
-'''TODO: Find out if doing 2D g(r) is worth it?'''
+#TODO: Find out if doing 2D g(r) is worth it?
 
 GRAPHENE = 3
 BIN_GR = 80
@@ -19,18 +19,25 @@ def gr_cal(crd0, crd1, rang, xbins, dists):
        on distance of crd0 from graphene. Will do 2D or 3D, depending on the
        length of the rang array.'''
     # Here x... is for a histogram of the type 0 particles dist from wall.
-    gr, dim = [], len(rang); st = 3 - dim; xst = xbins[1]-xbins[0]
+    gr, dim, vl = [], len(rang), 1.0; st = 3 - dim; xst = xbins[1]-xbins[0]
     xmx = xbins[-1]+xst; dr = LMAX/float(BIN_GR)
     # Normalization factors for g(r)
-    rd_rng = np.arange(0, LMAX, dr)
-    rd_mu = 4.*math.pi*rd_rng*rd_rng*dr if dim == 3 else 2.*math.pi*rd_rng*dr
-    rd_mu[0] = 1.0 # set norm of first pos to zero so no runtime errors
+    rd_rng = np.arange(0, LMAX, dr); low, upp = rd_rng[:-1], rd_rng[1:]
+    if dim == 3: rd_mu = 4.0/3.0*np.pi*(np.power(upp,3.) - np.power(low,3.))
+    else: rd_mu = 2.0*np.pi*(np.power(upp,2.) - np.power(low,2.)) 
+
+    # number density normalization
+    n0 = float(len(crd0))
+    n1 = n0 if crd1 == [] else float(len(crd1))
+    for d in range(st, 3): vl *= rang[d]
+    num_dens = n0*n1 / vl
 
     # For storing the data
     at_ct = np.zeros((len(xbins))); gr_ar = np.zeros((len(xbins), BIN_GR))
     for fm in range(len(crd0)): # for each of type 0, find dist to each type 1
-        frm_ar = np.repeat(crd0[np.newaxis,fm,st:],len(crd1),axis=0)
-        dist = d_pbc(crd1[:,st:], frm_ar, rang)
+        to_ar = crd1[:,st:] if crd1 != [] else np.delete(crd0[:,st:],fm,0)
+        frm_ar = np.repeat(crd0[np.newaxis,fm,st:],len(to_ar),axis=0)
+        dist = d_pbc(to_ar, frm_ar, rang)
         his_den, benz = np.histogram(dist, BIN_GR, range=(0, LMAX))
         x_loc = math.floor((dists[fm]/xmx)*float(len(xbins))) # find idx of cor0[fm]
         at_ct[x_loc] += 1.0
@@ -63,11 +70,15 @@ def get_gr(xyz, disC, dists, volC, grPair):
                         volC.get_z_rng_i(i)]) # pbc range
         rng_m += rng # take average of range for printing
 
-        c00 = xyz.atom[i,ty00,:]; c10 = xyz.atom[i,ty10,:] # coords for them
+        c00 = xyz.atom[i,ty00,:]; # coords for them
+        if grPair[0] == grPair[1]: c10 = [] 
+        else: c10 = xyz.atom[i,ty10,:]
         g_r_3.append(gr_cal(c00, c10, rng, x_binz, dists[i,ty00,-1]))
        #print(c00.shape, c10.shape, x_binz.shape, dists[i,ty00,-1].shape)
 
-        c01 = xyz.atom[i,ty01,:]; c11 = xyz.atom[i,ty11,:] # coords for them
+        c01 = xyz.atom[i,ty01,:]; 
+        if grPair[0] == grPair[1]: c11 = [] 
+        else: c11 = xyz.atom[i,ty10,:]
         g_r_3.append(gr_cal(c01, c11, rng, x_binz, dists[i,ty01,-1]))
 
     # Time averages of histograms

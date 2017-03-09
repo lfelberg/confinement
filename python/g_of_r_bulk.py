@@ -28,8 +28,7 @@ def gr_cal(rang, crd0, crd1 = []):
 
     # For storing the data
     his_all = np.zeros(len(RADI))
-    end = len(crd0) if crd1 != [] else len(crd0)-1
-    for fm in range(end): # for each of type 0, find dist to each type 1
+    for fm in range(int(n0)): # for each of type 0, find dist to each type 1
         to_arr = crd1[:,st:] if crd1 != [] else np.delete(crd0[:,st:],fm,0)
         frm_ar = np.repeat(crd0[np.newaxis,fm,st:],len(to_arr),axis=0)
         dist = d_pbc(to_arr, frm_ar, rang)
