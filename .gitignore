@@ -2,3 +2,13 @@
 .DS_*
 
 *.xyz
+
+# Latex ignores
+*bib
+*aux
+*bbl
+*blg
+*log
+*pdf
+*run.xml
+*synctex.gz

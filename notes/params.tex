@@ -13,6 +13,7 @@
 \usepackage[backend=bibtex,style=phys]{biblatex}
 
 
+\newcommand{\angstrom}{\textup{\AA}}
 
 \title{}
 \author[1]{Lisa E. Felberg}
@@ -31,91 +32,129 @@ Berkeley, California 94720, USA}
 Berkeley, California 94720, USA}
 
 
-\date{}                     %% if you don't need date to appear
+\date{}
 \setcounter{Maxaffil}{0}
 \renewcommand\Affilfont{\itshape\small}
 
 \begin{document}
 	\maketitle
-	
-\section{Abstract}
+\clearpage
+
+\section*{Abstract}
+
+\clearpage
+
+\section*{Introduction}
 
 
-\section{Introduction}
+\clearpage
 
-\section{Methods}
+\section*{Methods}
 
-\subsection{Models}
+\subsection*{Models}
 
 For this study, simulations of systems with parallel graphene plates with
-separations of 12, 16, 20 and 24 \r A respectively in the x-cartesian dimension.
-Simulations with solute molecules include 2 solute molecules, one for each solvent
-layer.
+separations of 6 and 12 \r A respectively in the x-cartesian dimension.
+Systems of two different sizes were used to explore periodic size effects, with graphene
+plate separation held constant. The smaller systems had y-z dimensions of 46.2 by 48.5 \r A
+and the large systems had dimensions of 121.8 by 118.8 \r A.
 
-\subsection{Force fields}
+\textbf{\color{red} How were they built?? }
 
-The graphene parameters used were k\textsubscript{bond} = 938 \(kCal/mol/\AA^2\)
-and k\textsubscript{angle} = 126 \(kCal/mol/rad^2\) with equilibrium bond and 
-angle lengths of 1.4 \r A and 120 degrees respectively \cite{Hummer2001}. The
-dihedral potential is harmonic with the functional form: \(E = K [ 1 + d cos(\phi)]\),
-where k = 3.15 kCal/mol, and \(d = \pm 1\) \cite{Patra2009}. The carbon partial charge 
-is 0.0 e, and the 6-12 Lennard-Jones pairwise potential coefficients are \(\sigma=0.070\)
-and \(r_0 = 3.55 \AA\).
+\subsection*{Force fields}
 
-The benzene parameters were taken from the OPLS-AA force field \cite{Jorgensen1996}.
-The atom type #145 was used for benzene carbons and #146 was used for benzene
-hydrogens. This is from the papers: # J. Am. Chem. SOC. 1990, 112, 4168-4114 \cite{Jorgensen1990}.
-and J. Am. Chem. Soc. 1996, 118, 11225-11236  \cite{Jorgensen1996}.  
+Harmonic bond and angle potentials were applied to the graphene sheets with 
+the following parameters: k\textsubscript{bond} = 938.0 \(kCal/mol/\angstrom^2\)
+and k\textsubscript{angle} = 126.0 \(kCal/mol/rad^2\), equilibrium bond and 
+angle lengths of 1.40 \r A and 120.0 degrees respectively \cite{Hummer2001}. The
+dihedral potential is harmonic with the functional form: \(E_{\text{di}} = K_{\text{di}} [ 1 + d cos(\phi)]\),
+where K\textsubscript{di} = 3.15 kCal/mol, \(\phi = 180.0\) degrees and \(d = \pm 1\) \cite{Patra2009}. An improper torsional 
+potential with a harmonic functional form as follows: \( E_{\text{im}} = K_{\text{im}} [ \chi - \chi_0 ]^2\) was
+used with parameters K\textsubscript{im} =  15.0 kCal/mol and \(\chi_0 = 0.0\) degrees. A summary
+of these potentials and their parameter values are given in Table \ref{table:ff_parms}
+The water model chosen is TIP4P-Ew \cite{Horn2004} was used 
+to represent explicit solvent. Partial charges and Van deWaals parameters for each atom type 
+are given in Table \ref{table:ff_parms_atoms}.
 
-Nonbonded parameters
-#   AN AT   CHARGE     SIGMA    EPSILON 
-145 06 CA   -0.115     3.550     0.070     Benzene C - 12 site JACS,112,4768-90
-146 01 HA    0.115     2.420     0.030     Benzene H - 12 site  "
+\begin{table}[ht!]
+\centering
+\begin{tabular}{ lllll } \hline
+Bond     &         & \(K_b\)  (\(kCal/mol/\angstrom^2\))      & b\textsubscript{0}  (\r A)            &          \\ \hline
+         & C-C     & 938.0         & 1.40            &          \\
+         &         &               &                 &          \\ \hline
+Angle    &         & \(K_{\theta}\)  (\(kCal/mol/rad^2\)) & \(\theta_0\) (degrees)   &          \\ \hline
+         & C-C-C   & 126.0         & 120.0           &          \\
+                           &         &               &                 &          \\ \hline
+Improper &         & K\textsubscript{im} (kCal/mol)       & \(\chi\_0\) (degrees)     &          \\ \hline
+         & C-C-C-C & 15.0          & 0.0             &          \\
+                           &         &               &                 &          \\ \hline
+Dihedral &         & K\textsubscript{di} (kCal/mol)       & n (multiplicity) & \(\phi\) (degrees)\\ \hline
+         & C-C-C-C & 3.150         & 2               & 180.0  \\ 
+\end{tabular}
+\caption{\textit{Force field bonded parameters used for graphene in confined water simulations.}}
+\label{table:ff_parms}
+\end{table}
 
-For bonds and angles, the following parameters were taken from AMBER all-atom
-\cite{Weiner1986} (also from http://zarbi.chem.yale.edu/doc/par_opls_aam.inp)
-Which has different CA-HA, and angle params.
+\begin{table}[ht!]
+\centering
+\begin{tabular}{|c|r|r|r|}
+\hline
+\textbf{Atom type} & \multicolumn{1}{c|}{\textbf{\begin{tabular}[c]{@{}c@{}}Partial charge\\ (e)\end{tabular}}} & \multicolumn{1}{c|}{\textbf{\begin{tabular}[c]{@{}c@{}}Sigma\\ (\r A)\end{tabular}}} & \multicolumn{1}{c|}{\textbf{\begin{tabular}[c]{@{}c@{}}Epsilon\\ (kCal/mole)\end{tabular}}} \\ \hline
+Graphene carbon    & 0.0000                                                                                     & 3.55000                                                                              & 0.07000                                                                                     \\ \hline
+Water oxygen       & -1.0484                                                                                    & 3.16435                                                                              & 0.16275                                                                                     \\ \hline
+Water hydrogen     & 0.5242                                                                                     & 0.00000                                                                              & 0.00000                                                                                     \\ \hline
+\end{tabular}
+\caption{\textit{Force field parameters used for each atom type in confined water simulations.}}
+\label{table:ff_parms_atoms}
+\end{table}
 
-Bonds
-CA-CA 469.       1.40         TRP,TYR,PHE
-CA-HA 367.       1.080        PHE, etc. 
+%The benzene parameters were taken from the OPLS-AA force field \cite{Jorgensen1996}.
+%The atom type \#145 was used for benzene carbons and \#146 was used for benzene
+%hydrogens. This is from the papers: J. Am. Chem. SOC. 1990, 112, 4168-4114 \cite{Jorgensen1990}.
+%and J. Am. Chem. Soc. 1996, 118, 11225-11236  \cite{Jorgensen1996}.  
+%
+%Nonbonded parameters
+%\#   AN AT   CHARGE     SIGMA    EPSILON 
+%145 06 CA   -0.115     3.550     0.070     Benzene C - 12 site JACS,112,4768-90
+%146 01 HA    0.115     2.420     0.030     Benzene H - 12 site  "
+%
+%For bonds and angles, the following parameters were taken from AMBER all-atom
+%\cite{Weiner1986} (also from zarbi.chem.yale.edu/doc/par\_opls\_aam.inp)
+%Which has different CA-HA, and angle params.
+%
+%Bonds
+%CA-CA 469.       1.40         TRP,TYR,PHE
+%CA-HA 367.       1.080        PHE, etc. 
+%
+%Angles
+%CA-CA-CA    63.        120.     PHE(OL)
+%CA-CA-HA     35.       120.
+%
+%
+%Torsions
+%\#      v1        v2        v3       v4         notes
+%165   0.0       7.250     0.0       0.0        CA-CA-CA-CA                           
+%
+%Improper
+%improper\_coeff 1 1.1 -1 1  \# CA-CA-CA-HA for benzene 
 
-Angles
-CA-CA-CA    63.        120.     PHE(OL)
-CA-CA-HA     35.       120.
+\subsection*{Simulation protocols}
 
-
-Torsions
-#      v1        v2        v3       v4         notes
-165   0.0       7.250     0.0       0.0        CA-CA-CA-CA                           
-
-Improper
-improper_coeff 1 1.1 -1 1  # CA-CA-CA-HA for benzene 
-
-The water model chosen is TIP4P-Ew \cite{Horn2004} was used to represent explicit 
-solvent.
-
-\subsection{Simulation protocols}
-
-The system was built with force field parameters described, and the density was
-chosen with %%%%%%%%%%%%%%%.
-The simulation was perfomed with the LAMMPS software package \cite{Plimpton1995}. 
+Simulations were performed with the LAMMPS software package \cite{Plimpton1995}. 
 Equilibration of initial configurations were performed as follows. Systems were run in 
 the NVE ensemble with a Langevin Thermostat at 298 Kelvin
 for 10 ps. The water was then fixed with the SHAKE protocol \cite{Andersen1983} with a tolerance
 of 10\textsuperscript{-5}, and the system was run for 10 ps in the NVT ensemble.
 Finally, data was saved for analysis in a production run in the NpT ensemble,
 during which all cartesian coordinates were stored every 500 timesteps. 
-Systems were run in the NpT ensemble for 10 ns. Each system was run with 4 different 
-replicas, initialized from identical configurations, but velocities were initialized with
-different random seeds. Reported values were averaged across the ensemble.  The 
+Systems were run in the NpT ensemble for 10 ns. The 
 pressure in the direction orthogonal to the graphene walls was maintained at 1 atm.
 Thermal control was implemented using a Nos\' e-Hoover extended Lagrangian procedure \cite{Martyna1994},
 and the dynamical integration scheme was velocity-Verlet \cite{Swope1982}.
-For systems containing only graphene and water, the dynamics timestep was set at 2.0 
-femtoseconds. For simulations containing solute molecules, the timestep was set
-at 1.0 fs. 
+For all simulations, the dynamics timestep was set at 2.0 femtoseconds. 
 
-\subsection{Analysis}
+\subsection*{Analysis}
 
-
+\clearpage
+\printbibliography
+\end{document}

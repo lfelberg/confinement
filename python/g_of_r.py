@@ -10,7 +10,7 @@ from util    import d_pbc
 #TODO: Find out if doing 2D g(r) is worth it?
 
 GRAPHENE = 3
-LMAX = 12.0
+LMAX = 22.0
 dr = 0.05
 
 def gr_cal(crd0, crd1, rang, xbins, dists):
@@ -34,25 +34,26 @@ def gr_cal(crd0, crd1, rang, xbins, dists):
     num_dens = n0*n1 / vl
 
     # For storing the data
-    at_ct = np.zeros((len(xbins))); gr_ar = np.zeros((len(xbins), bin_gr-1))
+   #at_ct = np.zeros((len(xbins))); gr_ar = np.zeros((len(xbins), bin_gr-1))
+    gr_ar = np.zeros(bin_gr-1)
     for fm in range(len(crd0)): # for each of type 0, find dist to each type 1
         to_ar = crd1[:,st:] if crd1 != [] else np.delete(crd0[:,st:],fm,0)
         frm_ar = np.repeat(crd0[np.newaxis,fm,st:],len(to_ar),axis=0)
         dist = d_pbc(to_ar, frm_ar, rang)
         his_den, benz = np.histogram(dist, bins=rd_rng)
-        x_loc = math.floor((dists[fm]/xmx)*float(len(xbins))) # find idx of cor0[fm]
-        print(low.shape, rd_mu.shape, his_den.shape)
-        at_ct[x_loc] += 1.0
-        gr_ar[x_loc] += (his_den.astype(float)/rd_mu)
+        gr_ar += his_den
+       #x_loc = math.floor((dists[fm]/xmx)*float(len(xbins))) # find idx of cor0[fm]
+       #at_ct[x_loc] += 1.0
+       #gr_ar[x_loc] += (his_den.astype(float)/rd_mu)
 
-    at_ct[at_ct==0] = 1.0 # if no at in bin, set to 1, for no div/0
-    at_ar = np.repeat(at_ct[:,np.newaxis],gr_ar.shape[1],axis=1)
-    return gr_ar/at_ar
+   #at_ct[at_ct==0] = 1.0 # if no at in bin, set to 1, for no div/0
+   #at_ar = np.repeat(at_ct[:,np.newaxis],gr_ar.shape[1],axis=1)
+    return gr_ar/num_dens/rd_mu  #/at_ar
         
 def get_gr(xyz, disC, dists, volC, grPair):
     '''Method to get the g(r) for two atom types'''
     # find atoms of type 0 and type 1
-    ty0 = xyz.get_type_i(grPair[0]); ty1 = xyz.get_type_i(grPair[1]); bnz = 10
+    ty0 = xyz.get_type_i(grPair[0]); ty1 = xyz.get_type_i(grPair[1]); bnz = 2
     g_r_3, g_r_2_m, rng_m = [], [], np.zeros((3))
 
     x_hlf = volC.get_x_max()/2.0 # Half of box divides 2 walls
@@ -92,13 +93,16 @@ def print_gr(x, grs, fname):
     '''Print distances to carbon wall in xyz like format'''
     f = open(fname, 'w'); 
     f.write("Bin,"); st = ""
+    f.write("gr\n")
     dimbins = np.arange(0, LMAX, dr)
-    for i in range(len(x)): st += "{0:.5f},".format(x[i])
-    f.write("{0}\n".format(st[:-1]))
-    for i in range(len(dimbins)-1):
-        st = ""
-        for j in range(len(grs[i])): st += "{0:.5f},".format(grs[i][j])
-        f.write("{0:.4f},{1}\n".format(dimbins[i], st[:-1]))
+   #for i in range(len(x)): st += "{0:.5f},".format(x[i])
+   #f.write("{0}\n".format(st[:-1]))
+   #for i in range(len(dimbins)-1):
+    for i in range(len(grs)):
+        f.write("{0:.4f},{1:.4f}\n".format(dimbins[i], grs[i]))
+       #st = ""
+       #for j in range(len(grs[i])): st += "{0:.5f},".format(grs[i][j])
+       #f.write("{0:.4f},{1}\n".format(dimbins[i], st[:-1]))
     f.close()
 
 def main():

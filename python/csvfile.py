@@ -35,3 +35,8 @@ class CSVFile:
         '''Find locations of key dim, where given word is found'''
         locs = [ x for x in range(len(self.key)) if word in self.key[x]]
         return locs
+
+    def find_not_keyword(self, word):
+        '''Find locations of key dim, where given word is not found'''
+        locs = [ x for x in range(len(self.key)) if word not in self.key[x]]
+        return locs
