@@ -14,6 +14,7 @@ def plot_scatter(plt_nm, csvL, loc, sep, ln, itr):
     for i in range(len(csvL)):
         for j in range(len(csvL[i])):
             for k in range(len(csvL[i][j])):
+                print("This is plot val mean: {0}".format(np.mean(csvL[i][j][k].dat[loc])))
                 ax.plot(range(len(csvL[i][j][k].dat[0])), 
                         csvL[i][j][k].dat[loc], color=colorL[ct])
                 leg += [str(sep[i])+r'$\AA$ Sep, '+'L='+str(ln[j])+r'$\AA$']
@@ -45,7 +46,6 @@ def main():
     for i in range(lnE, itE): itr.append(int(sys.argv[i]))
     
     ext = sys.argv[itE]; loc = int(sys.argv[itE+1])
-    print("Ext {0}, loc {1}".format(ext, loc))
     csvL = []
     for i in range(nsep):
         csL = []
@@ -56,6 +56,7 @@ def main():
                                   +str(itr[k])+ext))
             csL.append(cs)
         csvL.append(csL)
+    print("Ext {0}, loc {1} = {2}".format(ext, loc, cs[-1].key[loc]))
     plot_scatter(ext[1:], csvL, loc, sep, ln, itr)
 
 if __name__=="__main__":
