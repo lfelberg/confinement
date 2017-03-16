@@ -37,7 +37,7 @@ def g_of_r_multi(bns, dist, density = 1.0):
     hist, bins = np.histogramdd(dist, bins = bn_t, range = rg_t)
     upp, low = bns[1:], bns[:-1]
     ndens = float(len(dist)) / density
-    gr = hist/(4.0/3.0*np.pi*(np.power(upp, 3.) - np.power(low,3.)))/ndens
+    gr = hist  # NEED NORM FACTOR!!/
     return gr, ndens
 
 def trans_entropy(dists, vl):
@@ -59,6 +59,16 @@ def trans_entropy(dists, vl):
        #ax.plot(radi_r, grs[t])
    #plt.show()
 
+    gr = open("trans_gr.csv", "w")
+    st = "bin,"
+    for t in range(ntimes): st += ("time"+str(t)+",")
+    gr.write(st[:-1]+"\n")
+    for b in range(nb_r):
+        st = "{0:.4f},".format(radi_r[b])
+        for t in range(ntimes): st += "{0:.6f},".format(grs[t][b])
+        gr.write(st[:-1]+"\n")
+    gr.close()
+
     grs_avg = np.mean(grs, axis = 0)
     s_t_integrand = grs_avg*np.log(grs_avg) - grs_avg + 1.0
     ent_t = simps(s_t_integrand, radi_r)
@@ -69,7 +79,7 @@ def orien_order_entropy(order, dists, angles, vl):
        and angles to the order approximation
     '''
     ntimes, npairs, angle_combos = dists.shape[0], dists.shape[1], []
-    binsiz_ra, binsiz_a, grs, nden = 0.53, 0.17, [], np.zeros(ntimes)
+    binsiz_ra, binsiz_a, grs, nden = 0.10, 0.17, [], np.zeros(ntimes)
     bns_ra = np.arange(2.5,RMAX,binsiz_ra); 
     bns_a = np.arange(0,np.pi+binsiz_a,binsiz_a)
     radi_a  = binsiz_a/2.+bns_a[:-1] # center of each histogram bin
@@ -90,8 +100,7 @@ def orien_order_entropy(order, dists, angles, vl):
     for t in range(ntimes):
         r_bins = np.digitize(dists[t], bns_ra)
         grs_r[t], nden[t] = g_of_r(bns_ra, dists[t], vl.get_vol_i(t))
-       #for each r bin, compute the g(angle)
-        for bn in range(nb_ra):
+        for bn in range(nb_ra): #for each r bin, compute the g(angle)
              this_r = r_bins == bn
              if sum(this_r.astype(int)) == 0: sh_shell[bn] = np.zeros(ncombos)
              else:
@@ -108,6 +117,21 @@ def orien_order_entropy(order, dists, angles, vl):
                       integ = simps(integ, radi_a)
                   sh_shell[bn] = integ
 
+    for bn in range(nb_ra): #for each r bin and angle combo
+        for an in range(ncombos):
+            ans = ""
+            for i in angle_combos[an]: ans += str(i)+"_"
+            f = open("angle_g_o{0}_bn{1:.4f}.csv".
+                      format(ans[:-1],radi_ra[bn]), "w")
+            st = "bin,"
+            for t in range(ntimes): st += ("time"+str(t)+",")
+            f.write(st[:-1]+"\n")
+            for ab in range(nb_a):
+                st = "{0:.4f},".format(radi_a[ab])
+                for t in range(ntimes): st += "{0:.6f},".format(grs[t][bn][an])
+                f.write(st[:-1]+"\n")
+            f.close()
+            
     grs_avg = np.mean(grs_r, axis = 0)
     s_o_integrand = grs_avg[:,np.newaxis]*sh_shell
     radi_ra_ord = np.repeat(radi_ra[:,np.newaxis],ncombos,axis=1)
@@ -121,19 +145,23 @@ def main():
         calculate translational and rotational entropy
     '''
     angname=sys.argv[1]; sep=sys.argv[2]; ln=sys.argv[3]; itr=sys.argv[4]
+    ent_type = sys.argv[5]
     nm = str(sep)+"_"+str(ln)+"_"+str(itr)
     angC = CSVFile(angname)
     volC = VolFile("run"+nm+".vol")
     
     dis_loc = angC.find_keyword("dis")
     other_loc = angC.find_not_keyword("dis")
-    ent_t  = trans_entropy(angC.dat[dis_loc], volC)
-    print("This is the translational entropy: {0:.4f}".format(ent_t))
+
+    if ent_type == "trans" or ent_type == "both":
+        ent_t  = trans_entropy(angC.dat[dis_loc], volC)
+        print("This is the translational entropy: {0:.4f}".format(ent_t))
    #ent_or = orien_entropy(angC.dat[dis_loc], angC.dat[other_loc], volC)
-    ent_or_1 = orien_order_entropy(1,angC.dat[dis_loc],angC.dat[other_loc],volC)
-    ent_or_2 = orien_order_entropy(2,angC.dat[dis_loc],angC.dat[other_loc],volC)
-    ent_or_3 = orien_order_entropy(3,angC.dat[dis_loc],angC.dat[other_loc],volC)
-    ent_or_4 = orien_order_entropy(4,angC.dat[dis_loc],angC.dat[other_loc],volC)
+    if ent_type == "orien" or ent_type == "both":
+        ent_or_1 = orien_order_entropy(1,angC.dat[dis_loc],angC.dat[other_loc],volC)
+       #ent_or_2 = orien_order_entropy(2,angC.dat[dis_loc],angC.dat[other_loc],volC)
+       #ent_or_3 = orien_order_entropy(3,angC.dat[dis_loc],angC.dat[other_loc],volC)
+       #ent_or_4 = orien_order_entropy(4,angC.dat[dis_loc],angC.dat[other_loc],volC)
 
 if __name__=="__main__":
     main()
