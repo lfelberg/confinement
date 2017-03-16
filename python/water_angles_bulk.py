@@ -58,7 +58,7 @@ def get_angles(xyz, volC):
     '''Method to get various angles between two waters'''
     # find water oxys, hyds
     oo = xyz.get_type_i(WOXY); hh = xyz.get_type_i(WHYD); 
-    t1s, t2s, c1s, c2s, phs, rs, wat_angles = [],[],[],[],[],[],[]
+    t1s, t2s, c1s, c2s, phs, rs, vls, wat_angles = [],[],[],[],[],[],[],[]
 
     n_w = sum(oo.astype(int)); wat = np.zeros((3, n_w, 3));
     h=np.zeros((2,n_w), dtype=int); h_ct, hidx = 0, 0
@@ -69,7 +69,7 @@ def get_angles(xyz, volC):
             elif h_ct == 1:
                 h[1][hidx] = i; h_ct = 0; hidx +=1
 
-    for i in range(1,len(xyz.atom)): # for each time snapshot, except first
+    for i in range(len(xyz.atom)): # for each time snapshot, except first
         rng = np.array([volC.get_x_rng_i(i), volC.get_y_rng_i(i),
                         volC.get_z_rng_i(i)]) # pbc range
 
@@ -77,15 +77,15 @@ def get_angles(xyz, volC):
         wat[2] = xyz.atom[i,h[1],:]
         t1, t2, c1, c2, ph, r = cal_ang(wat, rng)
         t1s += [t1];t2s += [t2];c1s += [c1];c2s += [c2];phs += [ph];
-        rs += [r];
-    return list([t1s, t2s, c1s, c2s, phs, rs]) 
+        rs += [r]; vls += [[np.prod(rng) for i in range(len(r))]]
+    return list([t1s, t2s, c1s, c2s, phs, rs, vls]) 
 
 def print_angles(angls, fname):
     '''Print file of data in csv-like format, angls is a list of values:
        angls = [ [thet1],[thet2], [chi1], [chi2], [phi], [rs] ]'''
     f = open(fname, 'w'); 
     nsnap, stn = len(angls[0]), ''
-    vals = ['the1_', 'the2_','chi1_', 'chi2_','phi_', 'dis_']
+    vals = ['the1_', 'the2_','chi1_', 'chi2_','phi_', 'dis_','vol_']
     for i in range(nsnap):  # writing header
         for j in range(len(vals)):
             stn += "{0}{1},".format(vals[j],i)

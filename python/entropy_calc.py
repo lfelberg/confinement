@@ -26,19 +26,19 @@ def g_of_r(bns, dist, density = 1.0):
     gr = hist/(4.0/3.0*np.pi*(np.power(upp, 3.) - np.power(low,3.)))/ndens
     return gr, ndens
 
-def g_of_r_multi(bns, dist, density = 1.0):
+def g_of_r_multi(bns, dist):
     ''' Given an array of distances, histogram to compute g(r) 
         in multi dimensions, currently used only for orientation, so 
-        we normalize in a different way
+        we normalize in a different way, also going to assume each dim has same
+        bins!
     '''
-    dim = dist.shape[1] # number of dimensions for histogram
+    ar = 1.0; dim = dist.shape[1] # number of dimensions for histogram
     bn_t = tuple([len(bns)-1 for x in range(dim)]) # nu bins from bns input
     rg_t = tuple([tuple([min(bns),max(bns)]) for x in range(dim)])
     hist, bins = np.histogramdd(dist, bins = bn_t, range = rg_t)
-    upp, low = bns[1:], bns[:-1]
-    ndens = float(len(dist)) / density
-    gr = hist  # NEED NORM FACTOR!!/
-    return gr, ndens
+    for i in range(dim): ar *= (bins[i][1]-bins[i][0])
+    ar *= np.sum(hist)
+    return hist/ar
 
 def trans_entropy(dists, vl):
     '''Compute the translational entropy from a list of pairwise distances
@@ -79,7 +79,7 @@ def orien_order_entropy(order, dists, angles, vl):
        and angles to the order approximation
     '''
     ntimes, npairs, angle_combos = dists.shape[0], dists.shape[1], []
-    binsiz_ra, binsiz_a, grs, nden = 0.10, 0.17, [], np.zeros(ntimes)
+    binsiz_ra, binsiz_a, grs, nden = 0.10, 0.174533, [], np.zeros(ntimes)
     bns_ra = np.arange(2.5,RMAX,binsiz_ra); 
     bns_a = np.arange(0,np.pi+binsiz_a,binsiz_a)
     radi_a  = binsiz_a/2.+bns_a[:-1] # center of each histogram bin
@@ -109,35 +109,53 @@ def orien_order_entropy(order, dists, angles, vl):
                   for an in range(ncombos):
                       an_rng = [t*NANGLES+i for i in angle_combos[an]]
                       for o in range(order): an_dat[:,o] = angles[an_rng[o], this_r]
-                      grs[t][bn][an],_ = g_of_r_multi(bns_a, an_dat)
+                      grs[t][bn][an] = g_of_r_multi(bns_a, an_dat)
                   gr_mean = np.mean(grs[:,bn], axis = 0)
                   gr_mean[gr_mean==0] = 1.0
                   integ = gr_mean*np.log(gr_mean)
                   for i in range(order):  # integration over all dims of hist
-                      integ = simps(integ, radi_a)
-                  sh_shell[bn] = integ
+                      integ = simps(integ, radi_a)/np.pi
+                  sh_shell[bn] = -integ
 
     for bn in range(nb_ra): #for each r bin and angle combo
         for an in range(ncombos):
-            ans = ""
-            for i in angle_combos[an]: ans += str(i)+"_"
+            ans, st = "", ""
+            for i in angle_combos[an]: 
+                ans += str(i)+"_"
+                st += "bin"+str(i)+","
             f = open("angle_g_o{0}_bn{1:.4f}.csv".
                       format(ans[:-1],radi_ra[bn]), "w")
-            st = "bin,"
             for t in range(ntimes): st += ("time"+str(t)+",")
             f.write(st[:-1]+"\n")
-            for ab in range(nb_a):
-                st = "{0:.4f},".format(radi_a[ab])
-                for t in range(ntimes): st += "{0:.6f},".format(grs[t][bn][an])
+
+            if order == 1:
+                inds = np.mgrid[0:nb_a:1][:,np.newaxis]
+                xy = radi_a[:,np.newaxis]
+            if order == 2:
+                inds = np.mgrid[0:nb_a:1,0:nb_a:1].reshape(2,-1).T
+                xy = np.mgrid[0:radi_a[-1]+binsiz_a:binsiz_a,
+                              0:radi_a[-1]+binsiz_a:binsiz_a].reshape(2,-1).T
+            if order == 3:
+                inds = np.mgrid[0:nb_a:1,0:nb_a:1,0:nb_a:1].reshape(3,-1).T
+                xy = np.mgrid[0:radi_a[-1]+binsiz_a:binsiz_a,
+                              0:radi_a[-1]+binsiz_a:binsiz_a,
+                              0:radi_a[-1]+binsiz_a:binsiz_a].reshape(3,-1).T
+
+            for ab in range(inds.shape[0]):
+                st = ""
+                for di in range(inds.shape[1]): 
+                    st+="{0:.4f},".format(xy[ab][di])
+                for t in range(ntimes): 
+                    dat = grs[t][bn][an]
+                    st += "{0:.6f},".format(dat[tuple(inds[ab])])
                 f.write(st[:-1]+"\n")
             f.close()
             
     grs_avg = np.mean(grs_r, axis = 0)
     s_o_integrand = grs_avg[:,np.newaxis]*sh_shell
     radi_ra_ord = np.repeat(radi_ra[:,np.newaxis],ncombos,axis=1)
-    print(radi_ra.shape, s_o_integrand.shape, np.repeat(radi_ra[:,np.newaxis],ncombos,axis=1).shape)
     ent_o = simps(s_o_integrand,radi_ra_ord,axis = 0)
-    print(ent_o)
+    print(-0.5 * ent_o * KB_CAL_MOL * np.mean(nden), -0.5*sum(ent_o)*KB_CAL_MOL*np.mean(nden))
     return -0.5 * ent_o * KB_CAL_MOL * np.mean(nden)
 
 def main():
@@ -158,10 +176,15 @@ def main():
         print("This is the translational entropy: {0:.4f}".format(ent_t))
    #ent_or = orien_entropy(angC.dat[dis_loc], angC.dat[other_loc], volC)
     if ent_type == "orien" or ent_type == "both":
-        ent_or_1 = orien_order_entropy(1,angC.dat[dis_loc],angC.dat[other_loc],volC)
-       #ent_or_2 = orien_order_entropy(2,angC.dat[dis_loc],angC.dat[other_loc],volC)
-       #ent_or_3 = orien_order_entropy(3,angC.dat[dis_loc],angC.dat[other_loc],volC)
-       #ent_or_4 = orien_order_entropy(4,angC.dat[dis_loc],angC.dat[other_loc],volC)
+        nord = int(sys.argv[6])
+        if nord >= 1:
+            ent_or_1 = orien_order_entropy(1,angC.dat[dis_loc],angC.dat[other_loc],volC)
+        if nord >= 2:
+            ent_or_2 = orien_order_entropy(2,angC.dat[dis_loc],angC.dat[other_loc],volC)
+        if nord >= 3:
+            ent_or_3 = orien_order_entropy(3,angC.dat[dis_loc],angC.dat[other_loc],volC)
+        if nord >= 4:
+            ent_or_4 = orien_order_entropy(4,angC.dat[dis_loc],angC.dat[other_loc],volC)
 
 if __name__=="__main__":
     main()

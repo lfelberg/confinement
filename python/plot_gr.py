@@ -17,10 +17,15 @@ def plot_scatter(plt_nm, csvL, sep, ln):
 
     for i in range(len(csvL)):
         for j in range(len(csvL[i])):
+           for k in range(1,len(csvL[i][j].dat[1:]),15):
+               ax.plot(csvL[i][j].dat[0], 
+                       csvL[i][j].dat[k]) 
            ax.plot(csvL[i][j].dat[0], 
-                   csvL[i][j].dat[1], color=colorL[ct])
-           leg += [r"{0}$\AA$ sep".format(sep[i])]
-           ct += 1
+                   np.mean(csvL[i][j].dat[1:], axis = 0), color=colorL[ct])
+          #ax.plot(csvL[i][j].dat[0], 
+          #        csvL[i][j].dat[1], color=colorL[ct])
+          #leg += [r"{0}$\AA$ sep".format(sep[i])]
+          #ct += 1
            #for k in range(len(csvL[i][j].dat[:-1])):
            #    ax.plot(csvL[i][j].dat[-1][2:], 
            #            csvL[i][j].dat[k][2:], color=colorL[ct])
@@ -29,13 +34,13 @@ def plot_scatter(plt_nm, csvL, sep, ln):
            #    ct += 1
    #ax.plot(csvL[i][j].dat[0], 
    #        np.repeat(864, len(csvL[i][j].dat[0])), color=colorL[ct])
-    ax.legend(leg, loc = 9, ncol = 2,
-        columnspacing = 0.4,
-        fontsize =  4 ,
-        handletextpad = 0.2,
-        handlelength = 1.3,
-        borderaxespad = -0.9,
-        )
+   #ax.legend(leg, loc = 9, ncol = 2,
+   #    columnspacing = 0.4,
+   #    fontsize =  4 ,
+   #    handletextpad = 0.2,
+   #    handlelength = 1.3,
+   #    borderaxespad = -0.9,
+   #    )
    #ax.set_ylim([0,0.5])
     plt.savefig(plt_nm+'.png', format='png',                       
                     bbox_inches = 'tight', dpi=300) 
