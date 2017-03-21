@@ -18,13 +18,15 @@ MOL = 6.022140857e23  # avogadro's number
 J_TO_CAL = 1.0/4.1868 # 1 calorie/4.1868 Joules 
 KB_CAL_MOL = KB * J_TO_CAL * MOL
 
+NUM_DENSITY_H2O = 0.0333679 # number of water molecules per cubic angstrom
+
 def g_of_r(bns, dist, density = 1.0):
     ''' Given an array of distances, histogram to compute g(r) '''
     hist, bins = np.histogram(dist, bins = bns)
     upp, low = bns[1:], bns[:-1]
     ndens = float(len(dist)) / density
     gr = hist/(4.0/3.0*np.pi*(np.power(upp, 3.) - np.power(low,3.)))/ndens
-    return gr, ndens
+    return gr
 
 def g_of_r_multi(bns, dist):
     ''' Given an array of distances, histogram to compute g(r) 
@@ -49,15 +51,10 @@ def trans_entropy(dists, vl):
     radi_r  = binsiz_r/2.+bns_r[:-1] # center of each histogram bin
     nb_r = len(bns_r)-1
 
-   #f = plt.figure(1, figsize = (3.0, 3.0))
-   #ax = f.add_subplot(111)
-
     # calculating g(R) for each time snapshot
     grs = np.zeros((ntimes, nb_r))
     for t in range(ntimes):
-        grs[t], ndens[t] = g_of_r(bns_r, dists[t], vl.get_vol_i(t))
-       #ax.plot(radi_r, grs[t])
-   #plt.show()
+        grs[t] = g_of_r(bns_r, dists[t], vl.get_vol_i(t))
 
     gr = open("trans_gr.csv", "w")
     st = "bin,"
@@ -69,10 +66,23 @@ def trans_entropy(dists, vl):
         gr.write(st[:-1]+"\n")
     gr.close()
 
-    grs_avg = np.mean(grs, axis = 0)
-    s_t_integrand = grs_avg*np.log(grs_avg) - grs_avg + 1.0
-    ent_t = simps(s_t_integrand, radi_r)
-    return -0.5 * ent_t * KB_CAL_MOL * np.mean(ndens)
+    gr_av = np.mean(grs, axis = 0)
+    s_t_integrand = np.zeros(len(gr_av))
+    s_t_integrand[nzer] = gr_av[nzer]*np.log(gr_av[nzer])-gr_av[nzer]+1.0
+    s_t_integrand[gr_av == 0.0] = 1.0
+    ent_t = simps(s_t_integrand*np.power(gr_dat[0],2.0)*4.*np.pi, gr_dat[0])
+    return -0.5 * ent_t * KB_CAL_MOL * NUM_DENSITY_H2O
+
+def trans_gr(gr_dat):
+    '''Given a g(r), compute the translational entropy'''
+    gr_av = np.mean(gr_dat[1:], axis = 0)
+    nzer = gr_av != 0.0
+    s_t_integrand = np.zeros(len(gr_av))
+    s_t_integrand[nzer] = gr_av[nzer]*np.log(gr_av[nzer])-gr_av[nzer]+1.0
+    s_t_integrand[gr_av == 0.0] = 1.0
+    ent_t = simps(s_t_integrand*np.power(gr_dat[0],2.0)*4.*np.pi, gr_dat[0])
+    print(ent_t, KB_CAL_MOL, NUM_DENSITY_H2O)
+    return -0.5 * ent_t * KB_CAL_MOL * NUM_DENSITY_H2O
 
 def orien_order_entropy(order, dists, angles, vl):
     '''Compute the orientational entropy from a list of pairwise distances
@@ -172,9 +182,11 @@ def main():
     other_loc = angC.find_not_keyword("dis")
 
     if ent_type == "trans" or ent_type == "both":
-        ent_t  = trans_entropy(angC.dat[dis_loc], volC)
-        print("This is the translational entropy: {0:.4f}".format(ent_t))
-   #ent_or = orien_entropy(angC.dat[dis_loc], angC.dat[other_loc], volC)
+        if "gr" in angname:
+            ent_t = trans_gr(angC.dat) 
+        else:
+            ent_t = trans_entropy(angC.dat[dis_loc], volC)
+        print("This is the translational entropy: {0:.7f}".format(ent_t))
     if ent_type == "orien" or ent_type == "both":
         nord = int(sys.argv[6])
         if nord >= 1:

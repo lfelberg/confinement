@@ -22,6 +22,8 @@ def plot_scatter(plt_nm, csvL, sep, ln):
                        csvL[i][j].dat[k]) 
            ax.plot(csvL[i][j].dat[0], 
                    np.mean(csvL[i][j].dat[1:], axis = 0), color=colorL[ct])
+           print(np.mean(csvL[i][j].dat[1:], axis = 0))
+           print(np.mean(csvL[i][j].dat[1:][200:]))
           #ax.plot(csvL[i][j].dat[0], 
           #        csvL[i][j].dat[1], color=colorL[ct])
           #leg += [r"{0}$\AA$ sep".format(sep[i])]
