@@ -18,7 +18,7 @@ MOL = 6.022140857e23  # avogadro's number
 J_TO_CAL = 1.0/4.1868 # 1 calorie/4.1868 Joules 
 KB_CAL_MOL = KB * J_TO_CAL * MOL
 
-NUM_DENSITY_H2O = 0.0333679 # number of water molecules per cubic angstrom
+NUM_DENSITY_H2O = 1728./52534.8456042 # num of wat mols per A^3 (TIP4P EW 298K)
 
 def g_of_r(bns, dist, density = 1.0):
     ''' Given an array of distances, histogram to compute g(r) '''
@@ -47,7 +47,7 @@ def trans_entropy(dists, vl):
     '''
     ntimes, npairs = dists.shape[0], dists.shape[1]
     binsiz_r, grs, ndens = 0.03, [], np.zeros(ntimes)
-    bns_r = np.arange( 2.5, RMAX, binsiz_r)
+    bns_r = np.arange(0.0, RMAX, binsiz_r)
     radi_r  = binsiz_r/2.+bns_r[:-1] # center of each histogram bin
     nb_r = len(bns_r)-1
 
@@ -67,10 +67,18 @@ def trans_entropy(dists, vl):
     gr.close()
 
     gr_av = np.mean(grs, axis = 0)
+    nzer = gr_av != 0.0
     s_t_integrand = np.zeros(len(gr_av))
     s_t_integrand[nzer] = gr_av[nzer]*np.log(gr_av[nzer])-gr_av[nzer]+1.0
     s_t_integrand[gr_av == 0.0] = 1.0
-    ent_t = simps(s_t_integrand*np.power(gr_dat[0],2.0)*4.*np.pi, gr_dat[0])
+    ent_t = simps(s_t_integrand*np.power(radi_r,2.0)*4.*np.pi, radi_r)
+
+    f = plt.figure(1, figsize = (3.0, 3.0))
+    ax = f.add_subplot(111)
+    ax.plot(radi_r, gr_av)
+    ax.plot(radi_r, s_t_integrand)
+    plt.show()
+
     return -0.5 * ent_t * KB_CAL_MOL * NUM_DENSITY_H2O
 
 def trans_gr(gr_dat):
@@ -90,7 +98,7 @@ def orien_order_entropy(order, dists, angles, vl):
     '''
     ntimes, npairs, angle_combos = dists.shape[0], dists.shape[1], []
     binsiz_ra, binsiz_a, grs, nden = 0.10, 0.174533, [], np.zeros(ntimes)
-    bns_ra = np.arange(2.5,RMAX,binsiz_ra); 
+    bns_ra = np.arange(0.0,RMAX,binsiz_ra); 
     bns_a = np.arange(0,np.pi+binsiz_a,binsiz_a)
     radi_a  = binsiz_a/2.+bns_a[:-1] # center of each histogram bin
     radi_ra = binsiz_ra/2.+bns_ra[:-1] # center of each histogram bin
@@ -109,7 +117,7 @@ def orien_order_entropy(order, dists, angles, vl):
     
     for t in range(ntimes):
         r_bins = np.digitize(dists[t], bns_ra)
-        grs_r[t], nden[t] = g_of_r(bns_ra, dists[t], vl.get_vol_i(t))
+        grs_r[t] = g_of_r(bns_ra, dists[t], vl.get_vol_i(t))
         for bn in range(nb_ra): #for each r bin, compute the g(angle)
              this_r = r_bins == bn
              if sum(this_r.astype(int)) == 0: sh_shell[bn] = np.zeros(ncombos)
@@ -164,9 +172,10 @@ def orien_order_entropy(order, dists, angles, vl):
     grs_avg = np.mean(grs_r, axis = 0)
     s_o_integrand = grs_avg[:,np.newaxis]*sh_shell
     radi_ra_ord = np.repeat(radi_ra[:,np.newaxis],ncombos,axis=1)
+    s_o_integrand *= (np.power(radi_ra_ord,2.0)*4.*np.pi)
     ent_o = simps(s_o_integrand,radi_ra_ord,axis = 0)
-    print(-0.5 * ent_o * KB_CAL_MOL * np.mean(nden), -0.5*sum(ent_o)*KB_CAL_MOL*np.mean(nden))
-    return -0.5 * ent_o * KB_CAL_MOL * np.mean(nden)
+    print(ent_o, -0.5 * ent_o * KB_CAL_MOL * NUM_DENSITY_H2O, -0.5*sum(ent_o)*KB_CAL_MOL*NUM_DENSITY_H2O)
+    return -0.5 * ent_o * KB_CAL_MOL * NUM_DENSITY_H2O
 
 def main():
     ''' Given a csv file with 5 angles, oxygen pair distance and dist from wall

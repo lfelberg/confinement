@@ -82,6 +82,10 @@ class VolFile:
         '''Return volume for ith snap'''
         return self.get_x_rng_i(i)*self.get_y_rng_i(i)*self.get_z_rng_i(i)
 
+    def get_vol(self):
+        '''Return average volume'''
+        return self.get_x_len()*self.get_y_len()*self.get_z_len()
+
     def get_x_len(self):
         '''Return average length of x dim'''
         xdif = self.dims[:,1] - self.dims[:,0]
