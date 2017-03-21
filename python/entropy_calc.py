@@ -73,12 +73,11 @@ def trans_entropy(dists, vl):
     s_t_integrand[gr_av == 0.0] = 1.0
     ent_t = simps(s_t_integrand*np.power(radi_r,2.0)*4.*np.pi, radi_r)
 
-    f = plt.figure(1, figsize = (3.0, 3.0))
-    ax = f.add_subplot(111)
-    ax.plot(radi_r, gr_av)
-    ax.plot(radi_r, s_t_integrand)
-    plt.show()
-
+   #f = plt.figure(1, figsize = (3.0, 3.0))
+   #ax = f.add_subplot(111)
+   #ax.plot(radi_r, gr_av)
+   #ax.plot(radi_r, s_t_integrand)
+   #plt.show()
     return -0.5 * ent_t * KB_CAL_MOL * NUM_DENSITY_H2O
 
 def trans_gr(gr_dat):
