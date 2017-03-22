@@ -11,26 +11,28 @@ def plot_scatter(plt_nm, csvL, loc, sep, ln, itr):
     '''Using data from a histogram, plot several'''
     matplotlib.rcParams['font.size'] = 5
     f = plt.figure(1, figsize = (3.0, 3.0))
-    ax, ct, leg = f.add_subplot(111), 0, []
+    f1= plt.figure(2, figsize = (3.0, 3.0))
+    ax, ax1, ct, leg = f.add_subplot(111),f1.add_subplot(111), 0, []
 
     for i in range(len(csvL)):
         for j in range(len(csvL[i])):
             for k in range(len(csvL[i][j])):
-                X = csvL[i][j][k].dat[8]; Y = csvL[i][j][k].dat[loc]
-                nbins = 70
-                xbins = np.linspace(min(X), max(X), 50)
+                # distances = X, angle = Y
+                X = csvL[i][j][k].dat[8]; Y = csvL[i][j][k].dat[loc]*np.sin(csvL[i][j][k].dat[loc])
+                nbins = 20
+                xbins = np.linspace(min(X), max(X), 7)
+                print(min(X), max(X), xbins)
                 ybins = np.linspace(min(Y), max(Y), nbins)
                 heatmap, xedges, yedges = np.histogram2d(X, Y, bins=(xbins,ybins))
-                print(heatmap.shape)
+               #print(heatmap.shape)
                 heatmap = heatmap.astype(float)
-                dat, bns = np.histogram(X, bins=xbins)
-                print(dat)
+                for b in range(len(xedges)-1): ax1.plot(yedges[:-1], heatmap[b])
                 extent = [min(X), max(X), min(Y), max(Y)]
-                ax.imshow((heatmap/dat.astype(float)[:,np.newaxis]).T,aspect='auto', extent=extent)
+               #ax.imshow(heatmap.T,aspect='auto', extent=extent)
                 leg += [str(sep[i])+r'$\AA$ Sep, '+'L='+str(ln[j])+r'$\AA$']
                 ct += 1
    #ax.set_xlim([-9,9])
-    titl = leg[0]+" and type "+csvL[0][0][0].key[loc]
+    titl = leg[0]+" "+csvL[0][0][0].key[8]+" vs "+csvL[0][0][0].key[loc]
     ax.set_title(titl)
    #ax.legend(leg, loc = 9, ncol = 1,
    #    columnspacing = 0.4,
@@ -40,6 +42,7 @@ def plot_scatter(plt_nm, csvL, loc, sep, ln, itr):
    #    borderaxespad = -0.9,
    #   #bbox_to_anchor = bbox
    #    )
+   #plt.show()
     plt.savefig(csvL[0][0][0].key[loc]+'.png', format='png',
                     bbox_inches = 'tight', dpi=200) 
     plt.close()
