@@ -10,7 +10,7 @@ from csvfile import CSVFile
 from volfile import VolFile
 from util    import d_pbc
 
-RMAX = 10. 
+RMAX = 6. 
 
 # Angle list in order from csv
 NANGLES = 5
@@ -119,8 +119,12 @@ def orien_order_entropy(order, keys, dists, angles, vl):
     for subset in itertools.combinations(range(NANGLES), order):
         angle_combos.append(list(subset))
     ncombos = len(angle_combos); nfacts = np.ones(ncombos)
+    ifacts = np.ones((ncombos, nb_a, order))
     for i in range(ncombos): 
-        for j in angle_combos[i]: nfacts[i] *= ANG_NORM[j]
+        for j in range(order): 
+            nfacts[i] *= ANG_NORM[angle_combos[i][j]]
+            if angle_combos[i][j] > 2: # for theta angles, need to mult by sin(theta)
+                ifacts[i,:,j] *= np.sin(radi_a)
 
     f, ((ax1, ax2), (ax3, ax4), (ax5, ax6)) = plt.subplots(3, 2, sharex='col', sharey='row')
 
@@ -129,6 +133,7 @@ def orien_order_entropy(order, keys, dists, angles, vl):
     grs = np.zeros(tuple(dim_ang_gr)); grs_r = np.zeros((ntimes, nb_ra))
     sh_shell = np.zeros((nb_ra, ncombos)); subset = np.zeros((order,npairs))
 
+    # For each timestep, calc the histogram for all combos of angles
     for t in range(ntimes):
         r_bins = np.digitize(dists[t], bns_ra)
         grs_r[t] = g_of_r(bns_ra, dists[t], vl[t])
@@ -143,25 +148,23 @@ def orien_order_entropy(order, keys, dists, angles, vl):
             for a in range(order): an_dat[:,a+1] = angles[an_rng[a],:].T
             grs[t][an] = g_of_r_multi(bns_ra, bns_a, an_dat, nfacts[an], angle_combos[an])
 
-    for bn in range(nb_ra): #for each r bin, compute the g(angle)
+    print(ifacts, ifacts.shape)
+
+    for bn in range(nb_ra): #for each r bin, integrate the g(angle)
         gr_mean = np.mean(grs[:,:,bn], axis = 0)
         ax1.plot(radi_a, gr_mean[0], label = str(radi_ra[bn]))
         ax2.plot(radi_a, gr_mean[1], label = str(radi_ra[bn]))
         ax3.plot(radi_a, gr_mean[2], label = str(radi_ra[bn]))
         ax4.plot(radi_a, gr_mean[3], label = str(radi_ra[bn]))
         ax5.plot(radi_a, gr_mean[4], label = str(radi_ra[bn]))
-        ax1.legend();
-        ax2.legend();
-        ax3.legend();
-        ax4.legend();
-        ax5.legend();
+        ax1.legend(); ax2.legend();ax3.legend();ax4.legend();ax5.legend();
         gr_mean[gr_mean==0] = 1.0
         
         integ = gr_mean*np.log(gr_mean)
+        print(integ.shape)
         for i in range(order):  # integration over all dims of hist
-            i_fact = 1.0
-            integ = simps(integ, radi_a)/nfacts
-        sh_shell[bn] = -integ
+            integ = simps(integ*ifacts[:,:,i], radi_a)/nfacts
+        sh_shell[bn] = integ
 
     print(gr_mean.shape)
     plt.show()

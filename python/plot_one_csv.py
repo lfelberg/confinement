@@ -18,9 +18,9 @@ def plot_scatter(plt_nm, csvL, loc, sep, ln, itr):
         for j in range(len(csvL[i])):
             for k in range(len(csvL[i][j])):
                 # distances = X, angle = Y
-                X = csvL[i][j][k].dat[8]; Y = csvL[i][j][k].dat[loc]*np.sin(csvL[i][j][k].dat[loc])
+                X = csvL[i][j][k].dat[8]; Y = csvL[i][j][k].dat[loc]
                 nbins = 20
-                xbins = np.linspace(min(X), max(X), 7)
+                xbins = np.linspace(1.5, 8, 7)
                 print(min(X), max(X), xbins)
                 ybins = np.linspace(min(Y), max(Y), nbins)
                 heatmap, xedges, yedges = np.histogram2d(X, Y, bins=(xbins,ybins))
