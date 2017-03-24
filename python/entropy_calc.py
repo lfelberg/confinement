@@ -3,6 +3,7 @@ import re
 import math
 import numpy as np
 import itertools
+import matplotlib
 import matplotlib.pyplot as plt 
 from scipy.integrate import simps
 
@@ -77,6 +78,22 @@ def print_gr(ntimes, radi_r, grs):
         gr.write(st[:-1]+"\n")
     gr.close()
 
+def integ_fact(shape, angle_nos, angle_rng):
+    ''' Given a list of angles and an array shape, will create an array of
+        shape = shape, to scale data by. Assumes that d1 = distance,
+        and the other dimensions are angles 
+    '''
+    scale_factor = np.ones(shape)
+    for i in range(len(angle_nos)): # Xfrm theta vars, first col is dist
+        if angle_nos[i] > 2: 
+            sft = np.sin(angle_rng)
+            for j in range(len(angle_nos)):
+                if i > j:   sft = np.expand_dims(sft, axis = 0)
+                elif i < j: sft = np.expand_dims(sft, axis = -1)
+            sft = np.expand_dims(sft, axis = 0)
+            scale_factor *= sft
+    return scale_factor
+
 def g_of_r_multi(bns_r, bns_a, dat, nfact, ang_no):
     ''' Given an array of distances, histogram to compute g(r) 
         in multi dimensions, currently used only for orientation, so 
@@ -100,34 +117,18 @@ def g_of_r_multi(bns_r, bns_a, dat, nfact, ang_no):
     for i in range(dim): 
         nfact /= (bins[i+1][1]-bins[i+1][0])
         r_bins_tot = np.sum(r_bins_tot, axis = -1)
-    r_bins_tot[r_bins_tot == 0.0] = 1.0
+   #r_bins_tot[r_bins_tot == 0.0] = 1.0
     for i in range(len(ang_no)): r_bins_tot=np.expand_dims(r_bins_tot,axis=-1)
-    nfact /= r_bins_tot
-    return hist.astype(float) * nfact / sfact
-
-def integ_fact(shape, angle_nos, angle_rng):
-    ''' Given a list of angles and an array shape, will create an array of
-        shape = shape, to scale data by. Assumes that d1 = distance,
-        and the other dimensions are angles 
-    '''
-    scale_factor = np.ones(shape)
-    for i in range(len(angle_nos)): # Xfrm theta vars, first col is dist
-        if angle_nos[i] > 2: 
-            sft = np.sin(angle_rng)
-            for j in range(len(angle_nos)):
-                if i > j:   sft = np.expand_dims(sft, axis = 0)
-                elif i < j: sft = np.expand_dims(sft, axis = -1)
-            sft = np.expand_dims(sft, axis = 0)
-            scale_factor *= sft
-    return scale_factor
+   #nfact /= r_bins_tot
+    return hist.astype(float) * nfact / sfact, r_bins_tot
 
 def orien_order_entropy(order, keys, dists, angles, vl):
     '''Compute the orientational entropy from a list of pairwise distances
        and angles to the order approximation
     '''
     ntimes, npairs, angle_combos = dists.shape[0],dists.shape[1],[]
-    binsiz_ra, binsiz_a, grs, nden = 1.10, 0.174533, [], np.zeros(ntimes)
-    bns_ra = np.arange(0.8,RMAX,binsiz_ra); 
+    binsiz_ra, binsiz_a, grs, nden = 0.10, 0.174533, [], np.zeros(ntimes)
+    bns_ra = np.arange(0.0,RMAX,binsiz_ra); 
     bns_a = np.arange(0,np.pi+binsiz_a,binsiz_a)
     radi_a  = binsiz_a/2.+bns_a[:-1] # center of each histogram bin
     radi_ra = binsiz_ra/2.+bns_ra[:-1] # center of each histogram bin
@@ -138,18 +139,17 @@ def orien_order_entropy(order, keys, dists, angles, vl):
         angle_combos.append(list(subset))
     ncombos = len(angle_combos); nfacts = np.ones(ncombos)
     hist_shape = tuple([nb_ra]) + tuple([nb_a for x in range(order)])
-    ifacts = np.ones(tuple([ncombos])+hist_shape)
+    ifacts = np.ones(tuple([ncombos])+hist_shape); 
+    ntot = np.zeros(tuple([ncombos,nb_ra])+tuple([1 for x in range(order)]))
     for i in range(ncombos): 
         ifacts[i] = integ_fact(hist_shape, angle_combos[i], radi_a)
         for j in range(order): 
             nfacts[i] *= ANG_NORM[angle_combos[i][j]]
 
-    f, ((ax1, ax2), (ax3, ax4), (ax5, ax6)) = plt.subplots(3, 2, sharex='col', sharey='row')
-
     # calculating g(R) for each time snapshot
-    dim_ang_gr = [ntimes, ncombos, nb_ra] + [nb_a for o in range(order)]
+    dim_ang_gr = [ntimes+1, ncombos, nb_ra] + [nb_a for o in range(order)]
     grs = np.zeros(tuple(dim_ang_gr)); grs_r = np.zeros((ntimes, nb_ra))
-    sh_shell = np.zeros((nb_ra, ncombos)); subset = np.zeros((order,npairs))
+    sh_shell = np.zeros((nb_ra, ncombos))
 
     # For each timestep, calc the histogram for all combos of angles
     for t in range(ntimes):
@@ -164,37 +164,70 @@ def orien_order_entropy(order, keys, dists, angles, vl):
             an_rng = [i*ntimes+t for i in angle_combos[an]]
             # adding correct angles for time t to hist input
             for a in range(order): an_dat[:,a+1] = angles[an_rng[a],:].T
-            grs[t][an] = g_of_r_multi(bns_ra, bns_a, an_dat, nfacts[an], angle_combos[an])
+           #grs[t][an] = g_of_r_multi(bns_ra, bns_a, an_dat, nfacts[an], angle_combos[an])
+            gr_one, nhis = g_of_r_multi(bns_ra, bns_a, an_dat, nfacts[an], 
+                                        angle_combos[an])
+            hi_nz = nhis; hi_nz[hi_nz == 0.] = 1.0
+            grs[t][an] = gr_one/hi_nz; grs[-1][an] += gr_one; ntot[an] += nhis
 
-    print(ifacts, ifacts.shape)
-    print(angle_combos, radi_ra)
+    # for plotting
+    f, ((ax1, ax2), (ax3, ax4), (ax5, ax6), (ax7, ax8), (ax9, ax0)) = plt.subplots(5, 2, sharex='col', sharey='row')
+    bin_rng = [ 27, 33, 43, 65]
+
+    ntot[ntot == 0.0] = 1.0 # finding empty bins, setting to 1. for divide
+    gr_mean = grs[-1]/ntot; gr_mean[gr_mean==0] = 1.0
     for bn in range(nb_ra): #for each r bin, integrate the g(angle)
-        gr_mean = np.mean(grs[:,:,bn], axis = 0)
-        if order == 1:
-            ax1.plot(radi_a, gr_mean[0], label = str(radi_ra[bn]))
-            ax2.plot(radi_a, gr_mean[1], label = str(radi_ra[bn]))
-            ax3.plot(radi_a, gr_mean[2], label = str(radi_ra[bn]))
-            ax5.plot(radi_a, gr_mean[3], label = str(radi_ra[bn]))
-            ax6.plot(radi_a, gr_mean[4], label = str(radi_ra[bn]))
-       #ax1.legend(); ax2.legend();ax3.legend();ax4.legend();ax5.legend();
-        if (bn ==0 and order == 5):
+       #gr_mean = np.mean(grs[:,:,bn], axis = 0)
+        if (bn in bin_rng and order == 1):
+            ax5.plot(radi_a, gr_mean[0][bn], label = str(radi_ra[bn]))
+            ax6.plot(radi_a, gr_mean[1][bn], label = str(radi_ra[bn]))
+            ax7.plot(radi_a, gr_mean[2][bn], label = str(radi_ra[bn]))
+            ax9.plot(radi_a, gr_mean[3][bn], label = str(radi_ra[bn]))
+            ax0.plot(radi_a, gr_mean[4][bn], label = str(radi_ra[bn]))
+        if (bn == 27 and order == 2):
             X, Y = np.meshgrid(radi_a, radi_a)
-            print(X.shape, Y.shape, gr_mean[0].shape)
-            print(gr_mean)
-            ax1.contour(X, Y, gr_mean[0])#label = str(radi_ra[bn]))
-            ax2.contour(X, Y, gr_mean[1])#label = str(radi_ra[bn]))
-            ax3.contour(X, Y, gr_mean[2])#label = str(radi_ra[bn]))
-            ax5.contour(X, Y, gr_mean[3])#label = str(radi_ra[bn]))
-            ax6.contour(X, Y, gr_mean[4])#label = str(radi_ra[bn]))
-        gr_mean[gr_mean==0] = 1.0
-        
-        integ = gr_mean*np.log(gr_mean)*ifacts[:,bn]
-        print(integ.shape)
+            c1 = ax1.contour(X, Y, gr_mean[0][bn].T)
+            c2 = ax2.contour(X, Y, gr_mean[1][bn].T)
+            c3 = ax3.contour(X, Y, gr_mean[2][bn].T)
+            c4 = ax4.contour(X, Y, gr_mean[3][bn].T)
+            c5 = ax5.contour(X, Y, gr_mean[4][bn].T)
+            c6 = ax6.contour(X, Y, gr_mean[5][bn].T)
+            c7 = ax7.contour(X, Y, gr_mean[6][bn].T)
+            c8 = ax8.contour(X, Y, gr_mean[7][bn].T)
+            c9 = ax9.contour(X, Y, gr_mean[8][bn].T)
+            c0 = ax0.contour(X, Y, gr_mean[9][bn].T)
+
+            ax1.text(.5,.9,ANG_NM[angle_combos[0][0]]+","+ANG_NM[angle_combos[0][1]],horizontalalignment='center',transform=ax1.transAxes)
+            ax2.text(.5,.9,ANG_NM[angle_combos[1][0]]+","+ANG_NM[angle_combos[1][1]],horizontalalignment='center',transform=ax2.transAxes)
+            ax3.text(.5,.9,ANG_NM[angle_combos[2][0]]+","+ANG_NM[angle_combos[2][1]],horizontalalignment='center',transform=ax3.transAxes)
+            ax4.text(.5,.9,ANG_NM[angle_combos[3][0]]+","+ANG_NM[angle_combos[3][1]],horizontalalignment='center',transform=ax4.transAxes)
+            ax5.text(.5,.9,ANG_NM[angle_combos[4][0]]+","+ANG_NM[angle_combos[4][1]],horizontalalignment='center',transform=ax5.transAxes)
+            ax6.text(.5,.9,ANG_NM[angle_combos[5][0]]+","+ANG_NM[angle_combos[5][1]],horizontalalignment='center',transform=ax6.transAxes)
+            ax7.text(.5,.9,ANG_NM[angle_combos[6][0]]+","+ANG_NM[angle_combos[6][1]],horizontalalignment='center',transform=ax7.transAxes)
+            ax8.text(.5,.9,ANG_NM[angle_combos[7][0]]+","+ANG_NM[angle_combos[7][1]],horizontalalignment='center',transform=ax8.transAxes)
+            ax9.text(.5,.9,ANG_NM[angle_combos[8][0]]+","+ANG_NM[angle_combos[8][1]],horizontalalignment='center',transform=ax9.transAxes)
+            ax0.text(.5,.9,ANG_NM[angle_combos[9][0]]+","+ANG_NM[angle_combos[9][1]],horizontalalignment='center',transform=ax0.transAxes)
+
+            plt.clabel(c1, inline=1, fontsize= 7);plt.clabel(c2, inline=1, fontsize= 7)
+            plt.clabel(c3, inline=1, fontsize= 7);plt.clabel(c4, inline=1, fontsize= 7)
+            plt.clabel(c5, inline=1, fontsize= 7);plt.clabel(c6, inline=1, fontsize= 7)
+            plt.clabel(c7, inline=1, fontsize= 7);plt.clabel(c8, inline=1, fontsize= 7)
+            plt.clabel(c9, inline=1, fontsize= 7);plt.clabel(c0, inline=1, fontsize= 7)
+       #gr_mean[gr_mean==0] = 1.0
+       #integ = gr_mean*np.log(gr_mean)*ifacts[:,bn]
+        integ = gr_mean[:,bn]*np.log(gr_mean[:,bn])*ifacts[:,bn]
         for i in range(order):  # integration over all dims of hist
             integ = simps(integ, radi_a)
         sh_shell[bn] = integ/nfacts
 
-    plt.show()
+    matplotlib.rcParams.update({'font.size': 4})
+    if order == 1:
+        ax5.legend(ncol=len(bin_rng)); ax6.legend(ncol=len(bin_rng));
+        ax7.legend(ncol=len(bin_rng));ax9.legend(ncol=len(bin_rng));
+        ax0.legend(ncol=len(bin_rng));
+    plt.subplots_adjust(wspace=0.02, hspace=0.02)
+    plt.savefig("gangle_"+str(order)+'.png',format='png',bbox_inches='tight',dpi=300)
+   #plt.show()
    #print_gang(nb_ra, nb_a, ncombos, ntimes, angle_combos, radi_ra, radi_a,
    #           binsiz_a, grs, order)
             
@@ -259,23 +292,31 @@ def main():
     if ent_type == "trans" or ent_type == "both":
         if "gr" in angname:    ent_t = trans_gr(angC.dat) 
         else:  ent_t = trans_entropy(angC.dat[dis_loc], angC.dat[vol_loc,0])
-        print("This is the translational entropy: {0:.7f}".format(ent_t))
+        print("Translational entropy (cal/mol/K): {0:.7f}".format(ent_t))
     if ent_type == "orien" or ent_type == "both":
         nord = int(sys.argv[6])
         other_loc = angC.find_not_keyword("dis")
         oth_key = [angC.key[i] for i in other_loc]
-        if nord == 1:
+        if nord >= 1:
             ent_or_1 = orien_order_entropy(1,oth_key,angC.dat[dis_loc],
                                     angC.dat[other_loc],angC.dat[vol_loc,0])
+            print("1st order orien ent (cal/mol/K): {0:.7f}".format(
+                  sum(ent_or_1)))
         if nord >= 2:
             ent_or_2 = orien_order_entropy(2,oth_key,angC.dat[dis_loc],
                                     angC.dat[other_loc],angC.dat[vol_loc,0])
+            print("2nd order orien ent (cal/mol/K): {0:.7f}".format(
+                  sum(ent_or_2) - 3.*sum(ent_or_1)))
         if nord >= 3:
             ent_or_3 = orien_order_entropy(3,oth_key,angC.dat[dis_loc],
                                     angC.dat[other_loc],angC.dat[vol_loc,0])
+            print("3rd order orien ent (cal/mol/K): {0:.7f}".format(
+                  sum(ent_or_3) - 2.*sum(ent_or_2) + 3*sum(ent_or_1)))
         if nord >= 4:
             ent_or_4 = orien_order_entropy(4,oth_key,angC.dat[dis_loc],
                                     angC.dat[other_loc],angC.dat[vol_loc,0])
+            print("4th order orien ent (cal/mol/K): {0:.7f}".format(
+                  sum(ent_or_4)-sum(ent_or_3)+sum(ent_or_2)-sum(ent_or_1)))
 
 if __name__=="__main__":
     main()
