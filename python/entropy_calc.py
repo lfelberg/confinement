@@ -10,7 +10,7 @@ from csvfile import CSVFile
 from volfile import VolFile
 from util    import d_pbc
 
-RMAX = 6. 
+RMAX = 8. 
 
 # Angle list in order from csv
 NANGLES = 5
@@ -92,24 +92,42 @@ def g_of_r_multi(bns_r, bns_a, dat, nfact, ang_no):
     for i in range(len(ang_no)): # transforming theta vars, first col is dist
         if ang_no[i] == 4: dat[:,i+1] = np.pi - dat[:,i+1]
     hist, bins = np.histogramdd(dat, bins = bn_t, range = rg_t)
-
-    sfact = 1.0
-    for i in range(len(ang_no)): # transforming theta vars, first col is dist
-        if ang_no[i] > 2: sfact = np.sin(bins[i+1][:-1]+(bins[i+1][1]-bins[i+1][0])/2.)
-
+    
+    sfact = integ_fact(hist.shape, ang_no,
+                       bins[i+1][:-1]+(bins[i+1][1]-bins[i+1][0])/2.)
     # normalizing the histogram by angle nfact*binwid*nsamp
-    for i in range(dim): nfact /= (bins[i+1][1]-bins[i+1][0])
-    nfact /= np.sum(hist.astype(float), axis = 1)[:, np.newaxis]
+    r_bins_tot = hist.astype(float)
+    for i in range(dim): 
+        nfact /= (bins[i+1][1]-bins[i+1][0])
+        r_bins_tot = np.sum(r_bins_tot, axis = -1)
+    r_bins_tot[r_bins_tot == 0.0] = 1.0
+    for i in range(len(ang_no)): r_bins_tot=np.expand_dims(r_bins_tot,axis=-1)
+    nfact /= r_bins_tot
     return hist.astype(float) * nfact / sfact
+
+def integ_fact(shape, angle_nos, angle_rng):
+    ''' Given a list of angles and an array shape, will create an array of
+        shape = shape, to scale data by. Assumes that d1 = distance,
+        and the other dimensions are angles 
+    '''
+    scale_factor = np.ones(shape)
+    for i in range(len(angle_nos)): # Xfrm theta vars, first col is dist
+        if angle_nos[i] > 2: 
+            sft = np.sin(angle_rng)
+            for j in range(len(angle_nos)):
+                if i > j:   sft = np.expand_dims(sft, axis = 0)
+                elif i < j: sft = np.expand_dims(sft, axis = -1)
+            sft = np.expand_dims(sft, axis = 0)
+            scale_factor *= sft
+    return scale_factor
 
 def orien_order_entropy(order, keys, dists, angles, vl):
     '''Compute the orientational entropy from a list of pairwise distances
        and angles to the order approximation
     '''
     ntimes, npairs, angle_combos = dists.shape[0],dists.shape[1],[]
-   #binsiz_ra, binsiz_a, grs, nden = 0.10, 0.174533, [], np.zeros(ntimes)
-    binsiz_ra, binsiz_a, grs, nden = 1.00, 0.174533, [], np.zeros(ntimes)
-    bns_ra = np.arange(1.8,RMAX,binsiz_ra); 
+    binsiz_ra, binsiz_a, grs, nden = 1.10, 0.174533, [], np.zeros(ntimes)
+    bns_ra = np.arange(0.8,RMAX,binsiz_ra); 
     bns_a = np.arange(0,np.pi+binsiz_a,binsiz_a)
     radi_a  = binsiz_a/2.+bns_a[:-1] # center of each histogram bin
     radi_ra = binsiz_ra/2.+bns_ra[:-1] # center of each histogram bin
@@ -119,12 +137,12 @@ def orien_order_entropy(order, keys, dists, angles, vl):
     for subset in itertools.combinations(range(NANGLES), order):
         angle_combos.append(list(subset))
     ncombos = len(angle_combos); nfacts = np.ones(ncombos)
-    ifacts = np.ones((ncombos, nb_a, order))
+    hist_shape = tuple([nb_ra]) + tuple([nb_a for x in range(order)])
+    ifacts = np.ones(tuple([ncombos])+hist_shape)
     for i in range(ncombos): 
+        ifacts[i] = integ_fact(hist_shape, angle_combos[i], radi_a)
         for j in range(order): 
             nfacts[i] *= ANG_NORM[angle_combos[i][j]]
-            if angle_combos[i][j] > 2: # for theta angles, need to mult by sin(theta)
-                ifacts[i,:,j] *= np.sin(radi_a)
 
     f, ((ax1, ax2), (ax3, ax4), (ax5, ax6)) = plt.subplots(3, 2, sharex='col', sharey='row')
 
@@ -149,24 +167,33 @@ def orien_order_entropy(order, keys, dists, angles, vl):
             grs[t][an] = g_of_r_multi(bns_ra, bns_a, an_dat, nfacts[an], angle_combos[an])
 
     print(ifacts, ifacts.shape)
-
+    print(angle_combos, radi_ra)
     for bn in range(nb_ra): #for each r bin, integrate the g(angle)
         gr_mean = np.mean(grs[:,:,bn], axis = 0)
-        ax1.plot(radi_a, gr_mean[0], label = str(radi_ra[bn]))
-        ax2.plot(radi_a, gr_mean[1], label = str(radi_ra[bn]))
-        ax3.plot(radi_a, gr_mean[2], label = str(radi_ra[bn]))
-        ax4.plot(radi_a, gr_mean[3], label = str(radi_ra[bn]))
-        ax5.plot(radi_a, gr_mean[4], label = str(radi_ra[bn]))
-        ax1.legend(); ax2.legend();ax3.legend();ax4.legend();ax5.legend();
+        if order == 1:
+            ax1.plot(radi_a, gr_mean[0], label = str(radi_ra[bn]))
+            ax2.plot(radi_a, gr_mean[1], label = str(radi_ra[bn]))
+            ax3.plot(radi_a, gr_mean[2], label = str(radi_ra[bn]))
+            ax5.plot(radi_a, gr_mean[3], label = str(radi_ra[bn]))
+            ax6.plot(radi_a, gr_mean[4], label = str(radi_ra[bn]))
+       #ax1.legend(); ax2.legend();ax3.legend();ax4.legend();ax5.legend();
+        if (bn ==0 and order == 5):
+            X, Y = np.meshgrid(radi_a, radi_a)
+            print(X.shape, Y.shape, gr_mean[0].shape)
+            print(gr_mean)
+            ax1.contour(X, Y, gr_mean[0])#label = str(radi_ra[bn]))
+            ax2.contour(X, Y, gr_mean[1])#label = str(radi_ra[bn]))
+            ax3.contour(X, Y, gr_mean[2])#label = str(radi_ra[bn]))
+            ax5.contour(X, Y, gr_mean[3])#label = str(radi_ra[bn]))
+            ax6.contour(X, Y, gr_mean[4])#label = str(radi_ra[bn]))
         gr_mean[gr_mean==0] = 1.0
         
-        integ = gr_mean*np.log(gr_mean)
+        integ = gr_mean*np.log(gr_mean)*ifacts[:,bn]
         print(integ.shape)
         for i in range(order):  # integration over all dims of hist
-            integ = simps(integ*ifacts[:,:,i], radi_a)/nfacts
-        sh_shell[bn] = integ
+            integ = simps(integ, radi_a)
+        sh_shell[bn] = integ/nfacts
 
-    print(gr_mean.shape)
     plt.show()
    #print_gang(nb_ra, nb_a, ncombos, ntimes, angle_combos, radi_ra, radi_a,
    #           binsiz_a, grs, order)
@@ -217,7 +244,6 @@ def print_gang(nb_ra, nb_a, ncombos, ntimes, angle_combos, radi_ra, radi_a,
                     st += "{0:.6f},".format(dat[tuple(inds[ab])])
                 f.write(st[:-1]+"\n")
             f.close()
-    
 
 def main():
     ''' Given a csv file with 5 angles, oxygen pair distance and dist from wall
@@ -238,18 +264,18 @@ def main():
         nord = int(sys.argv[6])
         other_loc = angC.find_not_keyword("dis")
         oth_key = [angC.key[i] for i in other_loc]
-        if nord >= 1:
+        if nord == 1:
             ent_or_1 = orien_order_entropy(1,oth_key,angC.dat[dis_loc],
-                                           angC.dat[other_loc],angC.dat[vol_loc,0])
+                                    angC.dat[other_loc],angC.dat[vol_loc,0])
         if nord >= 2:
-            ent_or_2 = orien_order_entropy(2,angC.dat[dis_loc],
-                                           angC.dat[other_loc],angC.dat[vol_loc,0])
+            ent_or_2 = orien_order_entropy(2,oth_key,angC.dat[dis_loc],
+                                    angC.dat[other_loc],angC.dat[vol_loc,0])
         if nord >= 3:
-            ent_or_3 = orien_order_entropy(3,angC.dat[dis_loc],
-                                           angC.dat[other_loc],angC.dat[vol_loc,0])
+            ent_or_3 = orien_order_entropy(3,oth_key,angC.dat[dis_loc],
+                                    angC.dat[other_loc],angC.dat[vol_loc,0])
         if nord >= 4:
-            ent_or_4 = orien_order_entropy(4,angC.dat[dis_loc],
-                                           angC.dat[other_loc],angC.dat[vol_loc,0])
+            ent_or_4 = orien_order_entropy(4,oth_key,angC.dat[dis_loc],
+                                    angC.dat[other_loc],angC.dat[vol_loc,0])
 
 if __name__=="__main__":
     main()
