@@ -11,7 +11,7 @@ from csvfile import CSVFile
 from volfile import VolFile
 from util    import d_pbc
 
-RMAX = 8. 
+RMAX = 10. 
 
 # Angle list in order from csv
 NANGLES = 5
@@ -172,32 +172,33 @@ def orien_order_entropy(order, keys, dists, angles, vl):
 
     ntot[ntot == 0.0] = 1.0 # finding empty bins, setting to 1. for divide
     gr_mean = grs[-1]/ntot; gr_mean[gr_mean==0] = 1.0
+    print(grs.shape, ntimes, ncombos, nb_ra)
 
     # for plotting
-    if order == 1: f, axes = plt.subplots(5,2,sharex='col',sharey='row')
-    else:
-        f, axes = plt.subplots(5,2,sharex='col',sharey='row',figsize=(2,5)) 
-        axes = axes.flatten()
-        print(axes.shape, gr_mean.shape)
-        plt.setp(axes.flat, aspect=1.0, adjustable='box-forced')
-    bin_rng = [ 27, 30, 43, 65]
+   #if order == 1: f, axes = plt.subplots(5,2,sharex='col',sharey='row')
+   #else:
+   #    f, axes = plt.subplots(5,2,sharex='col',sharey='row',figsize=(2,5)) 
+   #    axes = axes.flatten()
+   #    print(axes.shape, gr_mean.shape)
+   #    plt.setp(axes.flat, aspect=1.0, adjustable='box-forced')
+   #bin_rng = [ 27, 30, 43, 65]
 
     for bn in range(nb_ra): #for each r bin, integrate the g(angle)
        #gr_mean = np.mean(grs[:,:,bn], axis = 0)
-        if (bn in bin_rng and order == 1):
-            for j in range(ncombos):
-                axes[j+5].plot(radi_a,gr_mean[j][bn],label=str(radi_ra[bn]))
-        if (bn == 27 and order == 2):
-            X, Y = np.meshgrid(radi_a, radi_a)
-           #ax1.set(adjustable='box-forced', aspect='equal')
-            c = []
-            for j in range(ncombos):
-                c.append(axes[j].contour(X, Y, gr_mean[j][bn].T))
-                axes[j].text(.5,.8,ANG_NM[angle_combos[j][0]]+","+
-                             ANG_NM[angle_combos[0][1]],
-                             horizontalalignment='center',
-                             transform=axes[j].transAxes)
-                plt.clabel(c[j], inline=1, fontsize= 5);
+       #if (bn in bin_rng and order == 1):
+       #    for j in range(ncombos):
+       #        axes[j+5].plot(radi_a,gr_mean[j][bn],label=str(radi_ra[bn]))
+       #if (bn == 27 and order == 2):
+       #    X, Y = np.meshgrid(radi_a, radi_a)
+       #   #ax1.set(adjustable='box-forced', aspect='equal')
+       #    c = []
+       #    for j in range(ncombos):
+       #        c.append(axes[j].contour(X, Y, gr_mean[j][bn].T))
+       #        axes[j].text(.5,.8,ANG_NM[angle_combos[j][0]]+","+
+       #                     ANG_NM[angle_combos[0][1]],
+       #                     horizontalalignment='center',
+       #                     transform=axes[j].transAxes)
+       #        plt.clabel(c[j], inline=1, fontsize= 5);
        #gr_mean[gr_mean==0] = 1.0
        #integ = gr_mean*np.log(gr_mean)*ifacts[:,bn]
         integ = gr_mean[:,bn]*np.log(gr_mean[:,bn])*ifacts[:,bn]
@@ -205,15 +206,14 @@ def orien_order_entropy(order, keys, dists, angles, vl):
             integ = simps(integ, radi_a)
         sh_shell[bn] = integ/nfacts
 
-    matplotlib.rcParams.update({'font.size': 4})
-    if order == 1:
-        for j in range(ncombos):
-            axes[j+5].legend(ncol=len(bin_rng))
-    plt.subplots_adjust(wspace=0.02, hspace=0.02)
-    plt.savefig("gangle_"+str(order)+'.png',format='png',bbox_inches='tight',dpi=300)
+   #matplotlib.rcParams.update({'font.size': 4})
+   #if order == 1:
+   #    for j in range(ncombos):
+   #        axes[j+5].legend(ncol=len(bin_rng))
+   #plt.subplots_adjust(wspace=0.02, hspace=0.02)
+   #plt.savefig("gangle_"+str(order)+'.png',format='png',
+   #            bbox_inches='tight',dpi=300)
    #plt.show()
-   #print_gang(nb_ra, nb_a, ncombos, ntimes, angle_combos, radi_ra, radi_a,
-   #           binsiz_a, grs, order)
             
     grs_avg = np.mean(grs_r, axis = 0)
     s_o_integrand = grs_avg[:,np.newaxis]*sh_shell
@@ -222,12 +222,15 @@ def orien_order_entropy(order, keys, dists, angles, vl):
     ent_o = simps(s_o_integrand,radi_ra_ord,axis = 0)
     print(ent_o, -0.5 * ent_o * KB_CAL_MOL * NUM_DENSITY_H2O,
           -0.5*sum(ent_o)*KB_CAL_MOL*NUM_DENSITY_H2O)
+    print_gang(nb_ra, nb_a, ncombos, ntimes, angle_combos, radi_ra, radi_a,
+               binsiz_a, grs, order)
     return -0.5 * ent_o * KB_CAL_MOL * NUM_DENSITY_H2O
 
 def print_gang(nb_ra, nb_a, ncombos, ntimes, angle_combos, radi_ra, radi_a,
                binsiz_a, grs, order):
     '''Plot the histogram for each group for each timestep for multi
        dimensional g(\omega) '''
+    print(grs.shape)
     for bn in range(nb_ra): #for each r bin and angle combo
         for an in range(ncombos):
             ans, st = "", ""
@@ -281,7 +284,7 @@ def main():
         nord = int(sys.argv[6])
         other_loc = angC.find_not_keyword("dis")
         oth_key = [angC.key[i] for i in other_loc]
-        if (nord >= 1 and nord < 2):
+        if (nord >= 1 and nord < 5):
             ent_or_1 = orien_order_entropy(1,oth_key,angC.dat[dis_loc],
                                     angC.dat[other_loc],angC.dat[vol_loc,0])
             print("1st order orien ent (cal/mol/K): {0:.7f}".format(
