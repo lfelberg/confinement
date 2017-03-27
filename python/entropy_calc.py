@@ -170,49 +170,34 @@ def orien_order_entropy(order, keys, dists, angles, vl):
             hi_nz = nhis; hi_nz[hi_nz == 0.] = 1.0
             grs[t][an] = gr_one/hi_nz; grs[-1][an] += gr_one; ntot[an] += nhis
 
-    # for plotting
-    f, ((ax1, ax2), (ax3, ax4), (ax5, ax6), (ax7, ax8), (ax9, ax0)) = plt.subplots(5, 2, sharex='col', sharey='row')
-    bin_rng = [ 27, 33, 43, 65]
-
     ntot[ntot == 0.0] = 1.0 # finding empty bins, setting to 1. for divide
     gr_mean = grs[-1]/ntot; gr_mean[gr_mean==0] = 1.0
+
+    # for plotting
+    if order == 1: f, axes = plt.subplots(5,2,sharex='col',sharey='row')
+    else:
+        f, axes = plt.subplots(5,2,sharex='col',sharey='row',figsize=(2,5)) 
+        axes = axes.flatten()
+        print(axes.shape, gr_mean.shape)
+        plt.setp(axes.flat, aspect=1.0, adjustable='box-forced')
+    bin_rng = [ 27, 30, 43, 65]
+
     for bn in range(nb_ra): #for each r bin, integrate the g(angle)
        #gr_mean = np.mean(grs[:,:,bn], axis = 0)
         if (bn in bin_rng and order == 1):
-            ax5.plot(radi_a, gr_mean[0][bn], label = str(radi_ra[bn]))
-            ax6.plot(radi_a, gr_mean[1][bn], label = str(radi_ra[bn]))
-            ax7.plot(radi_a, gr_mean[2][bn], label = str(radi_ra[bn]))
-            ax9.plot(radi_a, gr_mean[3][bn], label = str(radi_ra[bn]))
-            ax0.plot(radi_a, gr_mean[4][bn], label = str(radi_ra[bn]))
+            for j in range(ncombos):
+                axes[j+5].plot(radi_a,gr_mean[j][bn],label=str(radi_ra[bn]))
         if (bn == 27 and order == 2):
             X, Y = np.meshgrid(radi_a, radi_a)
-            c1 = ax1.contour(X, Y, gr_mean[0][bn].T)
-            c2 = ax2.contour(X, Y, gr_mean[1][bn].T)
-            c3 = ax3.contour(X, Y, gr_mean[2][bn].T)
-            c4 = ax4.contour(X, Y, gr_mean[3][bn].T)
-            c5 = ax5.contour(X, Y, gr_mean[4][bn].T)
-            c6 = ax6.contour(X, Y, gr_mean[5][bn].T)
-            c7 = ax7.contour(X, Y, gr_mean[6][bn].T)
-            c8 = ax8.contour(X, Y, gr_mean[7][bn].T)
-            c9 = ax9.contour(X, Y, gr_mean[8][bn].T)
-            c0 = ax0.contour(X, Y, gr_mean[9][bn].T)
-
-            ax1.text(.5,.9,ANG_NM[angle_combos[0][0]]+","+ANG_NM[angle_combos[0][1]],horizontalalignment='center',transform=ax1.transAxes)
-            ax2.text(.5,.9,ANG_NM[angle_combos[1][0]]+","+ANG_NM[angle_combos[1][1]],horizontalalignment='center',transform=ax2.transAxes)
-            ax3.text(.5,.9,ANG_NM[angle_combos[2][0]]+","+ANG_NM[angle_combos[2][1]],horizontalalignment='center',transform=ax3.transAxes)
-            ax4.text(.5,.9,ANG_NM[angle_combos[3][0]]+","+ANG_NM[angle_combos[3][1]],horizontalalignment='center',transform=ax4.transAxes)
-            ax5.text(.5,.9,ANG_NM[angle_combos[4][0]]+","+ANG_NM[angle_combos[4][1]],horizontalalignment='center',transform=ax5.transAxes)
-            ax6.text(.5,.9,ANG_NM[angle_combos[5][0]]+","+ANG_NM[angle_combos[5][1]],horizontalalignment='center',transform=ax6.transAxes)
-            ax7.text(.5,.9,ANG_NM[angle_combos[6][0]]+","+ANG_NM[angle_combos[6][1]],horizontalalignment='center',transform=ax7.transAxes)
-            ax8.text(.5,.9,ANG_NM[angle_combos[7][0]]+","+ANG_NM[angle_combos[7][1]],horizontalalignment='center',transform=ax8.transAxes)
-            ax9.text(.5,.9,ANG_NM[angle_combos[8][0]]+","+ANG_NM[angle_combos[8][1]],horizontalalignment='center',transform=ax9.transAxes)
-            ax0.text(.5,.9,ANG_NM[angle_combos[9][0]]+","+ANG_NM[angle_combos[9][1]],horizontalalignment='center',transform=ax0.transAxes)
-
-            plt.clabel(c1, inline=1, fontsize= 7);plt.clabel(c2, inline=1, fontsize= 7)
-            plt.clabel(c3, inline=1, fontsize= 7);plt.clabel(c4, inline=1, fontsize= 7)
-            plt.clabel(c5, inline=1, fontsize= 7);plt.clabel(c6, inline=1, fontsize= 7)
-            plt.clabel(c7, inline=1, fontsize= 7);plt.clabel(c8, inline=1, fontsize= 7)
-            plt.clabel(c9, inline=1, fontsize= 7);plt.clabel(c0, inline=1, fontsize= 7)
+           #ax1.set(adjustable='box-forced', aspect='equal')
+            c = []
+            for j in range(ncombos):
+                c.append(axes[j].contour(X, Y, gr_mean[j][bn].T))
+                axes[j].text(.5,.8,ANG_NM[angle_combos[j][0]]+","+
+                             ANG_NM[angle_combos[0][1]],
+                             horizontalalignment='center',
+                             transform=axes[j].transAxes)
+                plt.clabel(c[j], inline=1, fontsize= 5);
        #gr_mean[gr_mean==0] = 1.0
        #integ = gr_mean*np.log(gr_mean)*ifacts[:,bn]
         integ = gr_mean[:,bn]*np.log(gr_mean[:,bn])*ifacts[:,bn]
@@ -222,9 +207,8 @@ def orien_order_entropy(order, keys, dists, angles, vl):
 
     matplotlib.rcParams.update({'font.size': 4})
     if order == 1:
-        ax5.legend(ncol=len(bin_rng)); ax6.legend(ncol=len(bin_rng));
-        ax7.legend(ncol=len(bin_rng));ax9.legend(ncol=len(bin_rng));
-        ax0.legend(ncol=len(bin_rng));
+        for j in range(ncombos):
+            axes[j+5].legend(ncol=len(bin_rng))
     plt.subplots_adjust(wspace=0.02, hspace=0.02)
     plt.savefig("gangle_"+str(order)+'.png',format='png',bbox_inches='tight',dpi=300)
    #plt.show()
@@ -297,26 +281,31 @@ def main():
         nord = int(sys.argv[6])
         other_loc = angC.find_not_keyword("dis")
         oth_key = [angC.key[i] for i in other_loc]
-        if nord >= 1:
+        if (nord >= 1 and nord < 2):
             ent_or_1 = orien_order_entropy(1,oth_key,angC.dat[dis_loc],
                                     angC.dat[other_loc],angC.dat[vol_loc,0])
             print("1st order orien ent (cal/mol/K): {0:.7f}".format(
                   sum(ent_or_1)))
-        if nord >= 2:
+        if (nord >= 2 and nord < 5):
             ent_or_2 = orien_order_entropy(2,oth_key,angC.dat[dis_loc],
                                     angC.dat[other_loc],angC.dat[vol_loc,0])
             print("2nd order orien ent (cal/mol/K): {0:.7f}".format(
                   sum(ent_or_2) - 3.*sum(ent_or_1)))
-        if nord >= 3:
+        if (nord >= 3 and nord < 5):
             ent_or_3 = orien_order_entropy(3,oth_key,angC.dat[dis_loc],
                                     angC.dat[other_loc],angC.dat[vol_loc,0])
             print("3rd order orien ent (cal/mol/K): {0:.7f}".format(
                   sum(ent_or_3) - 2.*sum(ent_or_2) + 3*sum(ent_or_1)))
-        if nord >= 4:
+        if (nord >= 4 and nord < 5):
             ent_or_4 = orien_order_entropy(4,oth_key,angC.dat[dis_loc],
                                     angC.dat[other_loc],angC.dat[vol_loc,0])
             print("4th order orien ent (cal/mol/K): {0:.7f}".format(
                   sum(ent_or_4)-sum(ent_or_3)+sum(ent_or_2)-sum(ent_or_1)))
+        if nord == 5:
+            ent_or_5 = orien_order_entropy(4,oth_key,angC.dat[dis_loc],
+                                    angC.dat[other_loc],angC.dat[vol_loc,0])
+            print("Full orien ent (cal/mol/K): {0:.7f}".format(
+                  sum(ent_or_5)))
 
 if __name__=="__main__":
     main()
