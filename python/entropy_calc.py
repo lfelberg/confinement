@@ -172,7 +172,6 @@ def orien_order_entropy(order, keys, dists, angles, vl):
 
     ntot[ntot == 0.0] = 1.0 # finding empty bins, setting to 1. for divide
     gr_mean = grs[-1]/ntot; gr_mean[gr_mean==0] = 1.0
-    print(grs.shape, ntimes, ncombos, nb_ra)
 
     # for plotting
    #if order == 1: f, axes = plt.subplots(5,2,sharex='col',sharey='row')
@@ -230,7 +229,6 @@ def print_gang(nb_ra, nb_a, ncombos, ntimes, angle_combos, radi_ra, radi_a,
                binsiz_a, grs, order):
     '''Plot the histogram for each group for each timestep for multi
        dimensional g(\omega) '''
-    print(grs.shape)
     for bn in range(nb_ra): #for each r bin and angle combo
         for an in range(ncombos):
             ans, st = "", ""
@@ -260,7 +258,8 @@ def print_gang(nb_ra, nb_a, ncombos, ntimes, angle_combos, radi_ra, radi_a,
                 for di in range(inds.shape[1]): 
                     st+="{0:.4f},".format(xy[ab][di])
                 for t in range(ntimes): 
-                    dat = grs[t][bn][an]
+                   #print(grs.shape, " ab ",ab," t ",t," bn ", bn," an ", an)
+                    dat = grs[t][an][bn]
                     st += "{0:.6f},".format(dat[tuple(inds[ab])])
                 f.write(st[:-1]+"\n")
             f.close()
