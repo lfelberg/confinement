@@ -15,7 +15,7 @@ RMAX = 10.
 
 # Angle list in order from csv
 NANGLES = 5
-ANG_NM = [ 'chi1', 'chi2', 'phi', 'the1', 'the2']
+ANG_NM = [r'$\chi_1$',r'$\chi_2$',r'$\phi$',r'$\theta_1$',r'$\theta_2$']
 ANG_NORM = [ np.pi, np.pi, np.pi, 2.0, 2.0] # THIS IS FOR A RNG OF 0-pi for all
 
 ## Constants for entropy eval @ final, k_B and rho
@@ -117,9 +117,7 @@ def g_of_r_multi(bns_r, bns_a, dat, nfact, ang_no):
     for i in range(dim): 
         nfact /= (bins[i+1][1]-bins[i+1][0])
         r_bins_tot = np.sum(r_bins_tot, axis = -1)
-   #r_bins_tot[r_bins_tot == 0.0] = 1.0
     for i in range(len(ang_no)): r_bins_tot=np.expand_dims(r_bins_tot,axis=-1)
-   #nfact /= r_bins_tot
     return hist.astype(float) * nfact / sfact, r_bins_tot
 
 def orien_order_entropy(order, keys, dists, angles, vl):
@@ -164,56 +162,71 @@ def orien_order_entropy(order, keys, dists, angles, vl):
             an_rng = [i*ntimes+t for i in angle_combos[an]]
             # adding correct angles for time t to hist input
             for a in range(order): an_dat[:,a+1] = angles[an_rng[a],:].T
-           #grs[t][an] = g_of_r_multi(bns_ra, bns_a, an_dat, nfacts[an], angle_combos[an])
             gr_one, nhis = g_of_r_multi(bns_ra, bns_a, an_dat, nfacts[an], 
                                         angle_combos[an])
             hi_nz = nhis; hi_nz[hi_nz == 0.] = 1.0
             grs[t][an] = gr_one/hi_nz; grs[-1][an] += gr_one; ntot[an] += nhis
 
     ntot[ntot == 0.0] = 1.0 # finding empty bins, setting to 1. for divide
-    gr_mean = grs[-1]/ntot; gr_mean[gr_mean==0] = 1.0
+    gr_mean = grs[-1]/ntot 
+    print(gr_mean.shape)
 
-    # for plotting
-   #if order == 1: f, axes = plt.subplots(5,2,sharex='col',sharey='row')
+    ##########################################
+    ##########################################
+   ## for plotting
+   #if order == 1: 
+   #    f,axes=plt.subplots(5,1,sharex='col',sharey='row',figsize=(1.3,3.5))
    #else:
-   #    f, axes = plt.subplots(5,2,sharex='col',sharey='row',figsize=(2,5)) 
-   #    axes = axes.flatten()
+   #    f,axes=plt.subplots(5,2,sharex='col',sharey='row',figsize=(2,5)) 
    #    print(axes.shape, gr_mean.shape)
    #    plt.setp(axes.flat, aspect=1.0, adjustable='box-forced')
+   #axes = axes.flatten()
    #bin_rng = [ 27, 30, 43, 65]
 
+   #for bn in range(nb_ra): #for each r bin, integrate the g(angle)
+   #   #gr_mean = np.mean(grs[:,:,bn], axis = 0)
+   #    if (bn in bin_rng and order == 1):
+   #        for j in range(ncombos):
+   #            axes[j].plot(radi_a,gr_mean[j][bn],label=str(radi_ra[bn]))
+   #    if (bn == 27 and order == 2):
+   #        X, Y = np.meshgrid(radi_a, radi_a); c = []
+   #        for j in range(ncombos):
+   #            c.append(axes[j].contour(X, Y, gr_mean[j][bn].T))
+   #            axes[j].text(.5,.8,ANG_NM[angle_combos[j][0]]+","+
+   #                         ANG_NM[angle_combos[j][1]],
+   #                         horizontalalignment='center',
+   #                         transform=axes[j].transAxes)
+   #            plt.clabel(c[j], inline=1, fontsize= 3);
+   #matplotlib.rcParams.update({'font.size': 4})
+   #max_tc = 4
+   #if order == 1:
+   #    axes[0].legend(ncol=len(bin_rng),columnspacing=-0.1,labelspacing=-1.95,
+   #                   borderaxespad=-1.9,handlelength=1.8,fontsize=4)
+   #    axes[-1].set_xlabel("Angle (radians)",fontsize=6)
+   #    axes[-1].xaxis.labelpad = -1
+   #    for j in range(ncombos):
+   #        axes[j].xaxis.set_major_locator(plt.MaxNLocator(max_tc))
+   #        axes[j].yaxis.set_major_locator(plt.MaxNLocator(max_tc))
+   #        axes[j].tick_params(axis='both', which='major', pad= 1.3)
+   #        axes[j].set_xlim(0, np.pi);axes[j].yaxis.labelpad = -1
+   #        axes[j].set_ylim(0, 3);
+   #        axes[j].set_ylabel("g("+ANG_NM[angle_combos[j][0]]+")",fontsize=6)
+   #        axes[j].text(.7,.6,ANG_NM[angle_combos[j][0]], 
+   #                     horizontalalignment='center',
+   #                     transform=axes[j].transAxes,fontsize=10);
+   #plt.subplots_adjust(wspace=0.14, hspace=0.14)
+   #plt.savefig("gangle_"+str(order)+'.png',format='png',
+   #            bbox_inches='tight',dpi=300)
+ 
+    ##########################################
+    ##########################################
+    gr_mean[gr_mean==0] = 1.0
     for bn in range(nb_ra): #for each r bin, integrate the g(angle)
-       #gr_mean = np.mean(grs[:,:,bn], axis = 0)
-       #if (bn in bin_rng and order == 1):
-       #    for j in range(ncombos):
-       #        axes[j+5].plot(radi_a,gr_mean[j][bn],label=str(radi_ra[bn]))
-       #if (bn == 27 and order == 2):
-       #    X, Y = np.meshgrid(radi_a, radi_a)
-       #   #ax1.set(adjustable='box-forced', aspect='equal')
-       #    c = []
-       #    for j in range(ncombos):
-       #        c.append(axes[j].contour(X, Y, gr_mean[j][bn].T))
-       #        axes[j].text(.5,.8,ANG_NM[angle_combos[j][0]]+","+
-       #                     ANG_NM[angle_combos[0][1]],
-       #                     horizontalalignment='center',
-       #                     transform=axes[j].transAxes)
-       #        plt.clabel(c[j], inline=1, fontsize= 5);
-       #gr_mean[gr_mean==0] = 1.0
-       #integ = gr_mean*np.log(gr_mean)*ifacts[:,bn]
         integ = gr_mean[:,bn]*np.log(gr_mean[:,bn])*ifacts[:,bn]
         for i in range(order):  # integration over all dims of hist
             integ = simps(integ, radi_a)
         sh_shell[bn] = integ/nfacts
 
-   #matplotlib.rcParams.update({'font.size': 4})
-   #if order == 1:
-   #    for j in range(ncombos):
-   #        axes[j+5].legend(ncol=len(bin_rng))
-   #plt.subplots_adjust(wspace=0.02, hspace=0.02)
-   #plt.savefig("gangle_"+str(order)+'.png',format='png',
-   #            bbox_inches='tight',dpi=300)
-   #plt.show()
-            
     grs_avg = np.mean(grs_r, axis = 0)
     s_o_integrand = grs_avg[:,np.newaxis]*sh_shell
     radi_ra_ord = np.repeat(radi_ra[:,np.newaxis],ncombos,axis=1)
