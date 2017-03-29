@@ -125,7 +125,8 @@ def orien_order_entropy(order, keys, dists, angles, vl):
        and angles to the order approximation
     '''
     ntimes, npairs, angle_combos = dists.shape[0],dists.shape[1],[]
-    binsiz_ra, binsiz_a, grs, nden = 0.10, 0.174533, [], np.zeros(ntimes)
+   #binsiz_ra, binsiz_a, grs, nden = 0.10, 0.174533, [], np.zeros(ntimes)
+    binsiz_ra, binsiz_a, grs, nden = 1.10, 0.7853981634, [], np.zeros(ntimes)
     bns_ra = np.arange(0.0,RMAX,binsiz_ra); 
     bns_a = np.arange(0,np.pi+binsiz_a,binsiz_a)
     radi_a  = binsiz_a/2.+bns_a[:-1] # center of each histogram bin
@@ -220,8 +221,9 @@ def orien_order_entropy(order, keys, dists, angles, vl):
  
     ##########################################
     ##########################################
-    gr_mean[gr_mean==0] = 1.0
+    gr_mean[gr_mean==0] = 1.0; st = "bins: "; tt = ntot[0].flatten()
     for bn in range(nb_ra): #for each r bin, integrate the g(angle)
+        st += "{0} ".format(tt[bn])
         integ = gr_mean[:,bn]*np.log(gr_mean[:,bn])*ifacts[:,bn]
         for i in range(order):  # integration over all dims of hist
             integ = simps(integ, radi_a)
@@ -232,16 +234,48 @@ def orien_order_entropy(order, keys, dists, angles, vl):
     radi_ra_ord = np.repeat(radi_ra[:,np.newaxis],ncombos,axis=1)
     s_o_integrand *= (np.power(radi_ra_ord,2.0)*4.*np.pi)
     ent_o = simps(s_o_integrand,radi_ra_ord,axis = 0)
-    print(ent_o, -0.5 * ent_o * KB_CAL_MOL * NUM_DENSITY_H2O,
+    print(st); print(ent_o, -0.5 * ent_o * KB_CAL_MOL * NUM_DENSITY_H2O,
           -0.5*sum(ent_o)*KB_CAL_MOL*NUM_DENSITY_H2O)
     print_gang(nb_ra, nb_a, ncombos, ntimes, angle_combos, radi_ra, radi_a,
                binsiz_a, grs, order)
     return -0.5 * ent_o * KB_CAL_MOL * NUM_DENSITY_H2O
 
+def grid_for_print(nb_a, radi_a, binsiz_a, order):
+    '''Grid for a varying dimensional g(angle)'''
+    if order == 1:
+        inds = np.mgrid[0:nb_a:1][:,np.newaxis]
+        xy = radi_a[:,np.newaxis]
+    if order == 2:
+        inds = np.mgrid[0:nb_a:1,0:nb_a:1].reshape(2,-1).T
+        xy = np.mgrid[radi_a[0]:radi_a[-1]+binsiz_a:binsiz_a,
+                      radi_a[0]:radi_a[-1]+binsiz_a:binsiz_a].reshape(2,-1).T
+    if order == 3:
+        inds=np.mgrid[0:nb_a:1,0:nb_a:1,0:nb_a:1].reshape(3,-1).T
+        xy = np.mgrid[radi_a[0]:radi_a[-1]+binsiz_a:binsiz_a,
+                      radi_a[0]:radi_a[-1]+binsiz_a:binsiz_a,
+                      radi_a[0]:radi_a[-1]+binsiz_a:binsiz_a].reshape(3,-1).T
+    if order == 4:
+        inds=np.mgrid[0:nb_a:1,0:nb_a:1,0:nb_a:1,0:nb_a:1].reshape(4,-1).T
+        xy = np.mgrid[radi_a[0]:radi_a[-1]+binsiz_a:binsiz_a,
+                      radi_a[0]:radi_a[-1]+binsiz_a:binsiz_a,
+                      radi_a[0]:radi_a[-1]+binsiz_a:binsiz_a,
+                      radi_a[0]:radi_a[-1]+binsiz_a:binsiz_a].reshape(4,-1).T
+    if order == 5:
+        inds=np.mgrid[0:nb_a:1,0:nb_a:1,0:nb_a:1,0:nb_a:1,
+                      0:nb_a:1].reshape(5,-1).T
+        xy = np.mgrid[radi_a[0]:radi_a[-1]+binsiz_a:binsiz_a,
+                      radi_a[0]:radi_a[-1]+binsiz_a:binsiz_a,
+                      radi_a[0]:radi_a[-1]+binsiz_a:binsiz_a,
+                      radi_a[0]:radi_a[-1]+binsiz_a:binsiz_a,
+                      radi_a[0]:radi_a[-1]+binsiz_a:binsiz_a].reshape(5,-1).T
+    return inds, xy
+
 def print_gang(nb_ra, nb_a, ncombos, ntimes, angle_combos, radi_ra, radi_a,
                binsiz_a, grs, order):
     '''Plot the histogram for each group for each timestep for multi
        dimensional g(\omega) '''
+    inds,xy = grid_for_print(nb_a, radi_a, binsiz_a, order)
+
     for bn in range(nb_ra): #for each r bin and angle combo
         for an in range(ncombos):
             ans, st = "", ""
@@ -253,25 +287,11 @@ def print_gang(nb_ra, nb_a, ncombos, ntimes, angle_combos, radi_ra, radi_a,
             for t in range(ntimes): st += ("time"+str(t)+",")
             f.write(st[:-1]+"\n")
 
-            if order == 1:
-                inds = np.mgrid[0:nb_a:1][:,np.newaxis]
-                xy = radi_a[:,np.newaxis]
-            if order == 2:
-                inds = np.mgrid[0:nb_a:1,0:nb_a:1].reshape(2,-1).T
-                xy = np.mgrid[0:radi_a[-1]+binsiz_a:binsiz_a,
-                              0:radi_a[-1]+binsiz_a:binsiz_a].reshape(2,-1).T
-            if order == 3:
-                inds = np.mgrid[0:nb_a:1,0:nb_a:1,0:nb_a:1].reshape(3,-1).T
-                xy = np.mgrid[0:radi_a[-1]+binsiz_a:binsiz_a,
-                              0:radi_a[-1]+binsiz_a:binsiz_a,
-                              0:radi_a[-1]+binsiz_a:binsiz_a].reshape(3,-1).T
-
             for ab in range(inds.shape[0]):
                 st = ""
                 for di in range(inds.shape[1]): 
                     st+="{0:.4f},".format(xy[ab][di])
-                for t in range(ntimes): 
-                   #print(grs.shape, " ab ",ab," t ",t," bn ", bn," an ", an)
+                for t in range(ntimes+1): 
                     dat = grs[t][an][bn]
                     st += "{0:.6f},".format(dat[tuple(inds[ab])])
                 f.write(st[:-1]+"\n")
@@ -282,45 +302,40 @@ def main():
         calculate translational and rotational entropy
     '''
     angname=sys.argv[1]; sep=sys.argv[2]; ln=sys.argv[3]; itr=sys.argv[4]
-    ent_type = sys.argv[5]
-    nm = str(sep)+"_"+str(ln)+"_"+str(itr)
+    ent_type = sys.argv[5]; nm = str(sep)+"_"+str(ln)+"_"+str(itr)
     angC = CSVFile(angname)
-    dis_loc = angC.find_keyword("dis")
-    vol_loc = angC.find_keyword("vol")
+    dis_loc = angC.find_keyword("dis"); vol_loc = angC.find_keyword("vol")
 
     if ent_type == "trans" or ent_type == "both":
         if "gr" in angname:    ent_t = trans_gr(angC.dat) 
         else:  ent_t = trans_entropy(angC.dat[dis_loc], angC.dat[vol_loc,0])
         print("Translational entropy (cal/mol/K): {0:.7f}".format(ent_t))
     if ent_type == "orien" or ent_type == "both":
-        nord = int(sys.argv[6])
-        other_loc = angC.find_not_keyword("dis")
+        nord = int(sys.argv[6]); other_loc = angC.find_not_keyword("dis")
         oth_key = [angC.key[i] for i in other_loc]
         if (nord >= 1 and nord < 5):
-            ent_or_1 = orien_order_entropy(1,oth_key,angC.dat[dis_loc],
+            ent_or1 = orien_order_entropy(1,oth_key,angC.dat[dis_loc],
                                     angC.dat[other_loc],angC.dat[vol_loc,0])
-            print("1st order orien ent (cal/mol/K): {0:.7f}".format(
-                  sum(ent_or_1)))
+            print("1st ord or ent (cal/mol/K): {0:.7f}".format(sum(ent_or1)))
         if (nord >= 2 and nord < 5):
-            ent_or_2 = orien_order_entropy(2,oth_key,angC.dat[dis_loc],
+            ent_or2 = orien_order_entropy(2,oth_key,angC.dat[dis_loc],
                                     angC.dat[other_loc],angC.dat[vol_loc,0])
-            print("2nd order orien ent (cal/mol/K): {0:.7f}".format(
-                  sum(ent_or_2) - 3.*sum(ent_or_1)))
+            print("2nd ord or ent (cal/mol/K): {0:.7f}".format(
+                  sum(ent_or2)-3.*sum(ent_or1)))
         if (nord >= 3 and nord < 5):
-            ent_or_3 = orien_order_entropy(3,oth_key,angC.dat[dis_loc],
+            ent_or3 = orien_order_entropy(3,oth_key,angC.dat[dis_loc],
                                     angC.dat[other_loc],angC.dat[vol_loc,0])
-            print("3rd order orien ent (cal/mol/K): {0:.7f}".format(
-                  sum(ent_or_3) - 2.*sum(ent_or_2) + 3*sum(ent_or_1)))
+            print("3rd ord or ent (cal/mol/K): {0:.7f}".format(
+                  sum(ent_or3) - 2.*sum(ent_or2) + 3*sum(ent_or1)))
         if (nord >= 4 and nord < 5):
-            ent_or_4 = orien_order_entropy(4,oth_key,angC.dat[dis_loc],
+            ent_or4 = orien_order_entropy(4,oth_key,angC.dat[dis_loc],
                                     angC.dat[other_loc],angC.dat[vol_loc,0])
-            print("4th order orien ent (cal/mol/K): {0:.7f}".format(
-                  sum(ent_or_4)-sum(ent_or_3)+sum(ent_or_2)-sum(ent_or_1)))
+            print("4th ord or ent (cal/mol/K): {0:.7f}".format(
+                  sum(ent_or4)-sum(ent_or3)+sum(ent_or2)-sum(ent_or1)))
         if nord == 5:
-            ent_or_5 = orien_order_entropy(4,oth_key,angC.dat[dis_loc],
+            ent_or5 = orien_order_entropy(4,oth_key,angC.dat[dis_loc],
                                     angC.dat[other_loc],angC.dat[vol_loc,0])
-            print("Full orien ent (cal/mol/K): {0:.7f}".format(
-                  sum(ent_or_5)))
+            print("Full or ent (cal/mol/K): {0:.7f}".format(sum(ent_or5)))
 
 if __name__=="__main__":
     main()
