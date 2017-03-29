@@ -11,7 +11,7 @@ from csvfile import CSVFile
 from volfile import VolFile
 from util    import d_pbc
 
-RMAX = 10. 
+RMAX = 9. 
 
 # Angle list in order from csv
 NANGLES = 5
@@ -125,8 +125,8 @@ def orien_order_entropy(order, keys, dists, angles, vl):
        and angles to the order approximation
     '''
     ntimes, npairs, angle_combos = dists.shape[0],dists.shape[1],[]
-   #binsiz_ra, binsiz_a, grs, nden = 0.10, 0.174533, [], np.zeros(ntimes)
-    binsiz_ra, binsiz_a, grs, nden = 1.10, 0.7853981634, [], np.zeros(ntimes)
+    binsiz_ra, binsiz_a, grs, nden = 0.10, 0.174533, [], np.zeros(ntimes)
+   #binsiz_ra, binsiz_a, grs, nden = 1.10, 0.7853981634, [], np.zeros(ntimes)
     bns_ra = np.arange(0.0,RMAX,binsiz_ra); 
     bns_a = np.arange(0,np.pi+binsiz_a,binsiz_a)
     radi_a  = binsiz_a/2.+bns_a[:-1] # center of each histogram bin
@@ -170,7 +170,6 @@ def orien_order_entropy(order, keys, dists, angles, vl):
 
     ntot[ntot == 0.0] = 1.0 # finding empty bins, setting to 1. for divide
     gr_mean = grs[-1]/ntot 
-    print(gr_mean.shape)
 
     ##########################################
     ##########################################
@@ -313,29 +312,33 @@ def main():
     if ent_type == "orien" or ent_type == "both":
         nord = int(sys.argv[6]); other_loc = angC.find_not_keyword("dis")
         oth_key = [angC.key[i] for i in other_loc]
-        if (nord >= 1 and nord < 5):
+       #if (nord >= 1 and nord < 5):
+        if nord == 1:
             ent_or1 = orien_order_entropy(1,oth_key,angC.dat[dis_loc],
                                     angC.dat[other_loc],angC.dat[vol_loc,0])
-            print("1st ord or ent (cal/mol/K): {0:.7f}".format(sum(ent_or1)))
-        if (nord >= 2 and nord < 5):
+           #print("1st ord or ent (cal/mol/K): {0:.7f}".format(sum(ent_or1)))
+       #if (nord >= 2 and nord < 5):
+        if nord == 2:
             ent_or2 = orien_order_entropy(2,oth_key,angC.dat[dis_loc],
                                     angC.dat[other_loc],angC.dat[vol_loc,0])
-            print("2nd ord or ent (cal/mol/K): {0:.7f}".format(
-                  sum(ent_or2)-3.*sum(ent_or1)))
-        if (nord >= 3 and nord < 5):
+           #print("2nd ord or ent (cal/mol/K): {0:.7f}".format(
+           #      sum(ent_or2)-3.*sum(ent_or1)))
+       #if (nord >= 3 and nord < 5):
+        if nord == 3:
             ent_or3 = orien_order_entropy(3,oth_key,angC.dat[dis_loc],
                                     angC.dat[other_loc],angC.dat[vol_loc,0])
-            print("3rd ord or ent (cal/mol/K): {0:.7f}".format(
-                  sum(ent_or3) - 2.*sum(ent_or2) + 3*sum(ent_or1)))
-        if (nord >= 4 and nord < 5):
+           #print("3rd ord or ent (cal/mol/K): {0:.7f}".format(
+           #      sum(ent_or3) - 2.*sum(ent_or2) + 3*sum(ent_or1)))
+       #if (nord >= 4 and nord < 5):
+        if nord == 4:
             ent_or4 = orien_order_entropy(4,oth_key,angC.dat[dis_loc],
                                     angC.dat[other_loc],angC.dat[vol_loc,0])
-            print("4th ord or ent (cal/mol/K): {0:.7f}".format(
-                  sum(ent_or4)-sum(ent_or3)+sum(ent_or2)-sum(ent_or1)))
+           #print("4th ord or ent (cal/mol/K): {0:.7f}".format(
+           #      sum(ent_or4)-sum(ent_or3)+sum(ent_or2)-sum(ent_or1)))
         if nord == 5:
             ent_or5 = orien_order_entropy(4,oth_key,angC.dat[dis_loc],
                                     angC.dat[other_loc],angC.dat[vol_loc,0])
-            print("Full or ent (cal/mol/K): {0:.7f}".format(sum(ent_or5)))
+           #print("Full or ent (cal/mol/K): {0:.7f}".format(sum(ent_or5)))
 
 if __name__=="__main__":
     main()
