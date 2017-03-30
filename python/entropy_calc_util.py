@@ -25,6 +25,12 @@ J_TO_CAL = 1.0/4.1868 # 1 calorie/4.1868 Joules
 KB_CAL_MOL = KB * J_TO_CAL * MOL
 NUM_DENSITY_H2O = 1728./52534.8456042 # num of wat mols per A^3 (TIP4P EW 298K)
 
+
+class STrans:
+    def __init__(self, fname, dim):
+        self.dim = dim   
+
+
 def g_of_r(bns, dist, dim = 3, density = 1.0):
     ''' Given an array of distances, histogram to compute g(r) '''
     hist, bins = np.histogram(dist, bins = bns)
@@ -50,26 +56,16 @@ def trans_entropy(dists, vl, dim = 3):
     for t in range(ntimes): grs[t] = g_of_r(bns_r, dists[t], dim, vl[t])
 
     print_gr(ntimes, nb_r, radi_r, grs) # printing for if needed later
-    gr_av = np.mean(grs, axis = 0)
-
-    f = plt.figure(1, figsize = (3.0, 3.0))
-    ax = f.add_subplot(111)
-    ax.plot(radi_r, gr_av)
-    plt.show()
-
-    nzer = gr_av != 0.0
-    s_t_integrand = np.zeros(len(gr_av))
-    s_t_integrand[nzer] = gr_av[nzer]*np.log(gr_av[nzer])-gr_av[nzer]+1.0
-    s_t_integrand[gr_av == 0.0] = 1.0
-    if dim == 3: r_int = np.power(radi_r,2.0)*4.*np.pi
-    else:        r_int = radi_r*2.*np.pi
-    ent_t = simps(s_t_integrand*r_int, radi_r)
-    print(ent_t, KB_CAL_MOL, NUM_DENSITY_H2O)
-    return -0.5 * ent_t * KB_CAL_MOL * NUM_DENSITY_H2O
+    return integ_rg(radi_r, np.mean(grs,axis=0), dim)
 
 def trans_gr(gr_dat, dim = 3):
     '''Given a g(r), compute the translational entropy'''
-    gr_av = np.mean(gr_dat[1:], axis = 0)
+    radi_r = gr_dat[0]; gr_av = np.mean(gr_dat[1:], axis = 0)
+    return integ_rg(gr_dat[0],np.mean(gr_dat[1:],axis=0), dim)
+
+def integ_rg(radi_r, gr_av, dim):
+    ''' Given distances and gr, integrate to calc entropy'''
+    plot_gr(radi_r, gr_av)
     nzer = gr_av != 0.0
     s_t_integrand = np.zeros(len(gr_av))
     s_t_integrand[nzer] = gr_av[nzer]*np.log(gr_av[nzer])-gr_av[nzer]+1.0
@@ -78,9 +74,23 @@ def trans_gr(gr_dat, dim = 3):
     if dim == 3: r_int = np.power(radi_r,2.0)*4.*np.pi
     else:        r_int = radi_r*2.*np.pi
     ent_t = simps(s_t_integrand*r_int, radi_r)
-    ent_t = simps(s_t_integrand*np.power(gr_dat[0],2.0)*4.*np.pi, gr_dat[0])
-    print(ent_t, KB_CAL_MOL, NUM_DENSITY_H2O)
+    print("Etrans before conv {0}, conv {1}".format(ent_t, 
+          -0.5 * KB_CAL_MOL * NUM_DENSITY_H2O))
     return -0.5 * ent_t * KB_CAL_MOL * NUM_DENSITY_H2O
+
+def plot_gr(radi_r, gr_av):
+    '''Plot the computed gr'''
+    matplotlib.rcParams.update({'font.size': 8})
+    f = plt.figure(1, figsize = (1.5, 1.5))
+    ax = f.add_subplot(111)
+    ax.plot(radi_r, gr_av)
+    ax.set_xlim(0, RMAX); #ax.set_ylim(0, 3);
+    ax.yaxis.labelpad = -0.6; ax.xaxis.labelpad = -0.6
+    ax.set_ylabel("g(R)",fontsize=10)
+    ax.set_xlabel("Distance ($\AA$)",fontsize=10)
+    plt.savefig('g_r.png',format='png',
+                bbox_inches='tight',dpi=300)
+    plt.close()
 
 def print_gr(ntimes, nb_r, radi_r, grs):
     '''Print the gr for each timestep for use later if needed '''
@@ -135,11 +145,18 @@ def g_of_r_multi(bns_r, bns_a, dat, nfact, ang_no):
     for i in range(len(ang_no)): r_bins_tot=np.expand_dims(r_bins_tot,axis=-1)
     return hist.astype(float) * nfact / sfact, r_bins_tot
 
-def orien_order_entropy(order, keys, dists, angles, vl):
+def ang_cmbs(order):
+    '''Given the desired order of entropy calc, return array of all combos'''
+    angle_combos = []
+    for subset in itertools.combinations(range(NANGLES), order):
+        angle_combos.append(list(subset))
+    return angle_combos, len(angle_combos)
+
+def orien_order_entropy(order, keys, dists, angles, vl, dim):
     '''Compute the orientational entropy from a list of pairwise distances
        and angles to the order approximation
     '''
-    ntimes, npairs, angle_combos = dists.shape[0],dists.shape[1],[]
+    ntimes, npairs = dists.shape[0],dists.shape[1]
     binsiz_ra, binsiz_a, grs, nden = 0.10, 0.174533, [], np.zeros(ntimes)
    #binsiz_ra, binsiz_a, grs, nden = 1.10, 0.7853981634, [], np.zeros(ntimes)
     bns_ra = np.arange(0.0,RMAX,binsiz_ra); 
@@ -148,10 +165,7 @@ def orien_order_entropy(order, keys, dists, angles, vl):
     radi_ra = binsiz_ra/2.+bns_ra[:-1] # center of each histogram bin
     nb_a, nb_ra = len(radi_a), len(radi_ra) # Number of bins for each hist
 
-    # Making a list of all possible combinations of angle groups
-    for subset in itertools.combinations(range(NANGLES), order):
-        angle_combos.append(list(subset))
-    ncombos = len(angle_combos); nfacts = np.ones(ncombos)
+    angle_combos, ncombos = ang_cmbs(order); nfacts = np.ones(ncombos)
     hist_shape = tuple([nb_ra]) + tuple([nb_a for x in range(order)])
     ifacts = np.ones(tuple([ncombos])+hist_shape); 
     ntot = np.zeros(tuple([ncombos,nb_ra])+tuple([1 for x in range(order)]))
@@ -168,7 +182,7 @@ def orien_order_entropy(order, keys, dists, angles, vl):
     # For each timestep, calc the histogram for all combos of angles
     for t in range(ntimes):
         r_bins = np.digitize(dists[t], bns_ra)
-        grs_r[t] = g_of_r(bns_ra, dists[t], vl[t])
+        grs_r[t] = g_of_r(bns_ra, dists[t], dim, vl[t])
         for bn in range(nb_ra): #for each r bin, compute the g(angle)
             this_r = r_bins == bn
             if sum(this_r.astype(int)) == 0: sh_shell[bn] = np.zeros(ncombos)
@@ -180,61 +194,21 @@ def orien_order_entropy(order, keys, dists, angles, vl):
             for a in range(order): an_dat[:,a+1] = angles[an_rng[a],:].T
             gr_one, nhis = g_of_r_multi(bns_ra, bns_a, an_dat, nfacts[an], 
                                         angle_combos[an])
-            hi_nz = nhis; hi_nz[hi_nz == 0.] = 1.0
+            hi_nz = np.copy(nhis); hi_nz[hi_nz == 0.] = 1.0
             grs[t][an] = gr_one/hi_nz; grs[-1][an] += gr_one; ntot[an] += nhis
 
     ntot[ntot == 0.0] = 1.0 # finding empty bins, setting to 1. for divide
     gr_mean = grs[-1]/ntot 
 
-    ##########################################
-    ##########################################
-   ## for plotting
-   #if order == 1: 
-   #    f,axes=plt.subplots(5,1,sharex='col',sharey='row',figsize=(1.3,3.5))
-   #else:
-   #    f,axes=plt.subplots(5,2,sharex='col',sharey='row',figsize=(2,5)) 
-   #    print(axes.shape, gr_mean.shape)
-   #    plt.setp(axes.flat, aspect=1.0, adjustable='box-forced')
-   #axes = axes.flatten()
-   #bin_rng = [ 27, 30, 43, 65]
+    if order < 3: plot_g_ang(order,ncombos,angle_combos,nb_ra,
+                             radi_a,radi_ra,gr_mean) # plotting 1/2 ord angs
+    print_gang(nb_ra, nb_a, ncombos, ntimes, angle_combos, radi_ra, radi_a,
+               binsiz_a, grs, ntot, order)
+    return integ_angle(order, ncombos, nb_ra, nfacts, ifacts, sh_shell, 
+                       radi_ra, grs_r, radi_a, ntot, gr_mean)
 
-   #for bn in range(nb_ra): #for each r bin, integrate the g(angle)
-   #   #gr_mean = np.mean(grs[:,:,bn], axis = 0)
-   #    if (bn in bin_rng and order == 1):
-   #        for j in range(ncombos):
-   #            axes[j].plot(radi_a,gr_mean[j][bn],label=str(radi_ra[bn]))
-   #    if (bn == 27 and order == 2):
-   #        X, Y = np.meshgrid(radi_a, radi_a); c = []
-   #        for j in range(ncombos):
-   #            c.append(axes[j].contour(X, Y, gr_mean[j][bn].T))
-   #            axes[j].text(.5,.8,ANG_NM[angle_combos[j][0]]+","+
-   #                         ANG_NM[angle_combos[j][1]],
-   #                         horizontalalignment='center',
-   #                         transform=axes[j].transAxes)
-   #            plt.clabel(c[j], inline=1, fontsize= 3);
-   #matplotlib.rcParams.update({'font.size': 4})
-   #max_tc = 4
-   #if order == 1:
-   #    axes[0].legend(ncol=len(bin_rng),columnspacing=-0.1,labelspacing=-1.95,
-   #                   borderaxespad=-1.9,handlelength=1.8,fontsize=4)
-   #    axes[-1].set_xlabel("Angle (radians)",fontsize=6)
-   #    axes[-1].xaxis.labelpad = -1
-   #    for j in range(ncombos):
-   #        axes[j].xaxis.set_major_locator(plt.MaxNLocator(max_tc))
-   #        axes[j].yaxis.set_major_locator(plt.MaxNLocator(max_tc))
-   #        axes[j].tick_params(axis='both', which='major', pad= 1.3)
-   #        axes[j].set_xlim(0, np.pi);axes[j].yaxis.labelpad = -1
-   #        axes[j].set_ylim(0, 3);
-   #        axes[j].set_ylabel("g("+ANG_NM[angle_combos[j][0]]+")",fontsize=6)
-   #        axes[j].text(.7,.6,ANG_NM[angle_combos[j][0]], 
-   #                     horizontalalignment='center',
-   #                     transform=axes[j].transAxes,fontsize=10);
-   #plt.subplots_adjust(wspace=0.14, hspace=0.14)
-   #plt.savefig("gangle_"+str(order)+'.png',format='png',
-   #            bbox_inches='tight',dpi=300)
- 
-    ##########################################
-    ##########################################
+def integ_angle(order, ncombos, nb_ra, nfacts, ifacts, sh_shell, radi_ra, grs_r, radi_a, ntot, gr_mean):
+    ''' Integrate g(angle)*g(R) to calc S_orient'''
     gr_mean[gr_mean==0] = 1.0; st = "bins: "; tt = ntot[0].flatten()
     for bn in range(nb_ra): #for each r bin, integrate the g(angle)
         st += "{0} ".format(tt[bn])
@@ -250,9 +224,58 @@ def orien_order_entropy(order, keys, dists, angles, vl):
     ent_o = simps(s_o_integrand,radi_ra_ord,axis = 0)
     print(st); print(ent_o, -0.5 * ent_o * KB_CAL_MOL * NUM_DENSITY_H2O,
           -0.5*sum(ent_o)*KB_CAL_MOL*NUM_DENSITY_H2O)
-    print_gang(nb_ra, nb_a, ncombos, ntimes, angle_combos, radi_ra, radi_a,
-               binsiz_a, grs, order)
     return -0.5 * ent_o * KB_CAL_MOL * NUM_DENSITY_H2O
+
+def orien_gang(order, dirs, gr_dat):
+    ''' Given already computed g(r) and list of angle files, compute 
+        the g(angle) of specified order'''
+    ncombos, angle_combos = ang_cmbs(order) 
+    
+
+def plot_g_ang(order,ncombos,angle_combos,nb_ra,radi_a,radi_ra,gr_mean):
+    '''Method for plotting the g(angle) distributions for 1&2nd order'''
+    matplotlib.rcParams.update({'font.size': 4})
+    if order == 1: 
+        f,axes=plt.subplots(5,1,sharex='col',sharey='row',figsize=(1.3,3.5))
+    else:
+        f,axes=plt.subplots(5,2,sharex='col',sharey='row',figsize=(2,5)) 
+        print(axes.shape, gr_mean.shape)
+        plt.setp(axes.flat, aspect=1.0, adjustable='box-forced')
+    axes = axes.flatten()
+    bin_rng = [ 27, 30, 43, 65]
+
+    for bn in range(nb_ra): #for each r bin, integrate the g(angle)
+        if (bn in bin_rng and order == 1):
+            for j in range(ncombos):
+                axes[j].plot(radi_a,gr_mean[j][bn],label=str(radi_ra[bn]))
+        if (bn == 27 and order == 2):
+            X, Y = np.meshgrid(radi_a, radi_a); c = []
+            for j in range(ncombos):
+                c.append(axes[j].contour(X, Y, gr_mean[j][bn].T))
+                axes[j].text(.5,.8,ANG_NM[angle_combos[j][0]]+","+
+                             ANG_NM[angle_combos[j][1]],
+                             horizontalalignment='center',
+                             transform=axes[j].transAxes)
+                plt.clabel(c[j], inline=1, fontsize= 3);
+    max_tc = 4
+    if order == 1:
+        axes[0].legend(ncol=len(bin_rng),columnspacing=-0.1,labelspacing=-1.95,
+                       borderaxespad=-1.9,handlelength=1.8,fontsize=4)
+        axes[-1].set_xlabel("Angle (radians)",fontsize=6)
+        axes[-1].xaxis.labelpad = -1
+        for j in range(ncombos):
+            axes[j].xaxis.set_major_locator(plt.MaxNLocator(max_tc))
+            axes[j].yaxis.set_major_locator(plt.MaxNLocator(max_tc))
+            axes[j].tick_params(axis='both', which='major', pad= 1.3)
+            axes[j].set_xlim(0, np.pi);axes[j].yaxis.labelpad = -1
+            axes[j].set_ylim(0, 3);
+            axes[j].set_ylabel("g("+ANG_NM[angle_combos[j][0]]+")",fontsize=6)
+            axes[j].text(.7,.6,ANG_NM[angle_combos[j][0]], 
+                         horizontalalignment='center',
+                         transform=axes[j].transAxes,fontsize=10);
+    plt.subplots_adjust(wspace=0.14, hspace=0.14)
+    plt.savefig("gangle_"+str(order)+'.png',format='png',
+                bbox_inches='tight',dpi=300)
 
 def grid_for_print(nb_a, radi_a, binsiz_a, order):
     '''Grid for a varying dimensional g(angle)'''
@@ -285,9 +308,15 @@ def grid_for_print(nb_a, radi_a, binsiz_a, order):
     return inds, xy
 
 def print_gang(nb_ra, nb_a, ncombos, ntimes, angle_combos, radi_ra, radi_a,
-               binsiz_a, grs, order):
+               binsiz_a, grs, ntot, order):
     '''Plot the histogram for each group for each timestep for multi
        dimensional g(\omega) '''
+    his_ct = open("angle_g_bin_ct.csv","w"); tt = ntot[0].flatten()
+    his_ct.write("bin,ct\n")
+    for i in range(len(tt)): 
+        his_ct.write("{0:.3f},{1}\n".format(radi_ra[i],tt[i]))
+    his_ct.close()
+
     inds,xy = grid_for_print(nb_a, radi_a, binsiz_a, order)
 
     for bn in range(nb_ra): #for each r bin and angle combo

@@ -6,7 +6,8 @@ def open_file(fname, datloc):
     f = open(fname, 'r').readlines()
     data = np.zeros(len(f))
     for lin in range(len(f)):
-        tmp = f[lin].split()
+       #tmp = f[lin].split(",")
+        tmp = f[lin].split(",")
         data[lin] = float(tmp[datloc])
     return data
 
