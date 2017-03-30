@@ -1,21 +1,29 @@
 import sys
 import numpy as np
+import matplotlib.pyplot as plt
 
 from xyzfile import XYZFile
 from volfile import VolFile
 
-WOXY = 1; WHYD = 2; GRAPHENE = 3
 
-def get_angles(xyz, disC, volC):
-    '''Method to get various angles between two waters'''
-    # find water oxys, hyds
-    oo = xyz.get_type_i(WOXY); hh = xyz.get_type_i(WHYD); bnz = 5
+def get_water_dev(xyz, volC):
+    bnz = 5
     oi,hi = xyz.get_inner_wat(); oou,hou = xyz.get_outer_wat() # outside walls
-    t1s, t2s, c1s, c2s, phs, rs, ws, wat_angles = [],[],[],[],[],[],[],[]
-
+    print(xyz.atom.shape)
+    bns = np.arange(-3.,3.5, 0.1)
+    hs_t = np.zeros(len(bns)-1)
     for i in range(1,len(xyz.atom)): # for each time snapshot, except first
+        x_mn = np.mean(xyz.atom[i,oi,0])
+        hist, bins = np.histogram(xyz.atom[i,oi,0]-x_mn, bins = bns)
+        hs_t += hist
         
-    return 
+
+    f = plt.figure(1, figsize = (3.0, 3.0))
+    ax, ct, leg = f.add_subplot(111), 0, []
+    ax.plot(bins[:-1]+0.05, hs_t)
+    plt.show()
+
+    return bns
 
 def print_angles(angls, fname):
     '''Print file of data in csv-like format, angls is a list of values:
@@ -46,7 +54,7 @@ def main():
     xyz_cl = XYZFile(xyzname, volC)
 
     angs = get_water_dev(xyz_cl, volC)
-    print_angles(angs, "run"+nm+"_angles.csv")
+   #print_angles(angs, "run"+nm+"_angles.csv")
 
 if __name__=="__main__":
     main()

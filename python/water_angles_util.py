@@ -83,7 +83,7 @@ def project_plane(vec, norm):
     return (vec-(np.sum(vec*norm,axis=1)/
                  np.sum(norm*norm,axis=1))[:,np.newaxis]*norm)
 
-def cal_ang(w_coords, rng, d_to_wall = []):
+def cal_ang(w_coords, rng, d_to_wall = [], dim = 3):
     '''Given a list of coords (dimensions: [nat = 3, nwat, ndim = 3]), 
        move the coords into the nearest image of water of interest,
        calculate the dipole moments and angles''' 
@@ -129,7 +129,8 @@ def cal_ang(w_coords, rng, d_to_wall = []):
         mu_oth_proj = project_plane(mu_oth, inter_mol_ax)
         phi = angle_between(mu_cur_proj, mu_oth_proj)
         
-        dists = d_pbc(curr[0], ot_wr[0], rng) # cal O-O distance
+        if dim == 3: dists = d_pbc(curr[0], ot_wr[0], rng) # cal O-O distance
+        else:        dists = d_pbc(curr[0,:,1:], ot_wr[0,:,1:], rng[1:])
 
         t1.append(the_1); t2.append(the_2); c1.append(chi1); c2.append(chi2); 
         ph.append(phi); r.append(dists); 
