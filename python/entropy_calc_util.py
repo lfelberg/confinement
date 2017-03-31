@@ -47,15 +47,19 @@ class STrans:
     def trans_entropy(self, dists, vl):
         '''Given a list of pair separations, compute the g(r), print out
            and integrate to get translational entropy'''
-        for t in range(self.ntimes): 
-            self.grs[t] = self.g_of_r(dists[t], vl[t])
-        self.print_gr() # printing for if needed later
+        self.many_g_of_r(dists, vl)
         return self.integ_rg(np.mean(self.grs,axis=0))
 
     def trans_gr(self, gr_dat):
         '''Given a g(r), compute the translational entropy'''
         radi_r = gr_dat[0]; gr_av = np.mean(gr_dat[1:], axis = 0)
         return self.integ_rg(np.mean(gr_dat[1:],axis=0),gr_dat[0])
+
+    def many_g_of_r(self, dists, vl):
+        '''Given a list of pair separations, compute the g(r), print out'''
+        for t in range(self.ntimes): 
+            self.grs[t] = self.g_of_r(dists[t], vl[t])
+        self.print_gr() # printing for if needed later
 
     def g_of_r(self, dist, density = 1.0):
         ''' Given an array of distances, histogram to compute g(r) '''
@@ -97,310 +101,290 @@ class STrans:
 
     def print_gr(self):
         '''Print the gr for each timestep for use later if needed '''
-        gr = open("trans_gr.csv", "w");  st = "bin,"
+        gr = open("trans_gr_{0:.2f}.csv".format(self.binsiz_r),"w"); st="bin,"
         for t in range(self.ntimes): st += ("time"+str(t)+",")
         gr.write(st[:-1]+"\n")
         for b in range(self.nb_r):
             st = "{0:.4f},".format(self.radi_r[b])
-            for t in range(self.ntimes): st += "{0:.6f},".format(self.grs[t][b])
+            for t in range(self.ntimes): st+="{0:.6f},".format(self.grs[t][b])
             gr.write(st[:-1]+"\n")
         gr.close()
 
-def g_of_r(bns, dist, dim = 3, density = 1.0):
-    ''' Given an array of distances, histogram to compute g(r) '''
-    hist, bins = np.histogram(dist, bins = bns)
-    upp, low = bns[1:], bns[:-1]
-    ndens = float(len(dist)) / density
-    if dim == 3: nfact = 4.0/3.0*np.pi*(np.power(upp, 3.) - np.power(low,3.)) 
-    else:        nfact = np.pi*(np.power(upp, 2.) - np.power(low,2.))
-    gr = hist/(nfact*ndens)
-    return gr
+class SOrien:
+    '''Class with variables and methods for the calc of approximation
+       of orientational entropy
+    ''' 
+    def __init__(self, ntimes, npairs, order, bnr = 0.10, dim = 3):
+        '''Initialize vars for orientational entropy'''
+        self.dim = dim # dimension of g(r)
+        self.ntimes = ntimes # number of snapshots to average across
+        self.npairs = npairs # number of water pairs considered
+        self.order = order   # the order of the approximation 1-5
+        self.binsiz_r = bnr  # size of g(r) histogram bin
+        self.grC = STrans(ntimes, npairs, bnr, dim)
+        self.init_g_bins()   # initialize bins for g(r)
 
-def integ_fact(shape, angle_nos, angle_rng):
-    ''' Given a list of angles and an array shape, will create an array of
-        shape = shape, to scale data by. Assumes that d1 = distance,
-        and the other dimensions are angles 
-    '''
-    scale_factor = np.ones(shape)
-    for i in range(len(angle_nos)): # Xfrm theta vars, first col is dist
-        if angle_nos[i] > 2: 
-            sft = np.sin(angle_rng)
-            for j in range(len(angle_nos)):
-                if i > j:   sft = np.expand_dims(sft, axis = 0)
-                elif i < j: sft = np.expand_dims(sft, axis = -1)
-            sft = np.expand_dims(sft, axis = 0)
-            scale_factor *= sft
-    return scale_factor
+    def init_g_bins(self):
+        '''Method to initialize g(val) things, like the number of bins, 
+           bin size etc'''
+        self.grs,self.ndens,self.binsiz_a = [],np.zeros(self.ntimes),0.174533
+        self.bns_a = np.arange(0,np.pi+self.binsiz_a,self.binsiz_a)
+        self.radi_a  = self.binsiz_a/2.+self.bns_a[:-1] # centr of hist bins
+        self.nb_a = len(self.radi_a) # number of bins
 
-def g_of_r_multi(bns_r, bns_a, dat, nfact, ang_no):
-    ''' Given an array of distances, histogram to compute g(r) 
-        in multi dimensions, currently used only for orientation, so 
-        we normalize in a different way, also going to assume each dim has same
-        bins!
-    '''
-    dim = dat.shape[1] - 1 # number of angles for histogram
-    bn_t = tuple([len(bns_a)-1 for x in range(dim)]) # nu bins from bns input
-    bn_t = tuple([len(bns_r)-1]) + bn_t
-    rg_t = tuple([tuple([min(bns_a),max(bns_a)]) for x in range(dim)])
-    rg_t = tuple([tuple([min(bns_r),max(bns_r)])]) + rg_t
+        self.ang_cmbs(); self.nfacts = np.ones(self.ncombos)
+        self.ang_shape = tuple([self.nb_a for x in range(self.order)])
+        self.hist_shape = tuple([self.get_rbn_ct()]) + self.ang_shape
+        self.ntot = np.zeros(tuple([self.ncombos,self.get_rbn_ct()])+
+                             tuple([1 for x in range(self.order)]))
+        self.integ_fact()
 
-    for i in range(len(ang_no)): # transforming theta vars, first col is dist
-        if ang_no[i] == 4: dat[:,i+1] = np.pi - dat[:,i+1]
-    hist, bins = np.histogramdd(dat, bins = bn_t, range = rg_t)
-    
-    sfact = integ_fact(hist.shape, ang_no,
-                       bins[i+1][:-1]+(bins[i+1][1]-bins[i+1][0])/2.)
-    # normalizing the histogram by angle nfact*binwid*nsamp
-    r_bins_tot = hist.astype(float)
-    for i in range(dim): 
-        nfact /= (bins[i+1][1]-bins[i+1][0])
-        r_bins_tot = np.sum(r_bins_tot, axis = -1)
-    for i in range(len(ang_no)): r_bins_tot=np.expand_dims(r_bins_tot,axis=-1)
-    return hist.astype(float) * nfact / sfact, r_bins_tot
+    def orien_order_entropy(self, dists, angles, vl):
+        '''Compute orientational entropy from a list of pairwise distances
+           and angles to the order approximation
+        '''
+        self.dim_ang_gr = tuple([self.ntimes+1,self.ncombos])+self.hist_shape
+        self.gs=np.zeros(self.dim_ang_gr)
+        sh_shell = np.zeros((self.get_rbn_ct(), self.ncombos))
 
-def ang_cmbs(order):
-    '''Given the desired order of entropy calc, return array of all combos'''
-    angle_combos = []
-    for subset in itertools.combinations(range(NANGLES), order):
-        angle_combos.append(list(subset))
-    return angle_combos, len(angle_combos)
+        self.grC.many_g_of_r(dists, vl)  # computing the g(r)
+        # For each timestep, calc the histogram for all combos of angles
+        for t in range(self.ntimes):
+            an_dat=np.zeros((self.npairs,self.order+1)); an_dat[:,0]=dists[t]
+            for an in range(self.ncombos):
+                an_rng = [i*self.ntimes+t for i in self.angle_combos[an]]
+                # adding correct angles for time t to hist input
+                for a in range(self.order): an_dat[:,a+1]=angles[an_rng[a],:].T
+                g_one, nhis = self.g_of_multi(an_dat,an)
+                hi_nz = np.copy(nhis); hi_nz[hi_nz == 0.] = 1.0
+                self.gs[t][an]=g_one/hi_nz; 
+                self.gs[-1][an]+=g_one; self.ntot[an]+=nhis
 
-def orien_order_entropy(order, keys, dists, angles, vl, dim):
-    '''Compute the orientational entropy from a list of pairwise distances
-       and angles to the order approximation
-    '''
-    ntimes, npairs = dists.shape[0],dists.shape[1]
-    binsiz_ra, binsiz_a, grs, nden = 0.10, 0.174533, [], np.zeros(ntimes)
-   #binsiz_ra, binsiz_a, grs, nden = 1.10, 0.7853981634, [], np.zeros(ntimes)
-    bns_ra = np.arange(0.0,RMAX,binsiz_ra); 
-    bns_a = np.arange(0,np.pi+binsiz_a,binsiz_a)
-    radi_a  = binsiz_a/2.+bns_a[:-1] # center of each histogram bin
-    radi_ra = binsiz_ra/2.+bns_ra[:-1] # center of each histogram bin
-    nb_a, nb_ra = len(radi_a), len(radi_ra) # Number of bins for each hist
+        self.print_gang()
+        self.ntot[self.ntot==0.0]=1. # empty bins, setting to 1. for divide
+        g_mean = self.gs[-1]/self.ntot 
 
-    angle_combos, ncombos = ang_cmbs(order); nfacts = np.ones(ncombos)
-    hist_shape = tuple([nb_ra]) + tuple([nb_a for x in range(order)])
-    ifacts = np.ones(tuple([ncombos])+hist_shape); 
-    ntot = np.zeros(tuple([ncombos,nb_ra])+tuple([1 for x in range(order)]))
-    for i in range(ncombos): 
-        ifacts[i] = integ_fact(hist_shape, angle_combos[i], radi_a)
-        for j in range(order): 
-            nfacts[i] *= ANG_NORM[angle_combos[i][j]]
+        if self.order < 3: self.plot_g_ang(g_mean) # plotting 1/2 ord angs
+        return self.integ_angle(sh_shell, g_mean)
 
-    # calculating g(R) for each time snapshot
-    dim_ang_gr = [ntimes+1, ncombos, nb_ra] + [nb_a for o in range(order)]
-    grs = np.zeros(tuple(dim_ang_gr)); grs_r = np.zeros((ntimes, nb_ra))
-    sh_shell = np.zeros((nb_ra, ncombos))
+    def orien_gang(self, dirs, gr_dat):
+        ''' Given already computed g(r) and list of angle files, compute 
+            the g(angle) of specified order'''
+        # getting histogram tallies    
+        nct = np.zeros((len(dirs), self.get_rbn_ct()))
+        for i in range(len(dirs)): 
+            ctCSV = CSVFile("iter_"+str(dirs[i]+"/angle_g_bin_ct.csv"))
+            nct[i] = ctCSV.dat[1]
+        nct[nct == 50.0]=0.0; nct[nct==1.0]=0.0 # THIS WILL NEED TO BE CHANGED
+        nct = np.sum(nct,axis = 0)[np.newaxis]
+        for i in range(self.order): nct = np.expand_dims(nct, axis = -1)
+        nct[nct == 0.0] = 1.0 
 
-    # For each timestep, calc the histogram for all combos of angles
-    for t in range(ntimes):
-        r_bins = np.digitize(dists[t], bns_ra)
-        grs_r[t] = g_of_r(bns_ra, dists[t], dim, vl[t])
-        for bn in range(nb_ra): #for each r bin, compute the g(angle)
-            this_r = r_bins == bn
-            if sum(this_r.astype(int)) == 0: sh_shell[bn] = np.zeros(ncombos)
-        an_dat = np.zeros((npairs, order+1))
-        an_dat[:,0] = dists[t]
-        for an in range(ncombos):
-            an_rng = [i*ntimes+t for i in angle_combos[an]]
-            # adding correct angles for time t to hist input
-            for a in range(order): an_dat[:,a+1] = angles[an_rng[a],:].T
-            gr_one, nhis = g_of_r_multi(bns_ra, bns_a, an_dat, nfacts[an], 
-                                        angle_combos[an])
-            hi_nz = np.copy(nhis); hi_nz[hi_nz == 0.] = 1.0
-            grs[t][an] = gr_one/hi_nz; grs[-1][an] += gr_one; ntot[an] += nhis
+        self.grC.grs = gr_dat[1:]  # computing the g(r)
+        self.grC.plot_gr(np.mean(gr_dat[1:],axis=0))
+        gang = np.zeros(tuple([self.ncombos,len(dirs)])+self.hist_shape)
+        for an in range(self.ncombos):
+            an_nm = ""
+            for j in self.angle_combos[an]: an_nm += (str(j)+"_")
+            for bn in range(self.get_rbn_ct()):
+                bn_nm = "bn{0:.4f}".format(self.get_r_rad()[bn])
+                for i in range(len(dirs)):
+                    fname = "iter_"+str(dirs[i])+"/angle_g_o"+an_nm+bn_nm+".csv"
+                    dat = self.get_g_ang(fname)
+                    gang[an][i][bn] = dat.reshape(self.ang_shape)
 
-    print_gang(nb_ra, nb_a, ncombos, ntimes, angle_combos, radi_ra, radi_a,
-               binsiz_a, grs, ntot, order)
-    ntot[ntot == 0.0] = 1.0 # finding empty bins, setting to 1. for divide
-    gr_mean = grs[-1]/ntot 
+        g_an = np.sum(gang, axis = 1)/nct
+        return self.integ_angle(np.zeros((self.get_rbn_ct(),self.ncombos)),g_an)
 
-    if order < 3: plot_g_ang(order,ncombos,angle_combos,nb_ra,
-                             radi_a,radi_ra,gr_mean) # plotting 1/2 ord angs
-    return integ_angle(dim, order, ncombos, nb_ra, nfacts, ifacts, sh_shell, 
-                       radi_ra, grs_r, radi_a, ntot, gr_mean)
+    def g_of_multi(self, dat, an):
+        ''' Given an array of distances, histogram to compute g(r) 
+            in multi dimensions, currently used only for orientation, so 
+            we normalize in a different way, going to assume each dim has same
+            bins!
+        '''
+        dim,ba,br = self.order,self.bns_a,self.get_rbn() # No. angles for hist
+        bn_t = tuple([len(br)-1]) + tuple([len(ba)-1 for x in range(dim)]) #bns
+        rg_t = tuple([tuple([min(ba),max(ba)]) for x in range(dim)])
+        rg_t = tuple([tuple([min(br),max(br)])]) + rg_t
 
-def orien_gang(order, dirs, gr_dat, dim = 3):
-    ''' Given already computed g(r) and list of angle files, compute 
-        the g(angle) of specified order'''
-    angle_combos, ncombos = ang_cmbs(order)
-    binsiz_ra, binsiz_a, grs, nct = 0.10, 0.174533, [], []
-    bns_ra = np.arange(0.0,RMAX,binsiz_ra); 
-    bns_a = np.arange(0,np.pi+binsiz_a,binsiz_a)
-    radi_a  = binsiz_a/2.+bns_a[:-1] # center of each histogram bin
-    radi_ra = binsiz_ra/2.+bns_ra[:-1] # center of each histogram bin
-    nb_a, nb_ra = len(radi_a), len(radi_ra) # Number of bins for each hist
+        for i in range(self.order): # XFRM theta vars, first col is dist
+            if self.angle_combos[an][i] == 4: dat[:,i+1] = np.pi - dat[:,i+1]
+        hist, bins = np.histogramdd(dat, bins = bn_t, range = rg_t)
+        
+        # normalizing the histogram by angle nfact*binwid*nsamp
+        r_bins_tot = hist.astype(float);  scl = self.nfacts[an]
+        for i in range(dim): 
+            scl /= (bins[i+1][1]-bins[i+1][0])
+            r_bins_tot = np.sum(r_bins_tot, axis = -1)
+        for i in range(self.order): 
+            r_bins_tot=np.expand_dims(r_bins_tot,axis=-1)
+        return hist.astype(float) * scl / self.ifacts[an], r_bins_tot
 
-    # getting histogram tallies    
-    nct = np.zeros((len(dirs), nb_ra))
-    for i in range(len(dirs)): 
-        ctCSV = CSVFile("iter_"+str(dirs[i]+"/angle_g_bin_ct.csv"))
-        nct[i] = ctCSV.dat[1]
-    nct[nct == 50.0] = 0.0 # THIS WILL NEED TO BE CHANGED
-    nct[nct == 1.0]  = 0.0 # THIS WILL NEED TO BE CHANGED
-    nct = np.sum(nct,axis = 0)[np.newaxis]
-    for i in range(order): nct = np.expand_dims(nct, axis = -1)
-    nct[nct == 0.0] = 1.0 # THIS WILL NEED TO BE CHANGED
+    def get_g_ang(self, fname):
+        '''From each csv file, get the data'''
+        f = open(fname,'r').readlines()
+        dat = np.zeros(len(f)-1)
+        for l in range(1,len(f)):
+            tmp = f[l].split(",")
+            dat[l-1] = tmp[-1]
+        return dat
 
-    ang_shp = tuple([nb_a for x in range(order)])
-    hist_shape = tuple([nb_ra]) + ang_shp
-    gang = np.zeros(tuple([ncombos,len(dirs)])+hist_shape)
+    def integ_angle(self, sh_shell, g_mean):
+        ''' Integrate g(angle)*g(R) to calc S_orient'''
+        g_mean[g_mean==0] = 1.0; st = "bins: "; tt = self.ntot[0].flatten()
+        for bn in range(self.get_rbn_ct()): #for each rbn, integ g(angle)
+            st += "{0} ".format(tt[bn])
+            integ = g_mean[:,bn]*np.log(g_mean[:,bn])*self.ifacts[:,bn]
+            for i in range(self.order):  # integration over all dims of hist
+                integ = simps(integ, self.radi_a)
+            sh_shell[bn] = integ/self.nfacts
 
-    for an in range(ncombos):
-        an_nm = ""
-        for j in angle_combos[an]: an_nm += (str(j)+"_")
-        for bn in range(nb_ra):
-            bn_nm = "bn{0:.4f}".format(radi_ra[bn])
-            for i in range(len(dirs)):
-                fname = "iter_"+str(dirs[i])+"/angle_g_o"+an_nm+bn_nm+".csv"
-                dat = get_g_ang(fname,order)
-                gang[an][i][bn] = dat.reshape(ang_shp)
+        grs_avg = np.mean(self.grC.grs, axis = 0)
+        s_o_integrand = grs_avg[:,np.newaxis]*sh_shell
+        rr_ord = np.repeat(self.get_r_rad()[:,np.newaxis],self.ncombos,axis=1)
+        if self.dim==3: s_o_integrand*=(np.power(rr_ord,2.0)*4.*np.pi)
+        else:           s_o_integrand*=(rr_ord*2.*np.pi)
+        ent_o = simps(s_o_integrand,rr_ord,axis = 0)
+        print(st); print(ent_o, -0.5 * ent_o * KB_CAL_MOL * NUM_DENSITY_H2O,
+              -0.5*sum(ent_o)*KB_CAL_MOL*NUM_DENSITY_H2O)
+        return -0.5 * ent_o * KB_CAL_MOL * NUM_DENSITY_H2O
 
-    g_an_sum = np.sum(gang, axis = 1)/nct
-    ifacts = np.ones(tuple([ncombos])+hist_shape); nfacts = np.ones(ncombos)
-    for i in range(ncombos): 
-        ifacts[i] = integ_fact(hist_shape, angle_combos[i], radi_a)
-        for j in range(order): 
-            nfacts[i] *= ANG_NORM[angle_combos[i][j]]
-    return integ_angle(dim, order, ncombos, nb_ra, nfacts, ifacts, 
-                       np.zeros((nb_ra, ncombos)),
-                       radi_ra, gr_dat[1:], radi_a, nct, 
-                       g_an_sum)
+    def ang_cmbs(self):
+        '''Given desired order of entropy calc, generate array of all combos'''
+        self.angle_combos = []
+        for subset in itertools.combinations(range(NANGLES), self.order):
+            self.angle_combos.append(list(subset))
+        self.ncombos = len(self.angle_combos)
 
-def get_g_ang(fname, order):
-    '''From each csv file, get the data'''
-    f = open(fname,'r').readlines()
-    dat = np.zeros(len(f)-1)
-    for l in range(1,len(f)):
-        tmp = f[l].split(",")
-        dat[l-1] = tmp[-1]
-    return dat
+    def integ_fact(self):
+        ''' Given a list of angles and an array shape, will create an array of
+            shape = shape, to scale data by. Assumes that d1 = distance,
+            and the other dimensions are angles 
+        '''
+        self.ifacts = np.ones(tuple([self.ncombos])+self.hist_shape); 
+        self.nfacts = np.ones(self.ncombos)
+        for c in range(self.ncombos): 
+            for i in range(self.order): # Xfrm theta,1st col=dist
+                self.nfacts[c] *= ANG_NORM[self.angle_combos[c][i]]
+                if self.angle_combos[c][i] > 2: 
+                    sft = np.sin(self.radi_a)
+                    for j in range(self.order):
+                        if i > j:   sft = np.expand_dims(sft, axis = 0)
+                        elif i < j: sft = np.expand_dims(sft, axis = -1)
+                    sft = np.expand_dims(sft, axis = 0)
+                    self.ifacts[c] *= sft
 
-def integ_angle(dim, order, ncombos, nb_ra, nfacts, ifacts, sh_shell, radi_ra, 
-                grs_r, radi_a, ntot, gr_mean):
-    ''' Integrate g(angle)*g(R) to calc S_orient'''
-    gr_mean[gr_mean==0] = 1.0; st = "bins: "; tt = ntot[0].flatten()
-    for bn in range(nb_ra): #for each r bin, integrate the g(angle)
-        st += "{0} ".format(tt[bn])
-        integ = gr_mean[:,bn]*np.log(gr_mean[:,bn])*ifacts[:,bn]
-        for i in range(order):  # integration over all dims of hist
-            integ = simps(integ, radi_a)
-        sh_shell[bn] = integ/nfacts
+    def get_rbn(self):
+        '''Return bin edges of g(r)'''
+        return self.grC.bns_r
 
-    grs_avg = np.mean(grs_r, axis = 0)
-    s_o_integrand = grs_avg[:,np.newaxis]*sh_shell
-    radi_ra_ord = np.repeat(radi_ra[:,np.newaxis],ncombos,axis=1)
-    if dim == 3: s_o_integrand *= (np.power(radi_ra_ord,2.0)*4.*np.pi)
-    else:        s_o_integrand *= (radi_ra_ord*2.*np.pi)
-    ent_o = simps(s_o_integrand,radi_ra_ord,axis = 0)
-    print(st); print(ent_o, -0.5 * ent_o * KB_CAL_MOL * NUM_DENSITY_H2O,
-          -0.5*sum(ent_o)*KB_CAL_MOL*NUM_DENSITY_H2O)
-    return -0.5 * ent_o * KB_CAL_MOL * NUM_DENSITY_H2O
+    def get_rbn_ct(self):
+        '''Return bin count of g(r)'''
+        return self.grC.nb_r
 
-def plot_g_ang(order,ncombos,angle_combos,nb_ra,radi_a,radi_ra,gr_mean):
-    '''Method for plotting the g(angle) distributions for 1&2nd order'''
-    matplotlib.rcParams.update({'font.size': 4})
-    if order == 1: 
-        f,axes=plt.subplots(5,1,sharex='col',sharey='row',figsize=(1.3,3.5))
-    else:
-        f,axes=plt.subplots(5,2,sharex='col',sharey='row',figsize=(2,5)) 
-        print(axes.shape, gr_mean.shape)
-        plt.setp(axes.flat, aspect=1.0, adjustable='box-forced')
-    axes = axes.flatten()
-    bin_rng = [ 27, 30, 43, 65]
+    def get_r_rad(self):
+        '''Return centers of g(r) bins'''
+        return self.grC.radi_r
 
-    for bn in range(nb_ra): #for each r bin, integrate the g(angle)
-        if (bn in bin_rng and order == 1):
-            for j in range(ncombos):
-                axes[j].plot(radi_a,gr_mean[j][bn],label=str(radi_ra[bn]))
-        if (bn == 27 and order == 2):
-            X, Y = np.meshgrid(radi_a, radi_a); c = []
-            for j in range(ncombos):
-                c.append(axes[j].contour(X, Y, gr_mean[j][bn].T))
-                axes[j].text(.5,.8,ANG_NM[angle_combos[j][0]]+","+
-                             ANG_NM[angle_combos[j][1]],
+    def plot_g_ang(self, g_mean):
+        '''Method for plotting the g(angle) distributions for 1&2nd order'''
+        matplotlib.rcParams.update({'font.size': 4})
+        if self.order == 1: 
+            f,axes=plt.subplots(5,1,sharex='col',sharey='row',figsize=(1.3,3.5))
+        else:
+            f,axes=plt.subplots(5,2,sharex='col',sharey='row',figsize=(2,5)) 
+            print(axes.shape, g_mean.shape)
+            plt.setp(axes.flat, aspect=1.0, adjustable='box-forced')
+        axes = axes.flatten()
+        bin_rng = [ 27, 30, 43, 65]
+
+        for bn in range(self.get_rbn_ct()): #for each r bin, plot g(angle)
+            if (bn in bin_rng and self.order == 1):
+                for j in range(self.ncombos):
+                    axes[j].plot(self.radi_a,g_mean[j][bn],
+                                 label=str(self.get_r_rad()[bn]))
+            if (bn == 27 and self.order == 2):
+                X, Y = np.meshgrid(self.radi_a, self.radi_a); c = []
+                for j in range(self.ncombos):
+                    c.append(axes[j].contour(X, Y, g_mean[j][bn].T))
+                    axes[j].text(.5,.8,ANG_NM[self.angle_combos[j][0]]+","+
+                                 ANG_NM[self.angle_combos[j][1]],
+                                 horizontalalignment='center',
+                                 transform=axes[j].transAxes)
+                    plt.clabel(c[j], inline=1, fontsize= 3);
+        max_tc = 4
+        if self.order == 1:
+            axes[0].legend(ncol=len(bin_rng),columnspacing=-0.1,labelspacing=-1.95,
+                           borderaxespad=-1.9,handlelength=1.8,fontsize=4)
+            axes[-1].set_xlabel("Angle (radians)",fontsize=6)
+            axes[-1].xaxis.labelpad = -1
+            for j in range(self.ncombos):
+                axes[j].xaxis.set_major_locator(plt.MaxNLocator(max_tc))
+                axes[j].yaxis.set_major_locator(plt.MaxNLocator(max_tc))
+                axes[j].tick_params(axis='both', which='major', pad= 1.3)
+                axes[j].set_xlim(0, np.pi);axes[j].yaxis.labelpad = -1
+                axes[j].set_ylim(0, 3);
+                axes[j].set_ylabel("g("+ANG_NM[self.angle_combos[j][0]]+")",
+                                  fontsize=6)
+                axes[j].text(.7,.6,ANG_NM[self.angle_combos[j][0]], 
                              horizontalalignment='center',
-                             transform=axes[j].transAxes)
-                plt.clabel(c[j], inline=1, fontsize= 3);
-    max_tc = 4
-    if order == 1:
-        axes[0].legend(ncol=len(bin_rng),columnspacing=-0.1,labelspacing=-1.95,
-                       borderaxespad=-1.9,handlelength=1.8,fontsize=4)
-        axes[-1].set_xlabel("Angle (radians)",fontsize=6)
-        axes[-1].xaxis.labelpad = -1
-        for j in range(ncombos):
-            axes[j].xaxis.set_major_locator(plt.MaxNLocator(max_tc))
-            axes[j].yaxis.set_major_locator(plt.MaxNLocator(max_tc))
-            axes[j].tick_params(axis='both', which='major', pad= 1.3)
-            axes[j].set_xlim(0, np.pi);axes[j].yaxis.labelpad = -1
-            axes[j].set_ylim(0, 3);
-            axes[j].set_ylabel("g("+ANG_NM[angle_combos[j][0]]+")",fontsize=6)
-            axes[j].text(.7,.6,ANG_NM[angle_combos[j][0]], 
-                         horizontalalignment='center',
-                         transform=axes[j].transAxes,fontsize=10);
-    plt.subplots_adjust(wspace=0.14, hspace=0.14)
-    plt.savefig("gangle_"+str(order)+'.png',format='png',
-                bbox_inches='tight',dpi=300)
+                             transform=axes[j].transAxes,fontsize=10);
+        plt.subplots_adjust(wspace=0.14, hspace=0.14)
+        plt.savefig("gangle_"+str(self.order)+'.png',format='png',
+                    bbox_inches='tight',dpi=300)
 
-def grid_for_print(nb_a, radi_a, binsiz_a, order):
-    '''Grid for a varying dimensional g(angle)'''
-    if order == 1:
-        inds = np.mgrid[0:nb_a:1][:,np.newaxis]
-        xy = radi_a[:,np.newaxis]
-    if order == 2:
-        inds = np.mgrid[0:nb_a:1,0:nb_a:1].reshape(2,-1).T
-        xy = np.mgrid[radi_a[0]:radi_a[-1]+binsiz_a:binsiz_a,
-                      radi_a[0]:radi_a[-1]+binsiz_a:binsiz_a].reshape(2,-1).T
-    if order == 3:
-        inds=np.mgrid[0:nb_a:1,0:nb_a:1,0:nb_a:1].reshape(3,-1).T
-        xy = np.mgrid[radi_a[0]:radi_a[-1]+binsiz_a:binsiz_a,
-                      radi_a[0]:radi_a[-1]+binsiz_a:binsiz_a,
-                      radi_a[0]:radi_a[-1]+binsiz_a:binsiz_a].reshape(3,-1).T
-    if order == 4:
-        inds=np.mgrid[0:nb_a:1,0:nb_a:1,0:nb_a:1,0:nb_a:1].reshape(4,-1).T
-        xy = np.mgrid[radi_a[0]:radi_a[-1]+binsiz_a:binsiz_a,
-                      radi_a[0]:radi_a[-1]+binsiz_a:binsiz_a,
-                      radi_a[0]:radi_a[-1]+binsiz_a:binsiz_a,
-                      radi_a[0]:radi_a[-1]+binsiz_a:binsiz_a].reshape(4,-1).T
-    if order == 5:
-        inds=np.mgrid[0:nb_a:1,0:nb_a:1,0:nb_a:1,0:nb_a:1,
-                      0:nb_a:1].reshape(5,-1).T
-        xy = np.mgrid[radi_a[0]:radi_a[-1]+binsiz_a:binsiz_a,
-                      radi_a[0]:radi_a[-1]+binsiz_a:binsiz_a,
-                      radi_a[0]:radi_a[-1]+binsiz_a:binsiz_a,
-                      radi_a[0]:radi_a[-1]+binsiz_a:binsiz_a,
-                      radi_a[0]:radi_a[-1]+binsiz_a:binsiz_a].reshape(5,-1).T
-    return inds, xy
+    def grid_for_print(self):
+        '''Grid for a varying dimensional g(angle)'''
+        ba,ra,sa = self.nb_a,self.radi_a,self.binsiz_a # No. angles for hist
+        print(ba, ra, sa)
+        if self.order == 1:
+            inds = np.mgrid[0:ba:1][:,np.newaxis]; xy = ra[:,np.newaxis]
+        if self.order == 2:
+            inds = np.mgrid[0:ba:1,0:ba:1].reshape(2,-1).T
+            xy=np.mgrid[ra[0]:ra[-1]+sa:sa,ra[0]:ra[-1]+sa:sa].reshape(2,-1).T
+        if self.order == 3:
+            inds=np.mgrid[0:ba:1,0:ba:1,0:ba:1].reshape(3,-1).T
+            xy = np.mgrid[ra[0]:ra[-1]+sa:sa,ra[0]:ra[-1]+sa:sa,
+                          ra[0]:ra[-1]+sa:sa].reshape(3,-1).T
+        if self.order == 4:
+            inds=np.mgrid[0:ba:1,0:ba:1,0:ba:1,0:ba:1].reshape(4,-1).T
+            xy = np.mgrid[ra[0]:ra[-1]+sa:sa,ra[0]:ra[-1]+sa:sa,
+                          ra[0]:ra[-1]+sa:sa,ra[0]:ra[-1]+sa:sa].reshape(4,-1).T
+        if self.order == 5:
+            inds=np.mgrid[0:ba:1,0:ba:1,0:ba:1,0:ba:1,0:ba:1].reshape(5,-1).T
+            xy = np.mgrid[ra[0]:ra[-1]+sa:sa,ra[0]:ra[-1]+sa:sa,
+                          ra[0]:ra[-1]+sa:sa,ra[0]:ra[-1]+sa:sa,
+                          ra[0]:ra[-1]+sa:sa].reshape(5,-1).T
+        return inds, xy
 
-def print_gang(nb_ra, nb_a, ncombos, ntimes, angle_combos, radi_ra, radi_a,
-               binsiz_a, grs, ntot, order):
-    '''Plot the histogram for each group for each timestep for multi
-       dimensional g(\omega) '''
-    his_ct = open("angle_g_bin_ct.csv","w"); tt = ntot[0].flatten()
-    his_ct.write("bin,ct\n")
-    for i in range(len(tt)): 
-        his_ct.write("{0:.3f},{1}\n".format(radi_ra[i],tt[i]))
-    his_ct.close()
+    def print_gang(self):
+        '''Print histogram for each group for each timestep for multi
+           dimensional g(\omega) '''
+        inds, xy = self.grid_for_print(); radi_ra = self.get_r_rad()
+        his_ct = open("angle_g_bin_ct.csv","w"); tt = self.ntot[0].flatten()
+        his_ct.write("bin,ct\n")
+        for i in range(len(tt)): 
+            his_ct.write("{0:.3f},{1}\n".format(radi_ra[i],tt[i]))
+        his_ct.close()
 
-    inds,xy = grid_for_print(nb_a, radi_a, binsiz_a, order)
-    for bn in range(nb_ra): #for each r bin and angle combo
-        for an in range(ncombos):
-            ans, st = "", ""
-            for i in angle_combos[an]: 
-                ans += str(i)+"_"
-                st += "bin"+str(i)+","
-            f = open("angle_g_o{0}_bn{1:.4f}.csv".
-                      format(ans[:-1],radi_ra[bn]), "w")
-            for t in range(ntimes): st += ("time"+str(t)+",")
-            f.write(st[:-1]+"\n")
+        for bn in range(len(radi_ra)): #for each r bin and angle combo
+            for an in range(self.ncombos):
+                ans, st = "", ""
+                for i in self.angle_combos[an]: 
+                    ans += str(i)+"_"
+                    st += "bin"+str(i)+","
+                f = open("angle_g_o{0}_bn{1:.4f}.csv".
+                          format(ans[:-1],radi_ra[bn]), "w")
+                for t in range(self.ntimes): st += ("time"+str(t)+",")
+                f.write(st+"timetot\n")
 
-            for ab in range(inds.shape[0]):
-                st = ""
-                for di in range(inds.shape[1]): 
-                    st+="{0:.4f},".format(xy[ab][di])
-                for t in range(ntimes+1): 
-                    dat = grs[t][an][bn]
-                    st += "{0:.6f},".format(dat[tuple(inds[ab])])
-                f.write(st[:-1]+"\n")
-            f.close()
+                for ab in range(inds.shape[0]):
+                    st = ""
+                    for di in range(inds.shape[1]): 
+                        st+="{0:.4f},".format(xy[ab][di])
+                    for t in range(self.ntimes+1): 
+                        dat = self.gs[t][an][bn]
+                        st += "{0:.6f},".format(dat[tuple(inds[ab])])
+                    f.write(st[:-1]+"\n")
+                f.close()
 

@@ -2,8 +2,7 @@ import sys
 
 from csvfile import CSVFile
 from volfile import VolFile
-from entropy_calc_util import orien_order_entropy, orien_gang
-from entropy_calc_util import STrans
+from entropy_calc_util import STrans, SOrien
 
 def main():
     ''' Given a csv file with 5 angles, oxygen pair distance and dist from wall
@@ -19,7 +18,7 @@ def main():
             s_t = STrans(1,1); ent_t = s_t.trans_gr(angC.dat)
         else:  
             dis_dt = angC.dat[dis_loc]
-            s_t=STrans(dis_dt.shape[0],dis_dt.shape[1],0.1); 
+            s_t=STrans(dis_dt.shape[0],dis_dt.shape[1]); 
             ent_t = s_t.trans_entropy(dis_dt, angC.dat[vol_loc,0])
         print("Translational entropy (cal/mol/K): {0:.7f}".format(ent_t))
     if ent_type == "orien" or ent_type == "both":
@@ -29,10 +28,14 @@ def main():
         
         oth_key = [angC.key[i] for i in other_loc]
         if "trans_gr" in angname:
-            e_tr = orien_gang(nord,dr,angC.dat)
+            sorC = SOrien(1, 1, nord, 0.10)
+            e_or = sorC.orien_gang(dr, angC.dat)
         else:
-            e_tr=orien_order_entropy(nord,oth_key,angC.dat[dis_loc],
-                                      angC.dat[other_loc],angC.dat[vol_loc,0],3)
+            dis_dt = angC.dat[dis_loc]
+            sorC=SOrien(dis_dt.shape[0],dis_dt.shape[1], nord, 0.10)
+            e_or=sorC.orien_order_entropy(dis_dt,angC.dat[other_loc],
+                                          angC.dat[vol_loc,0])
+
 
 if __name__=="__main__":
     main()
