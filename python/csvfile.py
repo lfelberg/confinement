@@ -18,7 +18,6 @@ class CSVFile:
             for row in reader:                                                     
                 dat, rk = [], row.keys()                                           
                 if rw == 0: 
-                    print(sorted(rk))
                     self.key = sorted(rk)
                 for key in sorted(rk):                                             
                     if "_" in row[key]:
@@ -29,7 +28,7 @@ class CSVFile:
                 dt.append(dat)                                                     
                 rw += 1 
         self.dat = np.array((dt)).T
-        print(self.dat.shape)
+        print("Keys: ", self.key, " and dat shape ", self.dat.shape)
 
     def find_keyword(self, word):
         '''Find locations of key dim, where given word is found'''

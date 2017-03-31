@@ -8,10 +8,9 @@ import matplotlib.pyplot as plt
 from scipy.integrate import simps
 
 from csvfile import CSVFile
-from volfile import VolFile
 from util    import d_pbc
 
-RMAX = 12. 
+RMAX = 9.
 
 # Angle list in order from csv
 NANGLES = 5
@@ -25,11 +24,87 @@ J_TO_CAL = 1.0/4.1868 # 1 calorie/4.1868 Joules
 KB_CAL_MOL = KB * J_TO_CAL * MOL
 NUM_DENSITY_H2O = 1728./52534.8456042 # num of wat mols per A^3 (TIP4P EW 298K)
 
-
 class STrans:
-    def __init__(self, fname, dim):
-        self.dim = dim   
+    '''Class with variables and methods for the calc of translational entropy
+    ''' 
+    def __init__(self, ntimes, npairs, bnr = 0.03, dim = 3):
+        '''Initialize vars for translational entropy'''
+        self.dim = dim # dimension of g(r)
+        self.ntimes = ntimes # number of snapshots to average across
+        self.npairs = npairs # number of water pairs considered
+        self.binsiz_r = bnr  # size of g(r) histogram bin
+        self.init_g_bins()   # initialize bins for g(r)
 
+    def init_g_bins(self):
+        '''Method to initialize g(val) things, like the number of bins, 
+           bin size etc'''
+        self.grs, self.ndens = [], np.zeros(self.ntimes)
+        self.bns_r = np.arange(0.0, RMAX, self.binsiz_r)
+        self.radi_r  = self.binsiz_r/2.+self.bns_r[:-1] # centr of hist bins
+        self.nb_r = len(self.radi_r) # number of bins
+        self.grs = np.zeros((self.ntimes, self.nb_r))
+
+    def trans_entropy(self, dists, vl):
+        '''Given a list of pair separations, compute the g(r), print out
+           and integrate to get translational entropy'''
+        for t in range(self.ntimes): 
+            self.grs[t] = self.g_of_r(dists[t], vl[t])
+        self.print_gr() # printing for if needed later
+        return self.integ_rg(np.mean(self.grs,axis=0))
+
+    def trans_gr(self, gr_dat):
+        '''Given a g(r), compute the translational entropy'''
+        radi_r = gr_dat[0]; gr_av = np.mean(gr_dat[1:], axis = 0)
+        return self.integ_rg(np.mean(gr_dat[1:],axis=0),gr_dat[0])
+
+    def g_of_r(self, dist, density = 1.0):
+        ''' Given an array of distances, histogram to compute g(r) '''
+        hist, bins = np.histogram(dist, bins = self.bns_r)
+        upp, low = self.bns_r[1:], self.bns_r[:-1]
+        ndens = float(len(dist)) / density
+        if self.dim == 3: nfact=4.0/3.0*np.pi*(np.power(upp,3.)-np.power(low,3.)) 
+        else:        nfact = np.pi*(np.power(upp, 2.) - np.power(low,2.))
+        return hist/(nfact*ndens)
+
+    def integ_rg(self, gr_av, rad = []):
+        ''' Given distances and gr, integrate to calc entropy'''
+        self.plot_gr(gr_av);nzer = gr_av != 0.0
+        if rad != []: self.radi_r = rad
+        
+        s_t_integrand = np.zeros(len(gr_av))
+        s_t_integrand[nzer] = gr_av[nzer]*np.log(gr_av[nzer])-gr_av[nzer]+1.0
+        s_t_integrand[gr_av == 0.0] = 1.0
+        # integrate with 4pi*r^2 for volume, 2*pi*r for area
+        if self.dim == 3: r_int = np.power(self.radi_r,2.0)*4.*np.pi
+        else:        r_int = self.radi_r*2.*np.pi
+        ent_t = simps(s_t_integrand*r_int, self.radi_r)
+        print("Etrans before conv {0}, conv {1}".format(ent_t, 
+              -0.5 * KB_CAL_MOL * NUM_DENSITY_H2O))
+        return -0.5 * ent_t * KB_CAL_MOL * NUM_DENSITY_H2O
+
+    def plot_gr(self, gr_av):
+        '''Plot the computed gr'''
+        matplotlib.rcParams.update({'font.size': 8})
+        f = plt.figure(1, figsize = (1.5, 1.5))
+        ax = f.add_subplot(111)
+        ax.plot(self.radi_r, gr_av)
+        ax.set_xlim(0, RMAX); #ax.set_ylim(0, 3);
+        ax.yaxis.labelpad = -0.6; ax.xaxis.labelpad = -0.6
+        ax.set_ylabel("g(R)",fontsize=10)
+        ax.set_xlabel("Distance ($\AA$)",fontsize=10)
+        plt.savefig('g_r.png',format='png', bbox_inches='tight',dpi=300)
+        plt.close()
+
+    def print_gr(self):
+        '''Print the gr for each timestep for use later if needed '''
+        gr = open("trans_gr.csv", "w");  st = "bin,"
+        for t in range(self.ntimes): st += ("time"+str(t)+",")
+        gr.write(st[:-1]+"\n")
+        for b in range(self.nb_r):
+            st = "{0:.4f},".format(self.radi_r[b])
+            for t in range(self.ntimes): st += "{0:.6f},".format(self.grs[t][b])
+            gr.write(st[:-1]+"\n")
+        gr.close()
 
 def g_of_r(bns, dist, dim = 3, density = 1.0):
     ''' Given an array of distances, histogram to compute g(r) '''
@@ -40,68 +115,6 @@ def g_of_r(bns, dist, dim = 3, density = 1.0):
     else:        nfact = np.pi*(np.power(upp, 2.) - np.power(low,2.))
     gr = hist/(nfact*ndens)
     return gr
-
-def trans_entropy(dists, vl, dim = 3):
-    '''Compute the translational entropy from a list of pairwise distances
-    '''
-    print("This is my dat ", dists.shape, vl)
-    ntimes, npairs = dists.shape[0], dists.shape[1]
-    binsiz_r, grs, ndens = 0.03, [], np.zeros(ntimes)
-    bns_r = np.arange(0.0, RMAX, binsiz_r)
-    radi_r  = binsiz_r/2.+bns_r[:-1] # center of each histogram bin
-    nb_r = len(bns_r)-1
-
-    # calculating g(R) for each time snapshot
-    grs = np.zeros((ntimes, nb_r))
-    for t in range(ntimes): grs[t] = g_of_r(bns_r, dists[t], dim, vl[t])
-
-    print_gr(ntimes, nb_r, radi_r, grs) # printing for if needed later
-    return integ_rg(radi_r, np.mean(grs,axis=0), dim)
-
-def trans_gr(gr_dat, dim = 3):
-    '''Given a g(r), compute the translational entropy'''
-    radi_r = gr_dat[0]; gr_av = np.mean(gr_dat[1:], axis = 0)
-    return integ_rg(gr_dat[0],np.mean(gr_dat[1:],axis=0), dim)
-
-def integ_rg(radi_r, gr_av, dim):
-    ''' Given distances and gr, integrate to calc entropy'''
-    plot_gr(radi_r, gr_av)
-    nzer = gr_av != 0.0
-    s_t_integrand = np.zeros(len(gr_av))
-    s_t_integrand[nzer] = gr_av[nzer]*np.log(gr_av[nzer])-gr_av[nzer]+1.0
-    s_t_integrand[gr_av == 0.0] = 1.0
-    # integrate with 4pi*r^2 for volume, 2*pi*r for area
-    if dim == 3: r_int = np.power(radi_r,2.0)*4.*np.pi
-    else:        r_int = radi_r*2.*np.pi
-    ent_t = simps(s_t_integrand*r_int, radi_r)
-    print("Etrans before conv {0}, conv {1}".format(ent_t, 
-          -0.5 * KB_CAL_MOL * NUM_DENSITY_H2O))
-    return -0.5 * ent_t * KB_CAL_MOL * NUM_DENSITY_H2O
-
-def plot_gr(radi_r, gr_av):
-    '''Plot the computed gr'''
-    matplotlib.rcParams.update({'font.size': 8})
-    f = plt.figure(1, figsize = (1.5, 1.5))
-    ax = f.add_subplot(111)
-    ax.plot(radi_r, gr_av)
-    ax.set_xlim(0, RMAX); #ax.set_ylim(0, 3);
-    ax.yaxis.labelpad = -0.6; ax.xaxis.labelpad = -0.6
-    ax.set_ylabel("g(R)",fontsize=10)
-    ax.set_xlabel("Distance ($\AA$)",fontsize=10)
-    plt.savefig('g_r.png',format='png',
-                bbox_inches='tight',dpi=300)
-    plt.close()
-
-def print_gr(ntimes, nb_r, radi_r, grs):
-    '''Print the gr for each timestep for use later if needed '''
-    gr = open("trans_gr.csv", "w");  st = "bin,"
-    for t in range(ntimes): st += ("time"+str(t)+",")
-    gr.write(st[:-1]+"\n")
-    for b in range(nb_r):
-        st = "{0:.4f},".format(radi_r[b])
-        for t in range(ntimes): st += "{0:.6f},".format(grs[t][b])
-        gr.write(st[:-1]+"\n")
-    gr.close()
 
 def integ_fact(shape, angle_nos, angle_rng):
     ''' Given a list of angles and an array shape, will create an array of
@@ -197,17 +210,74 @@ def orien_order_entropy(order, keys, dists, angles, vl, dim):
             hi_nz = np.copy(nhis); hi_nz[hi_nz == 0.] = 1.0
             grs[t][an] = gr_one/hi_nz; grs[-1][an] += gr_one; ntot[an] += nhis
 
+    print_gang(nb_ra, nb_a, ncombos, ntimes, angle_combos, radi_ra, radi_a,
+               binsiz_a, grs, ntot, order)
     ntot[ntot == 0.0] = 1.0 # finding empty bins, setting to 1. for divide
     gr_mean = grs[-1]/ntot 
 
     if order < 3: plot_g_ang(order,ncombos,angle_combos,nb_ra,
                              radi_a,radi_ra,gr_mean) # plotting 1/2 ord angs
-    print_gang(nb_ra, nb_a, ncombos, ntimes, angle_combos, radi_ra, radi_a,
-               binsiz_a, grs, ntot, order)
-    return integ_angle(order, ncombos, nb_ra, nfacts, ifacts, sh_shell, 
+    return integ_angle(dim, order, ncombos, nb_ra, nfacts, ifacts, sh_shell, 
                        radi_ra, grs_r, radi_a, ntot, gr_mean)
 
-def integ_angle(order, ncombos, nb_ra, nfacts, ifacts, sh_shell, radi_ra, grs_r, radi_a, ntot, gr_mean):
+def orien_gang(order, dirs, gr_dat, dim = 3):
+    ''' Given already computed g(r) and list of angle files, compute 
+        the g(angle) of specified order'''
+    angle_combos, ncombos = ang_cmbs(order)
+    binsiz_ra, binsiz_a, grs, nct = 0.10, 0.174533, [], []
+    bns_ra = np.arange(0.0,RMAX,binsiz_ra); 
+    bns_a = np.arange(0,np.pi+binsiz_a,binsiz_a)
+    radi_a  = binsiz_a/2.+bns_a[:-1] # center of each histogram bin
+    radi_ra = binsiz_ra/2.+bns_ra[:-1] # center of each histogram bin
+    nb_a, nb_ra = len(radi_a), len(radi_ra) # Number of bins for each hist
+
+    # getting histogram tallies    
+    nct = np.zeros((len(dirs), nb_ra))
+    for i in range(len(dirs)): 
+        ctCSV = CSVFile("iter_"+str(dirs[i]+"/angle_g_bin_ct.csv"))
+        nct[i] = ctCSV.dat[1]
+    nct[nct == 50.0] = 0.0 # THIS WILL NEED TO BE CHANGED
+    nct[nct == 1.0]  = 0.0 # THIS WILL NEED TO BE CHANGED
+    nct = np.sum(nct,axis = 0)[np.newaxis]
+    for i in range(order): nct = np.expand_dims(nct, axis = -1)
+    nct[nct == 0.0] = 1.0 # THIS WILL NEED TO BE CHANGED
+
+    ang_shp = tuple([nb_a for x in range(order)])
+    hist_shape = tuple([nb_ra]) + ang_shp
+    gang = np.zeros(tuple([ncombos,len(dirs)])+hist_shape)
+
+    for an in range(ncombos):
+        an_nm = ""
+        for j in angle_combos[an]: an_nm += (str(j)+"_")
+        for bn in range(nb_ra):
+            bn_nm = "bn{0:.4f}".format(radi_ra[bn])
+            for i in range(len(dirs)):
+                fname = "iter_"+str(dirs[i])+"/angle_g_o"+an_nm+bn_nm+".csv"
+                dat = get_g_ang(fname,order)
+                gang[an][i][bn] = dat.reshape(ang_shp)
+
+    g_an_sum = np.sum(gang, axis = 1)/nct
+    ifacts = np.ones(tuple([ncombos])+hist_shape); nfacts = np.ones(ncombos)
+    for i in range(ncombos): 
+        ifacts[i] = integ_fact(hist_shape, angle_combos[i], radi_a)
+        for j in range(order): 
+            nfacts[i] *= ANG_NORM[angle_combos[i][j]]
+    return integ_angle(dim, order, ncombos, nb_ra, nfacts, ifacts, 
+                       np.zeros((nb_ra, ncombos)),
+                       radi_ra, gr_dat[1:], radi_a, nct, 
+                       g_an_sum)
+
+def get_g_ang(fname, order):
+    '''From each csv file, get the data'''
+    f = open(fname,'r').readlines()
+    dat = np.zeros(len(f)-1)
+    for l in range(1,len(f)):
+        tmp = f[l].split(",")
+        dat[l-1] = tmp[-1]
+    return dat
+
+def integ_angle(dim, order, ncombos, nb_ra, nfacts, ifacts, sh_shell, radi_ra, 
+                grs_r, radi_a, ntot, gr_mean):
     ''' Integrate g(angle)*g(R) to calc S_orient'''
     gr_mean[gr_mean==0] = 1.0; st = "bins: "; tt = ntot[0].flatten()
     for bn in range(nb_ra): #for each r bin, integrate the g(angle)
@@ -220,17 +290,12 @@ def integ_angle(order, ncombos, nb_ra, nfacts, ifacts, sh_shell, radi_ra, grs_r,
     grs_avg = np.mean(grs_r, axis = 0)
     s_o_integrand = grs_avg[:,np.newaxis]*sh_shell
     radi_ra_ord = np.repeat(radi_ra[:,np.newaxis],ncombos,axis=1)
-    s_o_integrand *= (np.power(radi_ra_ord,2.0)*4.*np.pi)
+    if dim == 3: s_o_integrand *= (np.power(radi_ra_ord,2.0)*4.*np.pi)
+    else:        s_o_integrand *= (radi_ra_ord*2.*np.pi)
     ent_o = simps(s_o_integrand,radi_ra_ord,axis = 0)
     print(st); print(ent_o, -0.5 * ent_o * KB_CAL_MOL * NUM_DENSITY_H2O,
           -0.5*sum(ent_o)*KB_CAL_MOL*NUM_DENSITY_H2O)
     return -0.5 * ent_o * KB_CAL_MOL * NUM_DENSITY_H2O
-
-def orien_gang(order, dirs, gr_dat):
-    ''' Given already computed g(r) and list of angle files, compute 
-        the g(angle) of specified order'''
-    ncombos, angle_combos = ang_cmbs(order) 
-    
 
 def plot_g_ang(order,ncombos,angle_combos,nb_ra,radi_a,radi_ra,gr_mean):
     '''Method for plotting the g(angle) distributions for 1&2nd order'''
@@ -318,7 +383,6 @@ def print_gang(nb_ra, nb_a, ncombos, ntimes, angle_combos, radi_ra, radi_a,
     his_ct.close()
 
     inds,xy = grid_for_print(nb_a, radi_a, binsiz_a, order)
-
     for bn in range(nb_ra): #for each r bin and angle combo
         for an in range(ncombos):
             ans, st = "", ""
