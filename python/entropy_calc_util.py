@@ -164,17 +164,23 @@ class SOrien:
         self.ntot[self.ntot==0.0]=1. # empty bins, setting to 1. for divide
         g_mean = self.gs[-1]/self.ntot 
 
-        if self.order < 3: self.plot_g_ang(g_mean) # plotting 1/2 ord angs
+       #if self.order < 3: self.plot_g_ang(g_mean) # plotting 1/2 ord angs
         return self.integ_angle(sh_shell, g_mean)
 
     def orien_gang(self, dirs, gr_dat):
         ''' Given already computed g(r) and list of angle files, compute 
             the g(angle) of specified order'''
         # getting histogram tallies    
-        nct = np.zeros((len(dirs), self.get_rbn_ct()))
+        nct = np.zeros((len(dirs), self.get_rbn_ct())); ndt = -1
         for i in range(len(dirs)): 
             ctCSV = CSVFile("iter_"+str(dirs[i]+"/angle_g_bin_ct.csv"))
             nct[i] = ctCSV.dat[1]
+            gr = CSVFile("iter_"+str(dirs[i])+"/trans37_37_"+str(dirs[i])
+                         +"_gr.0.1.csv")
+            if ndt == -1: 
+                ndt = len(gr.dat[1:]);
+                gr_dat = np.zeros((len(dirs)*ndt,len(gr.dat[1])))
+            gr_dat[i*ndt:(i+1)*ndt] = gr.dat[1:]
         nct[nct == 50.0]=0.0; nct[nct==1.0]=0.0 # THIS WILL NEED TO BE CHANGED
         nct = np.sum(nct,axis = 0)[np.newaxis]
         for i in range(self.order): nct = np.expand_dims(nct, axis = -1)
@@ -194,6 +200,7 @@ class SOrien:
                     gang[an][i][bn] = dat.reshape(self.ang_shape)
 
         g_an = np.sum(gang, axis = 1)/nct
+       #if self.order < 3: self.plot_g_ang(g_an) # plotting 1/2 ord angs
         return self.integ_angle(np.zeros((self.get_rbn_ct(),self.ncombos)),g_an)
 
     def g_of_multi(self, dat, an):
@@ -306,12 +313,12 @@ class SOrien:
             if (bn == 27 and self.order == 2):
                 X, Y = np.meshgrid(self.radi_a, self.radi_a); c = []
                 for j in range(self.ncombos):
+                    nm = self.angle_combos[j]
                     c.append(axes[j].contour(X, Y, g_mean[j][bn].T))
-                    axes[j].text(.5,.8,ANG_NM[self.angle_combos[j][0]]+","+
-                                 ANG_NM[self.angle_combos[j][1]],
-                                 horizontalalignment='center',
+                    axes[j].text(.5,1.04,"g("+ANG_NM[nm[0]]+", "+ANG_NM[nm[1]]+")",
+                                 horizontalalignment='center',fontsize = 5,
                                  transform=axes[j].transAxes)
-                    plt.clabel(c[j], inline=1, fontsize= 3);
+                    plt.clabel(c[j], inline=1, fontsize=2);
         max_tc = 4
         if self.order == 1:
             axes[0].legend(ncol=len(bin_rng),columnspacing=-0.1,labelspacing=-1.95,
