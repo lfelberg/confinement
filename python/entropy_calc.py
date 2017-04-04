@@ -20,7 +20,8 @@ def main():
         else:
             dis_dt = angC.dat[dis_loc]
             s_t=STrans(dis_dt.shape[0],dis_dt.shape[1], 0.03, 2)
-            ent_t = s_t.trans_entropy(dis_dt, angC.dat[vol_loc,0]*0.925)
+           #ent_t = s_t.trans_entropy(dis_dt, angC.dat[vol_loc,0]*0.925)
+            ent_t = s_t.trans_entropy(dis_dt, angC.dat[vol_loc,0])
         print("Translational entropy (cal/mol/K): {0:.7f}".format(ent_t))
     if ent_type == "orien" or ent_type == "both":
         nord = int(sys.argv[6]); other_loc = angC.find_not_keyword("dis")

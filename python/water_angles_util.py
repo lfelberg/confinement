@@ -129,8 +129,8 @@ def cal_ang(w_coords, rng, d_to_wall = [], dim = 3):
         mu_oth_proj = project_plane(mu_oth, inter_mol_ax)
         phi = angle_between(mu_cur_proj, mu_oth_proj)
         
-        if dim == 3: dists = d_pbc(curr[0], ot_wr[0], rng) # cal O-O distance
-        else:        dists = d_pbc(curr[0,:,1:], ot_wr[0,:,1:], rng[1:])
+        if dim == 3: dists=d_pbc(curr[0],ot_wr[0],rng) # cal O-O distance
+        else:        dists=d_pbc(curr[0,:,1:],ot_wr[0,:,1:],rng[1:],[1.,1.])
 
         t1.append(the_1); t2.append(the_2); c1.append(chi1); c2.append(chi2); 
         ph.append(phi); r.append(dists); 

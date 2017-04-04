@@ -13,7 +13,7 @@ def get_angles(xyz, volC):
     oo = xyz.get_type_i(WOXY); hh = xyz.get_type_i(WHYD); bnz = 5
     t1s, t2s, c1s, c2s, phs, rs, ws, wat_angles = [],[],[],[],[],[],[],[]
 
-    wat = np.zeros((3, sum(oo.astype(int)), 3))
+    wat = np.zeros((3, sum(oo.astype(int)), 3)) # [nat/water, nwaters, dim]
     hs=np.zeros((2,sum(oo.astype(int))), dtype=int); h_ct, hidx = 0, 0
     for i in range(len(oo)): #looping over all atoms, make a list of H1 and H2
         if hh[i] == True:
@@ -24,10 +24,10 @@ def get_angles(xyz, volC):
 
     for i in range(1,len(xyz.atom)): # for each time snapshot, except first
         th1, th2, ch1, ch2, phi, rr, wd = [],[],[],[],[],[],[]
-        rng = np.array([volC.get_x_rng_i(i), volC.get_y_rng_i(i),
-                        volC.get_z_rng_i(i)]) # pbc range
+        rng = np.array([volC.get_x_rng_i(i), 
+                        volC.get_y_rng_i(i), volC.get_z_rng_i(i)]) # pbc range
 
-        wat[0] = xyz.atom[i,oo,:]
+        wat[0] = xyz.atom[i,oo,:]; 
         for h in range(2): wat[h+1]=xyz.atom[i,hs[h],:]
 
         #binning waters by distribution of x positions
@@ -36,8 +36,7 @@ def get_angles(xyz, volC):
         for j in range(len(x_bn)):
             if sum((bn == j).astype(int)) > 1: #if there is > 1 water in bin
                 b_arr = bn == j
-                print(wat[:,b_arr].shape)
-                t1,t2,c1,c2,ph,r,w=cal_ang(wat[:,b_arr],rng)
+                t1,t2,c1,c2,ph,r,w=cal_ang(wat[:,b_arr],rng,[],2)
                 w = [rng[1]*rng[2]] * len(r)
                 th1+=t1;th2+=t2;ch1+=c1;ch2+=c2;phi+=ph;rr+=r;wd+=w
 

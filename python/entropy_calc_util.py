@@ -86,7 +86,7 @@ class STrans:
 
     def integ_rg(self, gr_av, rad = []):
         ''' Given distances and gr, integrate to calc entropy'''
-        self.plot_gr(gr_av);
+       #self.plot_gr(gr_av);
         nzer = gr_av != 0.0
         if rad != []: self.radi_r = rad
         
