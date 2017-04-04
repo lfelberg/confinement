@@ -23,6 +23,7 @@ MOL = 6.022140857e23  # avogadro's number
 J_TO_CAL = 1.0/4.1868 # 1 calorie/4.1868 Joules 
 KB_CAL_MOL = KB * J_TO_CAL * MOL
 NUM_DENSITY_H2O = 1728./52534.8456042 # num of wat mols per A^3 (TIP4P EW 298K)
+NUM_DENSITY_H2O_2D = 32.05/1392.4178 # num of wat mols per A^2 (TIP4P EW 298K)
 
 class STrans:
     '''Class with variables and methods for the calc of translational entropy
@@ -34,6 +35,8 @@ class STrans:
         self.npairs = npairs # number of water pairs considered
         self.binsiz_r = bnr  # size of g(r) histogram bin
         self.init_g_bins()   # initialize bins for g(r)
+        if dim == 3: self.rho = NUM_DENSITY_H2O
+        else:        self.rho = NUM_DENSITY_H2O_2D
 
     def init_g_bins(self):
         '''Method to initialize g(val) things, like the number of bins, 
@@ -50,10 +53,21 @@ class STrans:
         self.many_g_of_r(dists, vl)
         return self.integ_rg(np.mean(self.grs,axis=0))
 
-    def trans_gr(self, gr_dat):
+    def trans_gr(self, gr_dat, gr_dir = []):
         '''Given a g(r), compute the translational entropy'''
-        radi_r = gr_dat[0]; gr_av = np.mean(gr_dat[1:], axis = 0)
-        return self.integ_rg(np.mean(gr_dat[1:],axis=0),gr_dat[0])
+        if gr_dir != []: 
+            nb = -1
+            for i in range(len(gr_dir)): 
+                grCSV = CSVFile("iter_"+str(gr_dir[i])+"/trans_gr_"
+                                +str(gr_dir[i])+"_0.03.csv")
+                radi_r = grCSV.dat[0]
+                if nb == -1: 
+                    nb = len(grCSV.dat[1]); gr_dat = grCSV.dat[1]
+                else:  gr_dat += grCSV.dat[1]
+            gr_av = gr_dat/float(len(gr_dir))
+        else:
+            radi_r = gr_dat[0]; gr_av = np.mean(gr_dat[1:], axis = 0)
+        return self.integ_rg(gr_av,radi_r)
 
     def many_g_of_r(self, dists, vl):
         '''Given a list of pair separations, compute the g(r), print out'''
@@ -72,7 +86,7 @@ class STrans:
 
     def integ_rg(self, gr_av, rad = []):
         ''' Given distances and gr, integrate to calc entropy'''
-       #self.plot_gr(gr_av);
+        self.plot_gr(gr_av);
         nzer = gr_av != 0.0
         if rad != []: self.radi_r = rad
         
@@ -84,8 +98,8 @@ class STrans:
         else:        r_int = self.radi_r*2.*np.pi
         ent_t = simps(s_t_integrand*r_int, self.radi_r)
         print("Etrans before conv {0}, conv {1}".format(ent_t, 
-              -0.5 * KB_CAL_MOL * NUM_DENSITY_H2O))
-        return -0.5 * ent_t * KB_CAL_MOL * NUM_DENSITY_H2O
+              -0.5 * KB_CAL_MOL * self.rho))
+        return -0.5 * ent_t * KB_CAL_MOL * self.rho
 
     def plot_gr(self, gr_av):
         '''Plot the computed gr'''

@@ -10,13 +10,13 @@ def main():
     '''
     angname=sys.argv[1]; sep=sys.argv[2]; ln=sys.argv[3]; itr=sys.argv[4]
     ent_type = sys.argv[5]; nm = str(sep)+"_"+str(ln)+"_"+str(itr)
-    angC = CSVFile(angname)
+    angC = CSVFile(angname); dr = []
     dis_loc = angC.find_keyword("dis"); vol_loc = angC.find_keyword("vol")
 
     if ent_type == "trans" or ent_type == "both":
         if "gr" in angname:
-            s_t = STrans(1, 1, 0.03, 2); s_t.trans_gr(angC.dat)
-            ent_t = s_t.trans_gr(angC.dat)
+            for i in range(7,len(sys.argv)): dr.append(sys.argv[i])
+            s_t = STrans(1, 1, 0.03, 2); ent_t = s_t.trans_gr(angC.dat, dr)
         else:
             dis_dt = angC.dat[dis_loc]
             s_t=STrans(dis_dt.shape[0],dis_dt.shape[1], 0.03, 2)
@@ -27,8 +27,9 @@ def main():
         oth_key = [angC.key[i] for i in other_loc]
 
         if "trans_gr" in angname:
+            for i in range(7,len(sys.argv)): dr.append(sys.argv[i])
             sorC = SOrien(1, 1, nord, 0.10, 2)
-            e_or = sorC.orien_gang(dr, angC.dat)
+            e_or = sorC.orien_gang(dr, angC.dat, dr)
         else:
             dis_dt = angC.dat[dis_loc]
             sorC=SOrien(dis_dt.shape[0],dis_dt.shape[1], nord, 0.10, 2)
