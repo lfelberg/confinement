@@ -18,7 +18,7 @@ def main():
             s_t = STrans(1,1); ent_t = s_t.trans_gr(angC.dat)
         else:  
             dis_dt = angC.dat[dis_loc]
-            s_t=STrans(dis_dt.shape[0],dis_dt.shape[1]); 
+            s_t=STrans(dis_dt.shape[0],dis_dt.shape[1], 0.1); 
             ent_t = s_t.trans_entropy(dis_dt, angC.dat[vol_loc,0])
         print("Translational entropy (cal/mol/K): {0:.7f}".format(ent_t))
     if ent_type == "orien" or ent_type == "both":

@@ -72,7 +72,8 @@ class STrans:
 
     def integ_rg(self, gr_av, rad = []):
         ''' Given distances and gr, integrate to calc entropy'''
-        self.plot_gr(gr_av);nzer = gr_av != 0.0
+       #self.plot_gr(gr_av);
+        nzer = gr_av != 0.0
         if rad != []: self.radi_r = rad
         
         s_t_integrand = np.zeros(len(gr_av))
@@ -187,7 +188,7 @@ class SOrien:
         nct[nct == 0.0] = 1.0 
 
         self.grC.grs = gr_dat[1:]  # computing the g(r)
-        self.grC.plot_gr(np.mean(gr_dat[1:],axis=0))
+       #self.grC.plot_gr(np.mean(gr_dat[1:],axis=0))
         gang = np.zeros(tuple([self.ncombos,len(dirs)])+self.hist_shape)
         for an in range(self.ncombos):
             an_nm = ""
