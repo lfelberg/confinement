@@ -14,7 +14,13 @@ def get_angles(xyz, volC):
     t1s, t2s, c1s, c2s, phs, rs, ws, wat_angles = [],[],[],[],[],[],[],[]
 
     wat = np.zeros((3, sum(oo.astype(int)), 3))
-    hs=np.zeros((2,sum(oo.astype(int))), dtype=int)
+    hs=np.zeros((2,sum(oo.astype(int))), dtype=int); h_ct, hidx = 0, 0
+    for i in range(len(oo)): #looping over all atoms, make a list of H1 and H2
+        if hh[i] == True:
+            if h_ct == 0:
+                hs[0][hidx] = i; h_ct = 1
+            elif h_ct == 1:
+                hs[1][hidx] = i; h_ct = 0; hidx +=1
 
     for i in range(1,len(xyz.atom)): # for each time snapshot, except first
         th1, th2, ch1, ch2, phi, rr, wd = [],[],[],[],[],[],[]
@@ -25,12 +31,12 @@ def get_angles(xyz, volC):
         for h in range(2): wat[h+1]=xyz.atom[i,hs[h],:]
 
         #binning waters by distribution of x positions
-        x = np.mean(wat[0,:,0])
-        x_bn = np.arange(0, x*2.0, 0.7); 
-        bn = np.digitize(wat[0,:,0]-x, x_bn)
+        x = np.mean(wat[0,:,0]); x_bn = np.arange(0, x*2.0, 0.7); 
+        bn = np.digitize(wat[0,:,0], x_bn)
         for j in range(len(x_bn)):
             if sum((bn == j).astype(int)) > 1: #if there is > 1 water in bin
                 b_arr = bn == j
+                print(wat[:,b_arr].shape)
                 t1,t2,c1,c2,ph,r,w=cal_ang(wat[:,b_arr],rng)
                 w = [rng[1]*rng[2]] * len(r)
                 th1+=t1;th2+=t2;ch1+=c1;ch2+=c2;phi+=ph;rr+=r;wd+=w
