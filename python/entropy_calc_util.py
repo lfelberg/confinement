@@ -80,19 +80,17 @@ class STrans:
         hist, bins = np.histogram(dist, bins = self.bns_r)
         upp, low = self.bns_r[1:], self.bns_r[:-1]
         ndens = float(len(dist)) / density
-        if self.dim == 3: nfact=4.0/3.0*np.pi*(np.power(upp,3.)-np.power(low,3.)) 
+        if self.dim==3: nfact=4.0/3.0*np.pi*(np.power(upp,3.)-np.power(low,3.)) 
         else:        nfact = np.pi*(np.power(upp, 2.) - np.power(low,2.))
         return hist/(nfact*ndens)
 
     def integ_rg(self, gr_av, rad = []):
         ''' Given distances and gr, integrate to calc entropy'''
-       #self.plot_gr(gr_av);
-        nzer = gr_av != 0.0
         if rad != []: self.radi_r = rad
+        nzer = gr_av != 0.0;#self.plot_gr(gr_av);
         
-        s_t_integrand = np.zeros(len(gr_av))
+        s_t_integrand = np.ones(len(gr_av))
         s_t_integrand[nzer] = gr_av[nzer]*np.log(gr_av[nzer])-gr_av[nzer]+1.0
-        s_t_integrand[gr_av == 0.0] = 1.0
         # integrate with 4pi*r^2 for volume, 2*pi*r for area
         if self.dim == 3: r_int = np.power(self.radi_r,2.0)*4.*np.pi
         else:        r_int = self.radi_r*2.*np.pi

@@ -31,9 +31,9 @@ def get_angles(xyz, volC):
         for h in range(2): wat[h+1]=xyz.atom[i,hs[h],:]
 
         #binning waters by distribution of x positions
-        x = np.mean(wat[0,:,0]); x_bn = np.arange(0, x*2.0, 0.7); 
+        x = np.mean(wat[0,:,0]); x_bn = np.arange(0, x*2.0, 0.3); 
         bn = np.digitize(wat[0,:,0], x_bn)
-        for j in range(len(x_bn)):
+        for j in range(4,len(x_bn)-4):
             if sum((bn == j).astype(int)) > 1: #if there is > 1 water in bin
                 b_arr = bn == j
                 t1,t2,c1,c2,ph,r,w=cal_ang(wat[:,b_arr],rng,[],2)
