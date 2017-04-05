@@ -60,10 +60,11 @@ class STrans:
             for i in range(len(gr_dir)): 
                 grCSV = CSVFile("iter_"+str(gr_dir[i])+"/trans_gr_"
                                 +str(gr_dir[i])+"_0.03.csv")
-                radi_r = grCSV.dat[0]
+                radi_r = grCSV.dat[0]; print("This shape",grCSV.dat.shape)
                 if nb == -1: 
-                    nb = len(grCSV.dat[1]); gr_dat = grCSV.dat[1]
-                else:  gr_dat += grCSV.dat[1]
+                    nb = len(grCSV.dat[1])
+                    gr_dat = np.mean(grCSV.dat[1:], axis = 0)
+                else:  gr_dat += np.mean(grCSV.dat[1:], axis = 0)
             gr_av = gr_dat/float(len(gr_dir))
         else:
             radi_r = gr_dat[0]; gr_av = np.mean(gr_dat[1:], axis = 0)
@@ -86,9 +87,8 @@ class STrans:
 
     def integ_rg(self, gr_av, rad = []):
         ''' Given distances and gr, integrate to calc entropy'''
-       #self.plot_gr(gr_av);
-        nzer = gr_av != 0.0
         if rad != []: self.radi_r = rad
+        nzer = gr_av != 0.0;self.plot_gr(gr_av);
         
         s_t_integrand = np.zeros(len(gr_av))
         s_t_integrand[nzer] = gr_av[nzer]*np.log(gr_av[nzer])-gr_av[nzer]+1.0
@@ -106,6 +106,7 @@ class STrans:
         matplotlib.rcParams.update({'font.size': 8})
         f = plt.figure(1, figsize = (1.5, 1.5))
         ax = f.add_subplot(111)
+        print(self.radi_r.shape, gr_av.shape)
         ax.plot(self.radi_r, gr_av)
         ax.set_xlim(0, RMAX); #ax.set_ylim(0, 3);
         ax.yaxis.labelpad = -0.6; ax.xaxis.labelpad = -0.6
