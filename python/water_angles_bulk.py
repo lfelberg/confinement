@@ -1,6 +1,5 @@
 import sys
 import numpy as np
-import itertools
 
 from water_angles_util import translate_pbc,unit_vector,angle_between,cal_ang
 from water_angles_util import plane_eq,calc_dip,project_plane,find_closest
@@ -31,6 +30,7 @@ def get_angles(xyz, volC):
         wat[0] = xyz.atom[i,oo,:]; wat[1] = xyz.atom[i,h[0],:]
         wat[2] = xyz.atom[i,h[1],:]
         t1, t2, c1, c2, ph, r, _ = cal_ang(wat, rng)
+
         t1s += [t1];t2s += [t2];c1s += [c1];c2s += [c2];phs += [ph];
         rs += [r]; vls += [[np.prod(rng) for i in range(len(r))]]
     return list([t1s, t2s, c1s, c2s, phs, rs, vls]) 

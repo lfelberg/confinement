@@ -23,7 +23,7 @@ MOL = 6.022140857e23  # avogadro's number
 J_TO_CAL = 1.0/4.1868 # 1 calorie/4.1868 Joules 
 KB_CAL_MOL = KB * J_TO_CAL * MOL
 NUM_DENSITY_H2O = 1728./52534.8456042 # num of wat mols per A^3 (TIP4P EW 298K)
-NUM_DENSITY_H2O_2D = 32.05/1392.4178 # num of wat mols per A^2 (TIP4P EW 298K)
+NUM_DENSITY_H2O_2D = 1728./30./1392.4178 # num of wat mols per A^2 (TIP4P EW 298K)
 
 class STrans:
     '''Class with variables and methods for the calc of translational entropy
@@ -37,6 +37,7 @@ class STrans:
         self.init_g_bins()   # initialize bins for g(r)
         if dim == 3: self.rho = NUM_DENSITY_H2O
         else:        self.rho = NUM_DENSITY_H2O_2D
+        print("This is my rho: {0:.5f}".format(self.rho))
 
     def init_g_bins(self):
         '''Method to initialize g(val) things, like the number of bins, 
@@ -81,21 +82,22 @@ class STrans:
         hist, bins = np.histogram(dist, bins = self.bns_r)
         upp, low = self.bns_r[1:], self.bns_r[:-1]
         ndens = float(len(dist)) / density
-        if self.dim == 3: nfact=4.0/3.0*np.pi*(np.power(upp,3.)-np.power(low,3.)) 
+        if self.dim==3: nfact=4.0/3.0*np.pi*(np.power(upp,3.)-np.power(low,3.)) 
         else:        nfact = np.pi*(np.power(upp, 2.) - np.power(low,2.))
-        return hist/(nfact*ndens)
+        return hist  /(nfact*ndens)
 
     def integ_rg(self, gr_av, rad = []):
         ''' Given distances and gr, integrate to calc entropy'''
         if rad != []: self.radi_r = rad
-        nzer = gr_av != 0.0;self.plot_gr(gr_av);
+        nzer = gr_av != 0.0;
+        self.plot_gr(gr_av);
         
-        s_t_integrand = np.zeros(len(gr_av))
+        s_t_integrand = np.ones(len(gr_av))
         s_t_integrand[nzer] = gr_av[nzer]*np.log(gr_av[nzer])-gr_av[nzer]+1.0
-        s_t_integrand[gr_av == 0.0] = 1.0
         # integrate with 4pi*r^2 for volume, 2*pi*r for area
         if self.dim == 3: r_int = np.power(self.radi_r,2.0)*4.*np.pi
         else:        r_int = self.radi_r*2.*np.pi
+        self.plot_gr(s_t_integrand*r_int);
         ent_t = simps(s_t_integrand*r_int, self.radi_r)
         print("Etrans before conv {0}, conv {1}".format(ent_t, 
               -0.5 * KB_CAL_MOL * self.rho))
