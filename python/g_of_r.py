@@ -8,8 +8,8 @@ from volfile import VolFile
 from util    import d_pbc
 
 GRAPHENE = 3
-LMAX = 16.0
-dr = 0.50
+LMAX = 20.0
+dr = 0.05
 HIS = np.arange(0, LMAX, dr);
 
 def g_of_r(dists, rang):
@@ -24,7 +24,7 @@ def g_of_r(dists, rang):
     # number density normalization
     for d in range(dim): vl *= rang[d]
     his_den, benz = np.histogram(dists, bins=rd_rng)
-    return his_den*vl/rd_mu, len(dists)
+    return his_den*vl/2./rd_mu, len(dists) #DIVIDE BY TWO FOR NORM SCHEME
 
 def gr_cal(crd1,crd0,rang,same):
     '''Given an array of molecules you would like to compute the distance 
@@ -45,7 +45,7 @@ def get_gr(xyz, volC, grPair):
     ty0 = xyz.get_type_i(grPair[0]); ty1 = xyz.get_type_i(grPair[1]); bnz = 2
     g_r_3, g_r_2_m, rng_m = [], [], np.zeros((3))
 
-    bnsz = 1.4; x_bn = np.arange(0, volC.get_x_max()+bnsz, bnsz); 
+    bnsz = 0.7; x_bn = np.arange(0, volC.get_x_max()+bnsz, bnsz); 
     xb_ct=np.zeros((len(x_bn),2)); xb_his=np.zeros((len(x_bn),2,len(HIS)-1))
 
     # for the g(r) pairs, need to get groups on the same wall side
@@ -73,17 +73,21 @@ def get_gr(xyz, volC, grPair):
             b10 = np.digitize(c10[:,0], x_bn)
             b11 = np.digitize(c11[:,0], x_bn)
 
+        
+        gr3, pr_ct3 = gr_cal(c00,c10, rng, sm)
+        xb_his[0,0,:] += gr3;xb_ct[0,0] += pr_ct3;
+
+        gr3, pr_ct3 = gr_cal(c01,c11, rng, sm)
+        xb_his[0,0,:] += gr3;xb_ct[0,0] += pr_ct3;
+
         for j in range(len(x_bn)):
             if sum((b00==j).astype(int))>1 and sum((b10==j).astype(int))>1:
-               gr3, pr_ct3 = gr_cal(c00[b00==j],c10[b10==j], rng, sm)
                gr2, pr_ct2 = gr_cal(c00[b00==j],c10[b10==j], rng[1:], sm)
-               xb_his[j,0,:] += gr3;xb_his[j,1,:] += gr2;
-               xb_ct[j,0] += pr_ct3;xb_ct[j,1] += pr_ct2;
+               xb_his[j,1,:] += gr2;xb_ct[j,1] += pr_ct2;
+               
             if sum((b01==j).astype(int))>1 and sum((b11==j).astype(int))>1:
-               gr3, pr_ct3 = gr_cal(c01[b01==j],c11[b11==j], rng, sm)
                gr2, pr_ct2 = gr_cal(c01[b01==j],c11[b11==j], rng[1:], sm)
-               xb_his[j,0,:] += gr3;xb_his[j,1,:] += gr2;
-               xb_ct[j,0] += pr_ct3;xb_ct[j,1] += pr_ct2;
+               xb_his[j,1,:] += gr2;xb_ct[j,1] += pr_ct2;
 
     # Time averages of histograms
     xb_ct[xb_ct == 0.] = 1.0
@@ -97,7 +101,7 @@ def print_gr(x, grs, fname):
     f = open(fname, 'w'); 
     f.write("Bin,"); st = ""
     dimbins = HIS[:-1]+dr/2.
-    for i in range(len(x)): st += "x {0:.5f},".format(x[i])
+    for i in range(len(x)): st += "x{0:.3f},".format(x[i])
     f.write("{0}\n".format(st[:-1]))
     for i in range(len(dimbins)-1):
         st = ""
