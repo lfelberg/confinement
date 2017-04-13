@@ -4,7 +4,11 @@ import matplotlib.pyplot as plt
 
 from csvfile import CSVFile
 
-colorL = [[0,0,0], [0,0,1], [1, 0,0], [.93, .53, .18]]
+colorL = [(0,0,0), (0,0,1), (1, 0,0), (.93, .53, .18),
+            (0.859, 0.078, 0.234), (0.801, 0.586, 0.047),                            
+            (0., 0.391, 0.), (0.289, 0.461, 1.),                                   
+            (0.289, 0., 0.508), (0.777, 0.441, 0.441),                             
+            (0.777, 0.379, 0.078), (0., 0.9297, 0.9297)] 
 
 def plot_scatter(plt_nm, csvL, loc, sep, ln, itr):
     '''Using data from a histogram, plot several'''

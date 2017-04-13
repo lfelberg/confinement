@@ -39,7 +39,6 @@ def get_angles(xyz, volC):
             if sum((bn == j).astype(int)) > 1: #if there is > 1 water in bin
                 b_arr = bn == j
                 t1,t2,c1,c2,ph,r,w=cal_ang(wat[:,b_arr],rng,[],2)
-               #t1,t2,c1,c2,ph,r,w=cal_ang(wat[:,b_arr],rng)
                 w = [rng[1]*rng[2]] * len(r)
                 th1+=t1;th2+=t2;ch1+=c1;ch2+=c2;phi+=ph;rr+=r;wd+=w
 

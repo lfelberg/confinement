@@ -17,13 +17,13 @@ def plot_scatter(plt_nm, csvL, sep, ln):
 
     for i in range(len(csvL)):
         for j in range(len(csvL[i])):
-           for k in range(1,len(csvL[i][j].dat[1:]),15):
+           for k in range(1,len(csvL[i][j].dat[1:])):
                ax.plot(csvL[i][j].dat[0], 
                        csvL[i][j].dat[k]) 
-           ax.plot(csvL[i][j].dat[0], 
-                   np.mean(csvL[i][j].dat[1:], axis = 0), color=colorL[ct])
-           print(np.mean(csvL[i][j].dat[1:], axis = 0))
-           print(np.mean(csvL[i][j].dat[1:][200:]))
+          #ax.plot(csvL[i][j].dat[0], 
+          #        np.mean(csvL[i][j].dat[1:], axis = 0), color=colorL[ct])
+          #print(np.mean(csvL[i][j].dat[1:], axis = 0))
+          #print(np.mean(csvL[i][j].dat[1:][200:]))
           #ax.plot(csvL[i][j].dat[0], 
           #        csvL[i][j].dat[1], color=colorL[ct])
           #leg += [r"{0}$\AA$ sep".format(sep[i])]
@@ -43,7 +43,7 @@ def plot_scatter(plt_nm, csvL, sep, ln):
    #    handlelength = 1.3,
    #    borderaxespad = -0.9,
    #    )
-   #ax.set_ylim([0,0.5])
+    ax.set_ylim([0,2.5])
     plt.savefig(plt_nm+'.png', format='png',                       
                     bbox_inches = 'tight', dpi=300) 
     plt.close()
