@@ -17,6 +17,8 @@ def plot_scatter(plt_nm, csvL, loc, sep, ln, itr):
                 print("This is plot val mean, std: {0} {1}".format(
                       np.mean(csvL[i][j][k].dat[loc]),
                       np.std(csvL[i][j][k].dat[loc])))
+                m,b = np.polyfit(csvL[i][j][k].dat[0]*2./1000.,csvL[i][j][k].dat[loc],1)
+                print("Linear fit slope {0}, intercept {1}".format(m/6.,b))
                 ax.plot(range(len(csvL[i][j][k].dat[0])), 
                         csvL[i][j][k].dat[loc], color=colorL[ct])
                 leg += [str(sep[i])+r'$\AA$ Sep, '+'L='+str(ln[j])+r'$\AA$']

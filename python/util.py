@@ -10,3 +10,13 @@ def d_pbc(c1, c2, rng, pbcs = [1.,1.,1.]):
     ds = (d * d).sum(axis=1)
     return np.sqrt(ds)
 
+def d3(c1, c2):
+    '''Compute distance between points c1 and c2 are an array of coordinates'''
+    d = c1-c2
+    return d * d
+
+def translate_pbc(c1, c2, rng):
+    '''Translate c2 to distance sub rng/2 wrt c1
+       c1 and c2 are arrays of coordinates, rng is PBC range in x,y,z'''
+    boxl = np.round((c1-c2)/rng) # find what is rounded distance
+    return c2 + boxl*rng
