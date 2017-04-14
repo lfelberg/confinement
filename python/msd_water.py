@@ -2,8 +2,6 @@ import sys
 import re
 import math
 import numpy as np
-import matplotlib
-import matplotlib.pyplot as plt
 
 from xyzfile import XYZFile
 from volfile import VolFile
@@ -37,7 +35,7 @@ def get_msd(xyz, volC):
 def print_msd(msd, timstep, fname):
     '''Print the mean square displacement for 3D, for y-z and for x'''
     f = open(fname, 'w'); 
-    f.write("a_step,MSDX,MSDXER,MSDY,MSDYER,MSDZ,MSDZER,MSDYZ,MSDYZER,MSD3D,MSD3DER\n")
+    f.write("ASTP(PS),MSDX,MSDXER,MSDY,MSDYER,MSDZ,MSDZER,MSDYZ,MSDYZER,MSD3D,MSD3DER\n")
     tstep = np.arange(0,timstep*msd.shape[0], timstep)
     d = np.zeros(10)
     for i in range(msd.shape[0]):
@@ -50,7 +48,7 @@ def print_msd(msd, timstep, fname):
         d[8] = np.mean(np.sum(dat, axis = 1))
         d[9] = np.std(np.sum(dat, axis = 1))
         for j in range(len(d)): st += "{0:.5f},".format(d[j])
-        f.write("{0},{1}\n".format(tstep[i], st[:-1]))
+        f.write("{0},{1}\n".format(tstep[i]*2./1000., st[:-1]))
     f.close()
 
 def main():
