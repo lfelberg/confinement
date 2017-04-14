@@ -7,7 +7,6 @@ from xyzfile import XYZFile
 from volfile import VolFile
 from util    import d_pbc
 
-GRAPHENE = 3
 LMAX = 20.0
 dr = 0.05
 HIS = np.arange(0, LMAX, dr);

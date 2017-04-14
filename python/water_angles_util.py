@@ -1,16 +1,10 @@
 import numpy as np
 import itertools
 
-from util import d_pbc 
+from util import d_pbc, translate_pbc
 
 QOXY = -1.0484
 QHYD =  0.5242
-
-def translate_pbc(c1, c2, rng):
-    '''Translate c2 to distance sub rng/2 wrt c1
-       c1 and c2 are arrays of coordinates, rng is PBC range in x,y,z'''
-    boxl = np.round((c1-c2)/rng) # find what is rounded distance
-    return c2 + boxl*rng
 
 def find_closest(frm, to):
     '''Given a vector of points dim frm = [nvals, nsamp, ndim = 3],

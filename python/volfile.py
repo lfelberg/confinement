@@ -66,6 +66,12 @@ class VolFile:
         '''Return range of x for first snap'''
         return (self.dims[0][1] - self.dims[0][0])
 
+    def get_rng(self):
+        '''Return range of all snaps'''
+        return np.array([self.dims[:,1]-self.dims[:,0],
+                         self.dims[:,3]-self.dims[:,2],
+                         self.dims[:,5]-self.dims[:,4]]).T
+
     def get_x_rng_i(self, i):
         '''Return range of x for ith snap'''
         return (self.dims[i][1] - self.dims[i][0])
@@ -78,6 +84,11 @@ class VolFile:
         '''Return range of z for ith snap'''
         return (self.dims[i][5] - self.dims[i][4])
     
+    def get_rng_i(self, i):
+        '''Return array of range for xy and z for step i'''
+        return np.array([self.get_x_rng_i(i), self.get_y_rng_i(i),
+                         self.get_z_rng_i(i)])
+
     def get_vol_i(self, i):
         '''Return volume for ith snap'''
         return self.get_x_rng_i(i)*self.get_y_rng_i(i)*self.get_z_rng_i(i)
@@ -100,6 +111,7 @@ class VolFile:
         '''Return average length of y dim'''
         zdif = self.dims[:,5] - self.dims[:,4]
         return np.mean(zdif)
+
 
 def main():
     filename=sys.argv[1]

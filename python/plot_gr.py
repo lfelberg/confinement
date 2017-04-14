@@ -1,51 +1,58 @@
 import sys
 import numpy as np
+import matplotlib
 import matplotlib.pyplot as plt
 
 from csvfile import CSVFile
 
 colorL = [[0,0,0], [0,0,1], [1, 0,0], [.93, .53, .18],
-          [0.859, 0.078, 0.234], [0.801, 0.586, 0.047],                            
-            [0., 0.391, 0.], [0.289, 0.461, 1.],                                   
-            [0.289, 0., 0.508], [0.777, 0.441, 0.441],                             
+          [0.859, 0.078, 0.234], [0.801, 0.586, 0.047],
+            [0., 0.391, 0.], [0.289, 0.461, 1.],
+            [0.289, 0., 0.508], [0.777, 0.441, 0.441],
             [0.777, 0.379, 0.078], [0., 0.9297, 0.9297]]
+
+def get_plt_lst(csv_nm):
+    ''' Given a filename for g(r) csv, find sep size and use that to get
+        columns to plot'''
+    sep_siz = int(csv_nm.split("_")[3])
+    dim = csv_nm.split("_")[2]
+    if dim == "3D": cls = [1]
+    elif sep_siz == 6:    cls = [2,13,4]
+    elif sep_siz == 7:  cls = [2,17,9]
+    elif sep_siz == 8:  cls = [2,17,9]
+    elif sep_siz == 10: cls = [3,18,14,15,27,28,4,5,7]
+    elif sep_siz == 12: cls = [2,18,27,28,4,5,7]
+    elif sep_siz == 14: cls = [2,4,13]
+    elif sep_siz == 16: cls = [2,4,13]
+
+    else: cls = [1] # dont have this sep size saved
+    return cls
 
 def plot_scatter(plt_nm, csvL, sep, ln):
     '''Using data from a histogram, plot several'''
-    f = plt.figure(1, figsize = (3.0, 3.0))
+    f = plt.figure(1, figsize = (1.5, 1.5))
     ax, ct, leg = f.add_subplot(111), 0, []
+    matplotlib.rcParams.update({'font.size': 8})
 
     for i in range(len(csvL)):
         for j in range(len(csvL[i])):
-           for k in range(1,len(csvL[i][j].dat[1:])):
+           cls = get_plt_lst(csvL[i][j].csvfname)
+           for k in cls:
                ax.plot(csvL[i][j].dat[0], 
-                       csvL[i][j].dat[k]) 
-          #ax.plot(csvL[i][j].dat[0], 
-          #        np.mean(csvL[i][j].dat[1:], axis = 0), color=colorL[ct])
-          #print(np.mean(csvL[i][j].dat[1:], axis = 0))
-          #print(np.mean(csvL[i][j].dat[1:][200:]))
-          #ax.plot(csvL[i][j].dat[0], 
-          #        csvL[i][j].dat[1], color=colorL[ct])
-          #leg += [r"{0}$\AA$ sep".format(sep[i])]
-          #ct += 1
-           #for k in range(len(csvL[i][j].dat[:-1])):
-           #    ax.plot(csvL[i][j].dat[-1][2:], 
-           #            csvL[i][j].dat[k][2:], color=colorL[ct])
-           #    leg += [r"{0}$\AA$ sep, x={1:.1f}$\AA$".format(sep[i], 
-           #                             float(csvL[i][j].key[k]))]
-           #    ct += 1
-   #ax.plot(csvL[i][j].dat[0], 
-   #        np.repeat(864, len(csvL[i][j].dat[0])), color=colorL[ct])
-   #ax.legend(leg, loc = 9, ncol = 2,
-   #    columnspacing = 0.4,
-   #    fontsize =  4 ,
-   #    handletextpad = 0.2,
-   #    handlelength = 1.3,
-   #    borderaxespad = -0.9,
-   #    )
-    ax.set_ylim([0,2.5])
-    plt.savefig(plt_nm+'.png', format='png',                       
-                    bbox_inches = 'tight', dpi=300) 
+                       csvL[i][j].dat[k], label ="x="+csvL[i][j].key[k][1:-2])
+    ax.legend(ncol = 1, columnspacing = 0.4,
+        fontsize =  5 , handletextpad = 0.2,
+        handlelength = 1.3, borderaxespad = -0.9,
+        bbox_to_anchor = (0.9,0.9),
+        )
+    ax.set_ylim([0,4.0])
+    if "_1_2.csv" in csvL[i][j].csvfname:
+        ax.set_ylabel(r"$g_{{O-H}}(R)$ (a.u.)",fontsize=12)
+    else: ax.set_ylabel(r"$g_{{O-O}}(R)$ (a.u.)",fontsize=12)
+    ax.set_xlabel("Distance ($\AA$)",fontsize=12)
+    ax.yaxis.labelpad = -0.6; ax.xaxis.labelpad = -0.6
+    fname = plt_nm+csvL[i][j].csvfname[-7:-4]+".png"
+    plt.savefig(fname, format='png', bbox_inches = 'tight', dpi=300) 
     plt.close()
 
 def main():                                                                        
