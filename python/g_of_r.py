@@ -24,7 +24,7 @@ def g_of_r(dists, rang):
     # number density normalization
     for d in range(dim): vl *= rang[d]
     his_den, benz = np.histogram(dists, bins=rd_rng)
-    return his_den*vl/2./rd_mu, len(dists) #DIVIDE BY TWO FOR NORM SCHEME
+    return his_den*vl*2./rd_mu, len(dists) #DIVIDE BY TWO FOR NORM SCHEME
 
 def gr_cal(crd1,crd0,rang,same):
     '''Given an array of molecules you would like to compute the distance 
