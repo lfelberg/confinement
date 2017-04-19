@@ -17,12 +17,13 @@ def get_plt_lst(csv_nm):
     sep_siz = int(csv_nm.split("_")[3])
     dim = csv_nm.split("_")[2]
     if dim == "3D": cls = [1]
-    elif sep_siz == 6:    cls = [2,13,4]
-    elif sep_siz == 7:  cls = [2,17,9]
-    elif sep_siz == 8:  cls = [2,17,9]
+   #elif sep_siz == 6:  cls = [2,13,4]
+   #elif sep_siz == 7:  cls = [2,17,9]
+   #elif sep_siz == 8:  cls = [2,17,9]
+    elif sep_siz == 9:  cls = [2,23,25,26,11,12]
     elif sep_siz == 10: cls = [3,18,14,15,27,28,4,5,7]
-    elif sep_siz == 12: cls = [2,18,27,28,4,5,7]
-    elif sep_siz == 14: cls = [2,4,13]
+    elif sep_siz == 12: cls = [3,18,19,31,32,7,8,17,20,]
+    elif sep_siz == 14: cls = [2,19,29,38,4,7,8,11,12,23,24,] #27]
     elif sep_siz == 16: cls = [2,4,13]
 
     else: cls = [1] # dont have this sep size saved
@@ -37,14 +38,16 @@ def plot_scatter(plt_nm, csvL, sep, ln):
     for i in range(len(csvL)):
         for j in range(len(csvL[i])):
            cls = get_plt_lst(csvL[i][j].csvfname)
+           ct=0
            for k in cls:
-               ax.plot(csvL[i][j].dat[0], 
-                       csvL[i][j].dat[k], label ="x="+csvL[i][j].key[k][1:-2])
-    ax.legend(ncol = 1, columnspacing = 0.4,
-        fontsize =  5 , handletextpad = 0.2,
-        handlelength = 1.3, borderaxespad = -0.9,
-        bbox_to_anchor = (0.9,0.9),
-        )
+               ax.plot(csvL[i][j].dat[0], csvL[i][j].dat[k], 
+               label = "x="+csvL[i][j].key[k][1:-2], color = colorL[ct])
+               ct += 1
+   #ax.legend(ncol = 1, columnspacing = 0.4,
+   #    fontsize =  5 , handletextpad = 0.2,
+   #    handlelength = 1.3, borderaxespad = -0.9,
+   #    bbox_to_anchor = (0.9,0.9),
+   #    )
     ax.set_ylim([0,4.0])
     if "_1_2.csv" in csvL[i][j].csvfname:
         ax.set_ylabel(r"$g_{{O-H}}(R)$ (a.u.)",fontsize=12)
