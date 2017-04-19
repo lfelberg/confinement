@@ -1,23 +1,32 @@
 import numpy as np
 import itertools
+import operator
 
 from util import d_pbc, translate_pbc
 
 QOXY = -1.0484
 QHYD =  0.5242
 
-def find_closest(frm, to):
+def find_closest(frm, to, n_close = 1):
     '''Given a vector of points dim frm = [nvals, nsamp, ndim = 3],
        and to = [nsamp, ndim], return a vector of closest = [size = nsamp]
        where each position has the index (0->nvals) of point closest '''
     closest = np.zeros((1, frm.shape[1])); nsamp = frm.shape[0]
-    to_ar = np.repeat(to[np.newaxis,:,:], nsamp, axis = 0) 
-    d2 = np.sum((frm - to_ar)*(frm - to_ar), axis = 2)
-    return np.argmin(d2, axis =  0)
+   #to_ar = np.repeat(to[np.newaxis,:,:], nsamp, axis = 0) 
+    to_ar = np.repeat(to[np.newaxis,:], nsamp, axis = 0) 
+    d2 = np.sum((frm - to_ar)*(frm - to_ar), axis = -1)
+    if n_close == 1: return np.argmin(d2, axis =  0)
+    else: 
+        d2 = list(d2); d2_l = list(range(len(d2)))
+        d2 = list(zip(d2,d2_l)); d2.sort(key=operator.itemgetter(0))
+        clos, dd = [], []
+        for x in range(n_close): 
+            clos.append(d2[x][1]); dd.append(np.sqrt(d2[x][0]))
+        return clos, dd
 
 def unit_vector(vector):
     """ Returns the unit vector of the vector.  """
-    return vector / np.sqrt(np.sum(vector*vector,axis=1)[:,np.newaxis])
+    return vector / np.sqrt(np.sum(vector*vector,axis=-1)[:,np.newaxis])
 
 def angle_between(v1, v2, v1nrm = False, v2nrm = False):
     """ Returns the angle in radians between vectors 'v1' and 'v2'
@@ -34,7 +43,7 @@ def angle_between(v1, v2, v1nrm = False, v2nrm = False):
     if v2nrm == True: v2_u = v2
     else:             v2_u = unit_vector(v2)
 
-    return np.arccos(np.clip(np.sum(v1_u*v2_u, axis = 1), -1.0, 1.0))
+    return np.arccos(np.clip(np.sum(v1_u*v2_u, axis = -1), -1.0, 1.0))
 
 def plane_eq(c1, c2, c3):
     '''Given three points, calculate a unit normal to the plane made by those 
