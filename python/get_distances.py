@@ -40,10 +40,7 @@ def get_all_dist(xyz, dims):
     dist_btw_C, dv_g = [], []
 
     # Finding atoms with x values LT/GT half the box
-    x_hlf = (dims[0][1]-dims[0][0])/2.0 # Half of box divides 2 walls
-    x_less  = xyz.atom[0,:,0] < x_hlf; x_great = xyz.atom[0,:,0] > x_hlf
-    g_less = np.all(np.array([grap, x_less]), axis=0)
-    g_grat = np.all(np.array([grap, x_great]), axis=0)
+    g_less = xyz.get_graph_wall(0); g_grat = xyz.get_graph_wall(1)
     
     for i in range(len(xyz.atom)):
         # for the graphene wall-to-wall distance
@@ -76,24 +73,23 @@ def print_dist_to_c(fname, xyz, dists, dists_C):
     f.close()
 
 def print_dev_of_c(fname, xyz, dev_g, boxl_x, sep = False):
-   '''Print deviation of carbon wall to xyz like file'''
-   grap = xyz.types == GRAPHENE;
-   x_less=xyz.atom[0,:,0] < boxl_x/2.0; x_great=xyz.atom[0,:,0] > boxl_x/2.0
-   g_less = np.all(np.array([grap, x_less]), axis=0)
-   g_grat = np.all(np.array([grap, x_great]), axis=0) 
-   ct = 1 if sep == True else 2
-
-   for f in range(ct):
-       fn = open(fname+str(f)+".dat", 'w')
-       wall = g_less if f == 1 else g_grat
-       for i in range(len(xyz.atom)): # for each timestep
-           step = xyz.atom[i, wall, :] # find wall coords
-           fn.write("{0}\nAtoms. Timestep {1}\n".format(len(step), i))
-           for j in range(len(step)):
-               sep_d = dev_g[i][j][0] if sep == True else dev_g[i][f][j]
-               fn.write("{0} {1:.3f} {2:.3f} {l:.3f}\n".format(1, 
-                        *step[j,1:], l=sep_d)) 
-       fn.close()
+    '''Print deviation of carbon wall to xyz like file'''
+    grap = xyz.types == GRAPHENE;
+    
+    g_less = xyz.get_graph_wall(0); g_grat = xyz.get_graph_wall(1)
+    ct = 1 if sep == True else 2
+    
+    for f in range(ct):
+        fn = open(fname+str(f)+".dat", 'w')
+        wall = g_less if f == 1 else g_grat
+        for i in range(len(xyz.atom)): # for each timestep
+            step = xyz.atom[i, wall, :] # find wall coords
+            fn.write("{0}\nAtoms. Timestep {1}\n".format(len(step), i))
+            for j in range(len(step)):
+                sep_d = dev_g[i][j][0] if sep == True else dev_g[i][f][j]
+                fn.write("{0} {1:.3f} {2:.3f} {l:.3f}\n".format(1, 
+                         *step[j,1:], l=sep_d)) 
+        fn.close()
 
 def main():
     ''' usage: '''
