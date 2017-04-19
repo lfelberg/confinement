@@ -15,6 +15,8 @@ def trans_coords(coords, rng):
     cnew = np.zeros(coords.shape); cnew[0] = coords[0]
     for i in range(len(coords)-1):
         cnew[i+1] = translate_pbc(cnew[i], coords[i+1], rng[i])
+        cnew[i] = cnew[i] - np.mean(cnew[i], axis=0)
+    cnew[-1] = cnew[-1] - np.mean(cnew[-1], axis=0)
     return cnew
 
 def get_msd(xyz, volC):

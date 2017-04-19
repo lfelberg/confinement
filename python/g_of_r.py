@@ -54,8 +54,7 @@ def get_gr(xyz, volC, grPair):
     ty01 = np.all(np.array([ty0, xyz.get_outer_ats()]), axis=0) # out 2 walls
     ty11 = np.all(np.array([ty1, xyz.get_outer_ats()]), axis=0)
 
-   #for i in range(1,len(xyz.atom)):
-    for i in range(len(xyz.atom)): #scanning over all time
+    for i in range(1,len(xyz.atom)):
         rng = np.array([volC.get_x_rng_i(i), volC.get_y_rng_i(i),
                         volC.get_z_rng_i(i)]) # pbc range
         rng_m += rng # take average of range for printing
@@ -71,22 +70,28 @@ def get_gr(xyz, volC, grPair):
             c10 = xyz.atom[i,ty10,:]; c11 = xyz.atom[i,ty11,:] 
             b10 = np.digitize(c10[:,0], x_bn)
             b11 = np.digitize(c11[:,0], x_bn)
-
         
-        gr3, pr_ct3 = gr_cal(c00,c10, rng, sm)
-        xb_his[0,0,:] += gr3;xb_ct[0,0] += pr_ct3;
+        if "_14_" in xyz.xyzfname or "_16_" in xyz.xyzfname:
+            gr3, pr_ct3 = gr_cal(c00,c10, rng, sm)
+            xb_his[0,0,:] += gr3;xb_ct[0,0] += pr_ct3;
+            gr3, pr_ct3 = gr_cal(c01,c11, rng, sm)
+            xb_his[0,0,:] += gr3;xb_ct[0,0] += pr_ct3;
 
-        gr3, pr_ct3 = gr_cal(c01,c11, rng, sm)
-        xb_his[0,0,:] += gr3;xb_ct[0,0] += pr_ct3;
-
-        for j in range(len(x_bn)):
-            if sum((b00==j).astype(int))>1 and sum((b10==j).astype(int))>1:
-               gr2, pr_ct2 = gr_cal(c00[b00==j],c10[b10==j], rng[1:], sm)
-               xb_his[j,1,:] += gr2;xb_ct[j,1] += pr_ct2;
-               
-            if sum((b01==j).astype(int))>1 and sum((b11==j).astype(int))>1:
-               gr2, pr_ct2 = gr_cal(c01[b01==j],c11[b11==j], rng[1:], sm)
-               xb_his[j,1,:] += gr2;xb_ct[j,1] += pr_ct2;
+        if "_6_" in xyz.xyzfname or "_7_" in xyz.xyzfname or "_8_" in xyz.xyzfname:
+            gr2, pr_ct2 = gr_cal(c00,c10, rng[1:], sm)
+            xb_his[0,1,:] += gr2;xb_ct[0,1] += pr_ct2;
+        
+            gr2, pr_ct2 = gr_cal(c01,c11, rng[1:], sm)
+            xb_his[0,1,:] += gr2;xb_ct[0,1] += pr_ct2;
+        else:
+            for j in range(len(x_bn)):
+                if sum((b00==j).astype(int))>1 and sum((b10==j).astype(int))>1:
+                   gr2, pr_ct2 = gr_cal(c00[b00==j],c10[b10==j], rng[1:], sm)
+                   xb_his[j,1,:] += gr2;xb_ct[j,1] += pr_ct2;
+                   
+                if sum((b01==j).astype(int))>1 and sum((b11==j).astype(int))>1:
+                   gr2, pr_ct2 = gr_cal(c01[b01==j],c11[b11==j], rng[1:], sm)
+                   xb_his[j,1,:] += gr2;xb_ct[j,1] += pr_ct2;
 
     # Time averages of histograms
     xb_ct[xb_ct == 0.] = 1.0
