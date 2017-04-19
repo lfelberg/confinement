@@ -82,7 +82,15 @@ class XYZFile:
                 f.write(strn)
 
         f.close()
+ 
+    def get_nsnap(self):
+        '''Get the number of timeshots'''
+        return len(self.atom)
 
+    def get_ct_i(self, i):
+        '''Get count of type i'''
+        return np.sum((self.types == i).astype(int))
+    
     def get_type_i(self, i):
         '''Get indices of type i'''
         return self.types == i
