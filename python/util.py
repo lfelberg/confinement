@@ -19,3 +19,7 @@ def translate_pbc(c1, c2, rng):
        c1 and c2 are arrays of coordinates, rng is PBC range in x,y,z'''
     boxl = np.round((c1-c2)/rng) # find what is rounded distance
     return c2 + boxl*rng
+
+def translate_1st_im(c, rng):
+    '''Translate coords to first periodic image 0 -> edge'''
+    return c - np.floor((c+rng/2.)/rng)*rng

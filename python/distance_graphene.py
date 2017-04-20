@@ -4,29 +4,11 @@ import numpy as np
 
 from xyzfile import XYZFile
 from volfile import VolFile
-from util    import d_pbc, translate_pbc
+from util    import d_pbc, translate_pbc, translate_1st_im
 
 GRAPHENE = 3
 SPAC = 2.5
 
-def find_closest(dist):
-    '''Given an array of distances, return the smallest dist value
-       and the argmin'''
-    closest = np.argmin(dist)
-    d_sqrt = np.sqrt(dist[closest])
-    return closest, d_sqrt
-
-def dist_btw(frm, to, rang, pbcs = [1.0,1.0,1.0]):
-    '''Given an array of molecules you would like to compute the distance 
-       between, find the atom closest in the to list, given pbc range'''
-    dt, cl_crd = [], np.zeros(frm.shape)
-    for fm in range(len(frm)):
-        frm_ar = np.repeat(frm[np.newaxis,fm,:],len(to),axis=0)
-        dist = d_pbc(to, frm_ar, rang, pbcs)
-        clos_at, dis_at = find_closest(dist)
-        dt.append(dis_at); cl_crd[fm] = to[clos_at]
-    return dt, cl_crd
-        
 def get_dist(xyz, dims):
     '''Method to get the distance between graphene walls, and graphene
        and all oxygen atoms'''
@@ -48,17 +30,15 @@ def get_dist(xyz, dims):
                 o_p = np.all(np.array([o_yy==yy, o_zz==zz]),axis=0)
                 if sum(o_p.astype(int)) > 0:
                     c1_p = np.all(np.array([c1_yy==yy, c1_zz==zz]),axis=0)
-                    c1_cs = c1[c1_p,0];
-                    c1_xp = translate_pbc(np.zeros((1,1)),c1_cs,rng[0])
+                    c1_xp = translate_1st_im(c1[c1_p,0], rng[0]);
                     c1_x[0,0] = np.mean(c1_xp)
                     c2_p = np.all(np.array([c2_yy==yy, c2_zz==zz]),axis=0)
-                    c2_cs = c2[c2_p,0];
-                    c2_xp = translate_pbc(np.array(rng[0]),c2_cs,rng[0])
+                    c2_xp = translate_1st_im(c2[c2_p,0], rng[0]);
                     c2_x[0,0] = np.mean(c2_xp)
                     d1 = list(d_pbc(oxC[o_p,0][:,np.newaxis],c1_x,rng[0],[1.]))
                     d2 = list(d_pbc(oxC[o_p,0][:,np.newaxis],c2_x,rng[0],[1.]))
                     w_d1.append(d1); w_d2.append(d2)
-                    dgg = len(d1) * list((c2_x - c1_x)[0])
+                    dgg = len(d1) * list(abs((c2_x - c1_x)[0]))
                     cc_d.append(dgg)
     w_d1 = list(itertools.chain(*w_d1)); w_d2 = list(itertools.chain(*w_d2))
     return w_d1, w_d2, list(itertools.chain(*cc_d))
