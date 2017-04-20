@@ -29,14 +29,16 @@ def get_dist(xyz, dims):
             for zz in range(n_z_ed):
                 o_p = np.all(np.array([o_yy==yy, o_zz==zz]),axis=0)
                 if sum(o_p.astype(int)) > 0:
+                    o_w = translate_1st_im(oxC[o_p,0], rng[0])
                     c1_p = np.all(np.array([c1_yy==yy, c1_zz==zz]),axis=0)
                     c1_xp = translate_1st_im(c1[c1_p,0], rng[0]);
                     c1_x[0,0] = np.mean(c1_xp)
                     c2_p = np.all(np.array([c2_yy==yy, c2_zz==zz]),axis=0)
                     c2_xp = translate_1st_im(c2[c2_p,0], rng[0]);
                     c2_x[0,0] = np.mean(c2_xp)
-                    d1 = list(d_pbc(oxC[o_p,0][:,np.newaxis],c1_x,rng[0],[1.]))
-                    d2 = list(d_pbc(oxC[o_p,0][:,np.newaxis],c2_x,rng[0],[1.]))
+                    d1 = list(abs(o_w-np.mean(c1_xp))) #,rng[0],[1.]))
+                    d2 = list(abs(o_w-np.mean(c2_xp))) #,rng[0],[1.]))
+                    print(oxC[o_p,0], o_w, d1)
                     w_d1.append(d1); w_d2.append(d2)
                     dgg = len(d1) * list(abs((c2_x - c1_x)[0]))
                     cc_d.append(dgg)

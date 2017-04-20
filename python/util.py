@@ -21,5 +21,5 @@ def translate_pbc(c1, c2, rng):
     return c2 + boxl*rng
 
 def translate_1st_im(c, rng):
-    '''Translate coords to first periodic image 0 -> edge'''
-    return c - np.floor((c+rng/2.)/rng)*rng
+    '''Translate coords to first periodic image with box rng: 0 -> edge'''
+    return c - np.floor(c/rng)*rng
