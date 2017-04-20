@@ -17,7 +17,7 @@ def get_angles(xyz, volC):
     n_w_in = sum(oi.astype(int)); n_w_ou = sum(oou.astype(int))
     in_wat = np.zeros((1, n_w_in, 3)); ou_wat = np.zeros((1, n_w_ou, 3))
 
-    for i in range(1,3): #len(xyz.atom)): # for each time snapshot, except first
+    for i in range(1,len(xyz.atom)): # for each time snapshot, except first
         di1, di2, th1 = [],[],[]
         rng = volC.get_rng_i(i) # pbc range
         in_wat = xyz.atom[i,oi,:]; ou_wat = xyz.atom[i,oou,:];
@@ -41,7 +41,7 @@ def print_angles(angls, fname):
             stn += "{0}{1},".format(vals[j],i)
     f.write(stn[:-1]+'\n')
 
-    for k in range(len(angls[0][0])): # the number of pairs will change
+    for k in range(len(angls[0][0])):
         st = ""
         for j in range(nsnap):
             for i in range(len(vals)-1):
