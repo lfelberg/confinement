@@ -1,6 +1,5 @@
 import numpy as np
 
-
 def d_pbc(c1, c2, rng, pbcs = [1.,1.,1.]):
     '''Compute distance between points with PBCS
        c1 and c2 are an array of coordinates, rng is PBC range in x,y,z'''

@@ -9,32 +9,25 @@ colorL = [[0,0,0], [0,0,1], [1, 0,0], [.93, .53, .18]]
 
 def plot_scatter(csv, sep, ln, itr):
     '''Using data from a histogram, plot several'''
-    matplotlib.rcParams['font.size'] = 5; nbins = 70
-    f = plt.figure(1, figsize = (2.0, 2.0))
+    matplotlib.rcParams['font.size'] =  8; nbins = 200
+    f = plt.figure(1, figsize = (1.5, 1.5))
     ax, ct, leg = f.add_subplot(111), 0, []
 
-    # distances = X, angle = Y
-    Y = csv.dat[5::3].flatten()
-    X = csv.dat[3:-1:3].flatten()/Y
-    xbins = np.linspace(0, 1, nbins)
-    ybins = np.linspace(0, 6, nbins)
-    heatmap, xedges, yedges = np.histogram2d(X, Y, bins=(xbins,ybins))
-    print(heatmap.shape)
-    heatmap = heatmap.astype(float)
-    extent = [0, 1.0, 0., 6.]
-    ax.imshow(heatmap.T,aspect='auto', extent=extent)
+    Y = csv.dat[csv.key.index("dgg")]; 
+    X = csv.dat[csv.key.index("dg1")]/Y.astype(float)
+   #print(max(Y), max(X), min(Y), min(X), np.mean(X), np.mean(Y))
+   #heatmap, xedges, yedges = np.histogram2d(X, Y, bins=(nbins,nbins), range=([0,1], [4,14]))
+   #heatmap = heatmap.astype(float)
+   #extent = [xedges[0], xedges[-1],yedges[0], yedges[-1]]
+   #print(extent, heatmap.shape)#heatmap)
+   #ax.imshow(heatmap, aspect='auto', extent=extent, cmap=plt.get_cmap('plasma'))
+    plt.hist2d(X, Y, bins=(nbins,nbins), range=([0,1], [5,14]),cmap=plt.get_cmap('plasma'))
+   #plt.scatter(X,Y)
+   #plt.hist(Y,bins=nbins)
     leg = str(sep)+r'$\AA$ Sep, '+'L='+str(ln)+r'$\AA$'
-    ax.set_xlim([0,1])
-    titl = leg
-    ax.set_title(titl)
-   #ax.legend(leg, loc = 9, ncol = 1,
-   #    columnspacing = 0.4,
-   #    fontsize =  7 ,
-   #    handletextpad = 0.2,
-   #    handlelength = 1.3,
-   #    borderaxespad = -0.9,
-   #   #bbox_to_anchor = bbox
-   #    )
+    ax.set_xlim([0.2,0.8])
+    ax.set_ylim([5,14])
+    ax.set_title(leg)
    #plt.show()
     plt.savefig(csv.csvfname[:-3]+'.png', format='png',
                     bbox_inches = 'tight', dpi=200) 
