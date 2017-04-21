@@ -35,20 +35,20 @@ def plot_scatter(csv, sep, ln, itr):
         params = [min(Y),max(Y), 1.0, 1.0, 1.0, 1.0]
         fp,_ = scipy.optimize.curve_fit(double, x, y, p0=params)
         fit = double(x, *fp);
-        tit = "$d_{{gg1}}$: {0:.1f}, $d_{{gg2}}$: {1:.1f}".format(fp[0],fp[1])
+        tit = "$d_{{gg1}}$: {0:.1f} $\AA$, $d_{{gg2}}$: {1:.1f} $\AA$".format(fp[0],fp[1])
     else:
         params = [np.mean(Y), 1.0, -1.0]
         fp,_ = scipy.optimize.curve_fit(skew, x, y, p0=params)
         fit = skew(x, *fp);
-        tit = "$d_{{gg}}$: {0:.4f}".format(fp[0])
+        tit = "$d_{{gg}}$: {0:.4f} $\AA$".format(fp[0])
     print(tit)
     f = plt.figure(1, figsize = (1.0, 1.0))
     ax, ct, leg = f.add_subplot(111), 0, []
     matplotlib.rcParams['font.size'] = 5; nbins = 200
     ax.bar(x, y, width=dx, color = "y");  ax.plot(x,fit)
     ax.set_xlabel("$d_{gg} \, (\AA$)",fontsize=7);ax.set_xlim([6.,16.])
-    ax.set_ylabel("Frequency",fontsize=7)
-    ax.set_title(tit) #, fontsize=5)
+    ax.set_ylabel("Probability ($1/\AA$)",fontsize=7);ax.set_ylim([0.,2.5])
+    ax.set_title(tit)
     plt.savefig(csv.csvfname[:-3]+'g_sep_fit.png',bbox_inches = 'tight',)
 
 def main():                                                                        

@@ -26,6 +26,7 @@ def get_angles(xyz, volC):
         di1+=d1;di2+=d2;th1+=t1;
         d1,d2,t1=cal_ang(in_wat,rng)
         di1+=d1;di2+=d2;th1+=t1;
+        print(min(d1), min(d2))
 
         d1s += [di1];d2s += [di2];t1s += [th1];
     return list([d1s, d2s, t1s]) 
@@ -44,7 +45,7 @@ def print_angles(angls, fname):
     for k in range(len(angls[0][0])):
         st = ""
         for j in range(nsnap):
-            for i in range(len(vals)-1):
+            for i in range(len(vals)):
                 st += "{0:.5f},".format(angls[i][j][k])
         f.write("{0}\n".format(st[:-1]))
     f.close()

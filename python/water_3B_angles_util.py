@@ -19,5 +19,5 @@ def cal_ang(o_coords, rng, dim = 3):
                
         d1.append(cl_d[0]); d2.append(cl_d[1]);
         t1.append(angle_between(v1[np.newaxis,:], v2[np.newaxis,:])[0])
-    return t1, d1, d2
+    return d1, d2, t1
 
