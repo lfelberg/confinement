@@ -100,10 +100,10 @@ class XYZFile:
         grap = self.types == GRAPHENE
     
         if wall_no == 0:
-            xl = self.atom[0,:,0] < self.half_x
+            xl = self.atom[0,:,0] < self.half_x*0.95
             return np.all(np.array([grap, xl]), axis=0) # first wall
         else: 
-            xg = self.atom[0,:,0] > self.half_x
+            xg = self.atom[0,:,0] > self.half_x*0.95
             return np.all(np.array([grap, xg]), axis=0) # second wall
     
     def get_wall_i_xv(self, i=0):

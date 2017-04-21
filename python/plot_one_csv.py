@@ -10,47 +10,46 @@ colorL = [[0,0,0], [0,0,1], [1, 0,0], [.93, .53, .18]]
 
 def plot_scatter(csv, sep, ln, itr):
     '''Using data from a histogram, plot several'''
-    matplotlib.rcParams['font.size'] = 5; nbins = 200
-    f = plt.figure(1, figsize = (1.5, 1.5))
+    nbins = 200
+    f = plt.figure(1, figsize = (1.0, 1.0))
     ax, ct, leg = f.add_subplot(111), 0, []
     leg = str(sep)+r'$\AA$ Sep, '+'L='+str(ln)+r'$\AA$'
 
     Y = csv.dat[csv.key.index("dgg")]; 
     print(min(Y), max(Y))
-    y_okay = Y < sep+4.0; Y = Y[y_okay]
+    y_okay = Y > sep-3.5; Y = Y[y_okay]
     X = csv.dat[csv.key.index("dg1"),y_okay]/Y.astype(float)
     plt.hist2d(X, Y, bins=(nbins,nbins), range=([0,1], [5,14]),cmap=plt.get_cmap('plasma'))
     ax.set_xlim([0.2,0.8]); ax.set_ylim([5,14])
 
-    ax.set_title(leg, fontsize=10)
-    ax.set_xlabel("$x/d_{gg}$",fontsize=10)
-    ax.set_ylabel("$d_{gg} \, (\AA$)",fontsize=10)
-    plt.savefig(csv.csvfname[:-3]+'.png', format='png',
-                    bbox_inches = 'tight', dpi=300) 
+   #ax.set_title(leg, fontsize= 8)
+    ax.set_xlabel("$x/d_{gg}$",fontsize= 8)
+    ax.set_ylabel("$d_{gg} \, (\AA$)",fontsize= 8)
+    plt.savefig(csv.csvfname[:-3]+'.png',bbox_inches = 'tight',)
     plt.close()
 
     # finding graphene separation dist(s)
     y,x = np.histogram(Y, bins=nbins); dx = x[1]-x[0]
     x = x[:-1] + dx/2.;y = y/sum(y.astype(float))/dx
     if sep > 8 and itr != 'r':
-        params = [sep-1.,sep-0.5, 1.0, 1.0, 1.0, 1.0]
+        params = [min(Y),max(Y), 1.0, 1.0, 1.0, 1.0]
         fp,_ = scipy.optimize.curve_fit(double, x, y, p0=params)
-        fit = double(x, *fp)
+        fit = double(x, *fp);
         tit = "$d_{{gg1}}$: {0:.1f}, $d_{{gg2}}$: {1:.1f}".format(fp[0],fp[1])
     else:
-        params = [sep, 1.0, -1.0]
+        params = [np.mean(Y), 1.0, -1.0]
         fp,_ = scipy.optimize.curve_fit(skew, x, y, p0=params)
-        fit = skew(x, *fp)
+        fit = skew(x, *fp);
         tit = "$d_{{gg}}$: {0:.4f}".format(fp[0])
     print(tit)
-    f = plt.figure(1, figsize = (1.5, 1.5))
+    f = plt.figure(1, figsize = (1.0, 1.0))
     ax, ct, leg = f.add_subplot(111), 0, []
+    matplotlib.rcParams['font.size'] = 5; nbins = 200
     ax.bar(x, y, width=dx, color = "y");  ax.plot(x,fit)
-    ax.set_xlabel("$d_{gg} \, (\AA$)",fontsize=10)
-    ax.set_ylabel("Frequency",fontsize=10)
-    ax.set_title(tit, fontsize=10)
-    plt.savefig(csv.csvfname[:-3]+'g_sep_fit.png', format='png',
-                    bbox_inches = 'tight', dpi=300) 
+    ax.set_xlabel("$d_{gg} \, (\AA$)",fontsize=7);ax.set_xlim([6.,16.])
+    ax.set_ylabel("Frequency",fontsize=7)
+    ax.set_title(tit) #, fontsize=5)
+    plt.savefig(csv.csvfname[:-3]+'g_sep_fit.png',bbox_inches = 'tight',)
 
 def main():                                                                        
     '''For a collection of data, get info from csv and then plot,
