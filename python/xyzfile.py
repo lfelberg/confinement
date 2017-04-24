@@ -14,7 +14,7 @@ class XYZFile:
             if VolFile.volfname == '': self.get_coords_types(fname,[],[])
             else: 
                 self.get_coords_types(fname,VolFile.time,VolFile.dims)
-                self.half_x = VolFile.get_x_max()/2.0
+                self.half_x = VolFile.get_x_rng_i(0)/2.0
         else:
             self.print_coords(fname, xyz, ty)
 

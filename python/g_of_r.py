@@ -7,8 +7,8 @@ from xyzfile import XYZFile
 from volfile import VolFile
 from util    import d_pbc
 
-LMAX = 20.0
 dr = 0.05
+LMAX = 15.0+dr
 HIS = np.arange(0, LMAX, dr);
 
 def g_of_r(dists, rang):
@@ -129,7 +129,7 @@ def main():
     for i in range(n_gr):
         prNm = '_'+str(grPr[i][0])+'_'+str(grPr[i][1])+'.csv'
         grs3D, grs2D, xrng = get_gr(xyz_cl, volC, grPr[i])
-        print_gr(xrng, grs3D.T, 'g_r_3D_'+nm+prNm)
+       #print_gr(xrng, grs3D.T, 'g_r_3D_'+nm+prNm)
         print_gr(xrng, grs2D.T, 'g_r_2D_'+nm+prNm)
 
 if __name__=="__main__":
