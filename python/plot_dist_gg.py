@@ -29,13 +29,14 @@ def plot_scatter(csv, sep, ln, itr):
     plt.close()
 
     # finding graphene separation dist(s)
+    bil = [9,12] #list of initial seps that form 2 diff layers in flexible
     y,x = np.histogram(Y, bins=nbins); dx = x[1]-x[0]
     x = x[:-1] + dx/2.;y = y/sum(y.astype(float))/dx
-    if sep > 8 and itr != 'r':
-        params = [min(Y),max(Y), 1.0, 1.0, 1.0, 1.0]
+    if sep in bil and itr != 'r':
+        params = [sep-2, sep-1, 1.0, 1.0, 1.0, 1.0]
         fp,_ = scipy.optimize.curve_fit(double, x, y, p0=params)
         fit = double(x, *fp);
-        tit = "$d_{{gg1}}$: {0:.1f} $\AA$, $d_{{gg2}}$: {1:.1f} $\AA$".format(fp[0],fp[1])
+        tit = "$d_{{gg1}}$: {0:.4f} $\AA$, $d_{{gg2}}$: {1:.4f} $\AA$".format(fp[0],fp[1])
     else:
         params = [np.mean(Y), 1.0, -1.0]
         fp,_ = scipy.optimize.curve_fit(skew, x, y, p0=params)
@@ -45,11 +46,17 @@ def plot_scatter(csv, sep, ln, itr):
     f = plt.figure(1, figsize = (1.0, 1.0))
     ax, ct, leg = f.add_subplot(111), 0, []
     matplotlib.rcParams['font.size'] = 5; nbins = 200
-    ax.bar(x, y, width=dx, color = "y");  ax.plot(x,fit)
+    ax.bar(x, y, width=dx,color = "y",edgecolor = "none"); ax.plot(x,fit)
     ax.set_xlabel("$d_{gg} \, (\AA$)",fontsize=7);ax.set_xlim([6.,16.])
     ax.set_ylabel("Probability ($1/\AA$)",fontsize=7);ax.set_ylim([0.,2.5])
     ax.set_title(tit)
     plt.savefig(csv.csvfname[:-3]+'g_sep_fit.png',bbox_inches = 'tight',)
+
+    ft_fl = open(csv.csvfname[:-3]+'g_sep_fit', 'w')
+    ft_fl.write("bin,dat,fit\n")
+    for xx in range(len(x)): 
+        ft_fl.write("{0:.3f},{1:.4f},{2:.4f}\n".format(x[xx],y[xx],fit[xx]))
+    ft_fl.close()
 
 def main():                                                                        
     '''For a collection of data, get info from csv and then plot,
