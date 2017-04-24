@@ -16,6 +16,11 @@ def skew(x, *args):
     t = (x-e) / w
     return 2 / w * pdf(t) * cdf(a*t)
 
+def normal(x, *args):
+    e, w = args
+    t = (x-e) / w
+    return 2 / w * pdf(t)
+
 def double(x, *args):
     m1, m2, s1, s2, k1, k2 = args
     ret = k1*scipy.stats.norm.pdf(x, loc=m1 ,scale=s1)

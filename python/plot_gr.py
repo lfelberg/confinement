@@ -17,9 +17,6 @@ def get_plt_lst(csv_nm):
     sep_siz = int(csv_nm.split("_")[3])
     dim = csv_nm.split("_")[2]
     if dim == "3D": cls = [1]
-   #elif sep_siz == 6:  cls = [2,13,4]
-   #elif sep_siz == 7:  cls = [2,17,9]
-   #elif sep_siz == 8:  cls = [2,17,9]
     elif sep_siz == 9:  cls = [2,23,25,26,11,12]
     elif sep_siz == 10: cls = [3,18,14,15,27,28,4,5,7]
     elif sep_siz == 12: cls = [3,18,19,31,32,7,8,17,20,]
@@ -48,7 +45,7 @@ def plot_scatter(plt_nm, csvL, sep, ln):
    #    handlelength = 1.3, borderaxespad = -0.9,
    #    bbox_to_anchor = (0.9,0.9),
    #    )
-    ax.set_ylim([0,4.0])
+    ax.set_xlim([0,12.0]);ax.set_ylim([0,4.0])
     if "_1_2.csv" in csvL[i][j].csvfname:
         ax.set_ylabel(r"$g_{{O-H}}(R)$ (a.u.)",fontsize=12)
     else: ax.set_ylabel(r"$g_{{O-O}}(R)$ (a.u.)",fontsize=12)
