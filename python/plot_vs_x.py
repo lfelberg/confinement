@@ -1,6 +1,8 @@
 import sys
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.ticker import *
+MaxNLocator.default_params['nbins']=5
 
 from csvfile import CSVFile
 
@@ -14,6 +16,8 @@ def plot_scatter(plt_nm, csvL, loc, sep, ln, itr):
     '''Using data from a histogram, plot several'''
     f = plt.figure(1, figsize = (3.0, 3.0))
     ax, ct, leg = f.add_subplot(111), 0, []
+    ax.xaxis.set_major_locator(MaxNLocator())
+    ax.yaxis.set_major_locator(MaxNLocator())
 
     for i in range(len(csvL)):
         for j in range(len(csvL[i])):

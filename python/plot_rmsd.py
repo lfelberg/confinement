@@ -2,6 +2,8 @@ import sys
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
+from matplotlib.ticker import *
+MaxNLocator.default_params['nbins']=5
 
 from csvfile import CSVFile
 
@@ -12,6 +14,8 @@ def plot_scatter(plt_nm, csvL, loc, sep, ln, itr):
     f = plt.figure(1, figsize = (1.5, 1.5))
     ax, ct, leg = f.add_subplot(111), 0, []
     matplotlib.rcParams.update({'font.size': 4})
+    ax.xaxis.set_major_locator(MaxNLocator())
+    ax.yaxis.set_major_locator(MaxNLocator())
 
     for i in range(len(csvL)):
         for j in range(len(csvL[i])):

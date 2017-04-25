@@ -2,6 +2,8 @@ import sys
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.cm as cmx 
+from matplotlib.ticker import *
+MaxNLocator.default_params['nbins']=5
 from pylab import *
 
 from xyzfile import XYZFile

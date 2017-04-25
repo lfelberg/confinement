@@ -27,3 +27,10 @@ def double(x, *args):
     ret += k2*scipy.stats.norm.pdf(x, loc=m2 ,scale=s2)
     return ret
 
+def triple(x, *args):
+    m1, m2, m3, s1, s2, s3, k1, k2, k3 = args
+    ret = k1*scipy.stats.norm.pdf(x, loc=m1 ,scale=s1)
+    ret += k2*scipy.stats.norm.pdf(x, loc=m2 ,scale=s2)
+    ret += k3*scipy.stats.norm.pdf(x, loc=m3 ,scale=s3)
+    return ret
+

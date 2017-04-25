@@ -29,6 +29,7 @@ class XYZFile:
             time.append(int(line.split()[-1]))                                         
             t_ct += 1; grab_snap = 1                                                   
                                                                                        
+        self.edges = dims[:,1::2] - dims[:,0::2]
         '''First, we read in the coordinates from the trajectory file and              
            save them into atom=[[coords],[coords]...,[coords]]'''                      
         for line in f:                                                                 
@@ -98,7 +99,6 @@ class XYZFile:
     def get_graph_wall(self, wall_no=0):
         '''Get the indices of graphene wall 0 or 1'''
         grap = self.types == GRAPHENE
-    
         if wall_no == 0:
             xl = self.atom[0,:,0] < self.half_x*0.95
             return np.all(np.array([grap, xl]), axis=0) # first wall
@@ -108,8 +108,8 @@ class XYZFile:
     
     def get_wall_i_xv(self, i=0):
         '''Get the x location of graphene wall 0 or 1, from first snap'''
-        wall_idxs = self.get_graph_wall(i)
-        return np.mean(self.atom[0,wall_idxs,0])
+        wl_ids = self.get_graph_wall(i)
+        return np.mean(self.atom[0,wl_ids,0])
     
     def get_inner_ats(self):
         '''Get indices of atoms whose x values are btw the 2 walls'''

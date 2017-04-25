@@ -14,7 +14,6 @@ def get_dist(xyz, dims):
        and all oxygen atoms'''
     oxys,_ = xyz.get_inner_wat(); w_d1, w_d2 = [], []; cc_d = []
     water_dists = np.zeros((3,xyz.get_nsnap()-1,xyz.get_ct_i(1)))
-    c1_x = np.zeros((1,1)); c2_x = np.zeros((1,1))
     g_less = xyz.get_graph_wall(0); g_grat = xyz.get_graph_wall(1)
     yedg = np.arange(0,dims.get_y_len(),SPAC); n_y_ed = len(yedg)
     zedg = np.arange(0,dims.get_z_len(),SPAC); n_z_ed = len(zedg)
@@ -22,25 +21,23 @@ def get_dist(xyz, dims):
     for i in range(1,len(xyz.atom)): # for each snapshot
         c1 = xyz.atom[i,g_less,:]; c2 = xyz.atom[i,g_grat,:]
         oxC = xyz.atom[i,oxys,:]; rng = dims.get_rng_i(i) # pbc range
-        c1_yy = np.digitize(c1[:,1], yedg);c2_yy = np.digitize(c2[:,1], yedg)
-        c1_zz = np.digitize(c1[:,2], zedg);c2_zz = np.digitize(c2[:,2], zedg)
-        o_yy  = np.digitize(oxC[:,1], yedg);o_zz  = np.digitize(oxC[:,2], zedg)
+        c1[:,0] = translate_pbc(np.array(0.5),c1[:,0],rng[0]) 
+        c2[:,0] = translate_pbc(np.array(rng[0]-0.5),c2[:,0],rng[0]) 
+        c1_yy = np.digitize(c1[:,1],yedg); c2_yy = np.digitize(c2[:,1],yedg)
+        c1_zz = np.digitize(c1[:,2],zedg); c2_zz = np.digitize(c2[:,2],zedg)
+        o_yy  = np.digitize(oxC[:,1],yedg); o_zz  = np.digitize(oxC[:,2],zedg)
         for yy in range(n_y_ed):
             for zz in range(n_z_ed):
                 o_p = np.all(np.array([o_yy==yy, o_zz==zz]),axis=0)
                 if sum(o_p.astype(int)) > 0:
                     o_w = translate_1st_im(oxC[o_p,0], rng[0])
-                    c1_p = np.all(np.array([c1_yy==yy, c1_zz==zz]),axis=0)
-                    c1_xp = translate_1st_im(c1[c1_p,0], rng[0]);
-                    c1_x[0,0] = np.mean(c1_xp)
-                    c2_p = np.all(np.array([c2_yy==yy, c2_zz==zz]),axis=0)
-                    c2_xp = translate_1st_im(c2[c2_p,0], rng[0]);
-                    c2_x[0,0] = np.mean(c2_xp)
-                    d1 = list(abs(o_w-np.mean(c1_xp))) #,rng[0],[1.]))
-                    d2 = list(abs(o_w-np.mean(c2_xp))) #,rng[0],[1.]))
-                    print(oxC[o_p,0], o_w, d1)
+                    c1_p = c1[np.all(np.array([c1_yy==yy,c1_zz==zz]),axis=0),0]
+                    c2_p = c2[np.all(np.array([c2_yy==yy,c2_zz==zz]),axis=0),0]
+                    c1_x = np.mean(c1_p); c2_x = np.mean(c2_p)
+                    d1 = list(abs(o_w-c1_x));  d2 = list(abs(o_w-c2_x))
+                    if c2_x - c1_x < 2.0: print("This is pts and means",  c1_p, c2_p, c1_x, c2_x)
                     w_d1.append(d1); w_d2.append(d2)
-                    dgg = len(d1) * list(abs((c2_x - c1_x)[0]))
+                    dgg = len(d1) * [abs(c2_x - c1_x)]
                     cc_d.append(dgg)
     w_d1 = list(itertools.chain(*w_d1)); w_d2 = list(itertools.chain(*w_d2))
     return w_d1, w_d2, list(itertools.chain(*cc_d))
