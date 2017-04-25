@@ -14,8 +14,7 @@ def get_angles(xyz, volC):
     oi,_ = xyz.get_inner_wat(); oou,_ = xyz.get_outer_wat() # outside walls
     d1s, d2s, t1s, = [],[],[]
 
-   #for i in range(1,len(xyz.atom)): # for each time snapshot, except first
-    for i in range(1,2):
+    for i in range(1,len(xyz.atom)): # for each time snapshot, except first
         di1, di2, th1 = [],[],[]
         rng = volC.get_rng_i(i) # pbc range
         in_wat = xyz.atom[i,oi,:]; ou_wat = xyz.atom[i,oou,:];

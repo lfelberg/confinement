@@ -30,8 +30,8 @@ def plot_scatter(plt_nm, csvL, loc, sep, ln, itr):
                 leg += [str(sep[i])+r'$\AA$ Sep, '+'L='+str(ln[j])+r'$\AA$']
                 ct += 1
    #ax.set_xlim([-9,9])
-    ax.set_xlim([0,600])
-    ax.set_ylim([0,6000])
+   #ax.set_xlim([0,600])
+   #ax.set_ylim([0,6000])
     ax.legend(leg, loc = 9, ncol = 1,
         columnspacing = 0.4,
         fontsize =  7 ,
@@ -41,7 +41,7 @@ def plot_scatter(plt_nm, csvL, loc, sep, ln, itr):
        #bbox_to_anchor = bbox
         )
     ax.set_xlabel("Time (ps)",fontsize=12)
-    ax.set_ylabel("MSD ($\AA$)",fontsize=12)
+    ax.set_ylabel("MSD ($\AA^2$)",fontsize=12)
     ax.yaxis.labelpad = -0.6; ax.xaxis.labelpad = -0.6
     plt.savefig(plt_nm+csvL[i][j][k].key[loc]+'.png', format='png',
                     bbox_inches = 'tight', dpi=300) 

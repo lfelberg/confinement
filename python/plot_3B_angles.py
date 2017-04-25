@@ -23,8 +23,8 @@ def plot_scatter(csv, sep, ln, itr):
     ax.bar(x, y, width=dx, color = "y",edgecolor = "none");
     ax.set_xlim(rng); ax.set_ylim([0,0.03])
 
-    ax.set_xlabel("3 body angle (rad)",fontsize= 8)
-    ax.set_ylabel("Probability (1/rad)",fontsize= 8)
+    ax.set_xlabel(r"3 body angle ($^{\circ}$)",fontsize= 8)
+    ax.set_ylabel(r"Probability (1/$^{\circ}$)",fontsize= 8)
     plt.savefig(csv.csvfname[:-4]+'.png',bbox_inches = 'tight',)
 
    #params = [np.pi/2.,np.pi*(2./3.), 1.0, 1.0, 1.0, 1.0]
@@ -38,7 +38,7 @@ def plot_scatter(csv, sep, ln, itr):
     fp,_ = scipy.optimize.curve_fit(skew, x, y, p0=params)
     print(np.mean(angles))
     fit = skew(x, *params);  ax.plot(x,fit)
-    tit = "$A_{{3B}}$: {0:.2f} rad".format(fp[0])
+    tit = r'$A_{{3B}}$: {0:.2f}$^{{\circ}}$'.format(fp[0])
     print(tit, fp);  ax.set_title(tit)
     plt.savefig(csv.csvfname[:-4]+'_fit.png',bbox_inches='tight'); plt.close()
 
