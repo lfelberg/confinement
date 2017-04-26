@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.ticker import *
-MaxNLocator.default_params['nbins']=5
+MaxNLocator.default_params['nbins']=4
 
 from csvfile import CSVFile
 
@@ -19,8 +19,13 @@ def get_plt_lst(csv_nm):
     sep_siz = int(csv_nm.split("_")[3])
     dim = csv_nm.split("_")[2]
     if dim == "3D": cls = [1]
+    # flexible
     elif sep_siz == 9:  cls = [2,23,25,26,11,12]
-    elif sep_siz == 10: cls = [3,18,14,15,27,28,4,5,7]
+    elif sep_siz == 10: cls = [3,18,14,15,27]
+
+    # rigid
+   #elif sep_siz == 9:  cls = [5,15,18,27]
+   #elif sep_siz == 10: cls = [3,4,5,14,]
     elif sep_siz == 12: cls = [3,18,19,31,32,7,8,17,20,]
     elif sep_siz == 14: cls = [2,19,29,38,4,7,8,11,12,23,24,] #27]
     elif sep_siz == 16: cls = [2,4,13]
@@ -39,17 +44,21 @@ def plot_scatter(plt_nm, csvL, sep, ln):
     for i in range(len(csvL)):
         for j in range(len(csvL[i])):
            cls = get_plt_lst(csvL[i][j].csvfname)
-           ct=0
-           for k in cls:
-               ax.plot(csvL[i][j].dat[0], csvL[i][j].dat[k], 
-               label = "x="+csvL[i][j].key[k][1:-2], color = colorL[ct])
-               ct += 1
+          #cls = []
+          #for k in range(3,len(csvL[i][j].dat)-2):
+          #    if max(csvL[i][j].dat[k]) < 6. and sum(csvL[i][j].dat[k]) > 0.1: cls.append(k)
+           ct=0; print(cls)
+          #for k in cls:
+          #    ax.plot(csvL[i][j].dat[0], csvL[i][j].dat[k]+ct, 
+          #    label = "x="+csvL[i][j].key[k][1:-2], color = colorL[ct])
+          #    ct += 1
+           ax.plot(csvL[i][j].dat[0], np.mean(csvL[i][j].dat[cls],axis=0)+ct,  color = colorL[ct])
    #ax.legend(ncol = 1, columnspacing = 0.4,
    #    fontsize =  5 , handletextpad = 0.2,
    #    handlelength = 1.3, borderaxespad = -0.9,
    #    bbox_to_anchor = (0.9,0.9),
    #    )
-    ax.set_xlim([0,12.0]);ax.set_ylim([0,4.0])
+    ax.set_xlim([0,12.0]); ax.set_ylim([0,4.0])
     if "_1_2.csv" in csvL[i][j].csvfname:
         ax.set_ylabel(r"$g_{{O-H}}(R)$ (a.u.)",fontsize=12)
     else: ax.set_ylabel(r"$g_{{O-O}}(R)$ (a.u.)",fontsize=12)

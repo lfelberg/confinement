@@ -9,10 +9,14 @@
 \usepackage{mathptmx}
 \usepackage{amssymb}
 \usepackage{amsmath}
+\usepackage{subcaption}
 \usepackage{authblk}
 \usepackage[backend=bibtex,style=phys]{biblatex}
 
 \graphicspath{{snapshots/},{flexible/},{rigid/}}
+
+\captionsetup{font=footnotesize,labelfont=footnotesize,skip=0pt,labelfont=bf}
+\captionsetup[sub]{font=footnotesize,labelfont=footnotesize,skip=0pt,labelfont=bf}
 
 \newcommand{\angstrom}{\textup{\AA}}
 
@@ -219,26 +223,16 @@ Although the \(2\pi\) before the integrand is ignored because it will cancel wit
 	\centering
 	(a)~\includegraphics[width=0.45\linewidth]{d6L46_side} 
 	(b)~\includegraphics[width=0.40\linewidth]{d12L46_side}
-	\vspace{-10pt}
 	\caption{\textit{Snapshots of flexible confined systems.} Graphene carbons in grey, water oxygens in red and water hydrogens in white. (a) 6 \r A separated system (b) 12 \r A separated system. }
 	\label{fig:snapshot}
 \end{figure}
 
 \begin{figure}[h!]
 	\centering
-	\textbf{FLEXIBLE} \\
-	(a)~\includegraphics[width=0.28\linewidth]{g_r_6_46_f_o_o} 
-	(b)~\includegraphics[width=0.28\linewidth]{g_r_7_46_f_o_o}
-	(c)~\includegraphics[width=0.28\linewidth]{g_r_8_46_f_o_o}
-	\textbf{RIGID} \\
-	(d)~\includegraphics[width=0.28\linewidth]{g_r_6_46_r_o_o} 
-	(e)~\includegraphics[width=0.28\linewidth]{g_r_7_46_r_o_o}
-	 (f)~\includegraphics[width=0.28\linewidth]{g_r_8_46_r_o_o}
-	\vspace{-10pt}
-	\caption{\textit{Oxygen-oxygen radial distribution functions} Two-dimensional radial distribution functions in the plane parallel to the graphene plates (a,d) \(\rho_N\) = 0.065 (b,e) \(\rho_N\) = 0.097 (c,f) \(\rho_N\) = 0.129.}
-	\label{fig:gr}
+	\includegraphics[width=0.45\linewidth]{d_gg_r} 
+	\caption{\textit{Average graphene-graphene separation as a function of number density.}}
+	\label{fig:dgg}
 \end{figure}
-
 
 \begin{figure}[h!]
 	\centering
@@ -254,7 +248,6 @@ Although the \(2\pi\) before the integrand is ignored because it will cancel wit
 	(h)~\includegraphics[trim={0.35cm 0.25cm 0.75cm 0.15cm},clip,width=0.15\linewidth]{dgg_v_x_10_46_r}
 	(i)~\includegraphics[trim={0.35cm 0.25cm 0.75cm 0.15cm},clip,width=0.15\linewidth]{dgg_v_x_12_46_r}
 	(j)~\includegraphics[trim={0.35cm 0.25cm 0.75cm 0.15cm},clip,width=0.15\linewidth]{dgg_v_x_14_46_r}
-	\vspace{-10pt}
 	\caption{\textit{Oxygen-oxygen radial distribution functions} Two-dimensional radial distribution functions in the plane parallel to the graphene plates (a,f) \(\rho_N\) = 0.065, (b,g) \(\rho_N\) = 0.16, (c,h) \(\rho_N\) = 0.26, (d,i) \(\rho_N\) = 0.33.}
 	\label{fig:density_vs_dgg}
 \end{figure}
@@ -266,50 +259,209 @@ Although the \(2\pi\) before the integrand is ignored because it will cancel wit
 	(b)~\includegraphics[trim={0.3cm 0.25cm 0.45cm 0.15cm},clip,width=0.15\linewidth]{dgg_fit_9_46_f}
 	(c)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.14\linewidth]{dgg_fit_10_46_f}
 	(d)~\includegraphics[trim={0.3cm 0.25cm 0.45cm 0.15cm},clip,width=0.15\linewidth]{dgg_fit_12_46_f}
-	(d)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.14\linewidth]{dgg_fit_14_46_f} \\
+	(d)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.14\linewidth]{dgg_fit_14_46_f} \\  \vspace{-10pt} 
 	\textbf{RIGID} \\
 	(f)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.14\linewidth]{dgg_fit_6_46_r} 
 	(g)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.14\linewidth]{dgg_fit_9_46_r}
 	(h)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.14\linewidth]{dgg_fit_10_46_r}
 	(i)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.14\linewidth]{dgg_fit_12_46_r}
 	(j)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.14\linewidth]{dgg_fit_14_46_r}
-	\vspace{-10pt}
 	\caption{\textit{Oxygen-oxygen radial distribution functions} Two-dimensional radial distribution functions in the plane parallel to the graphene plates (a,f) \(\rho_N\) = 0.065, (b,g) \(\rho_N\) = 0.16, (c,h) \(\rho_N\) = 0.26, (d,i) \(\rho_N\) = 0.33.}
 	\label{fig:dgg_distribution}
 \end{figure}
 
 \begin{figure}[h!]
 	\centering
-	\textbf{FLEXIBLE} \\
-	(a)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{ang_3B_6_46_f} 
-	(b)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{ang_3B_7_46_f}
-	(c)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{ang_3B_8_46_f}
-	(d)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{ang_3B_12_46_f}
-	(d)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{ang_3B_14_46_f} \\
-	\textbf{RIGID} \\
-	(f)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{ang_3B_6_46_r} 
-	(g)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{ang_3B_7_46_r}
-	(h)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{ang_3B_8_46_r}
-	(i)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{ang_3B_12_46_r}
-	(j)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{ang_3B_14_46_r}
-	\vspace{-10pt}
-	\caption{\textit{3-body angle distribution functions} Distribution of angle formed between nearest neighbors (a,f) \(\rho_N\) = 0.065, (b,g) \(\rho_N\) = 0.16, (c,h) \(\rho_N\) = 0.26, (d,i) \(\rho_N\) = 0.33.}
+%	\textbf{FLEXIBLE} \\
+%	(a)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{ang_3B_6_46_f} 
+%	(b)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{ang_3B_7_46_f}
+%	(c)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{ang_3B_8_46_f}
+%	(d)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{ang_3B_12_46_f}
+%	(e)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{ang_3B_14_46_f} \\
+%	\textbf{RIGID} \\
+%	(f)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{ang_3B_6_46_r} 
+%	(g)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{ang_3B_7_46_r}
+%	(h)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{ang_3B_8_46_r}
+%	(i)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{ang_3B_12_46_r}
+%	(j)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{ang_3B_14_46_r}
+	   \textbf{FLEXIBLE} \\
+  \begin{subfigure}[b]{0.15\textwidth}
+    \includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_6_46_f}
+    \vspace{-15pt} \caption{}
+    \label{fig:ang_6_f}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.15\textwidth}
+    \includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_7_46_f}
+     \vspace{-15pt} \caption{}
+    \label{fig:ang_7_f}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.15\textwidth}
+    \includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_8_46_f}
+    \vspace{-15pt} \caption{}
+    \label{fig:ang_8_f}
+  \end{subfigure}
+    \begin{subfigure}[b]{0.15\textwidth}
+    \includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_9_46_f}
+    \vspace{-15pt} \caption{}
+    \label{fig:ang_9_f}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.15\textwidth}
+    \includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_12_46_f}
+     \vspace{-15pt} \caption{}
+    \label{fig:ang_12_f}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.15\textwidth}
+    \includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_14_46_f}
+    \vspace{-15pt} \caption{}
+    \label{fig:ang_14_f}
+  \end{subfigure} \\     \vspace{-10pt} 
+ % \hfill
+ \textbf{RIGID} \\
+  \begin{subfigure}[b]{0.15\textwidth}
+    \includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_6_46_r}
+     \vspace{-15pt} \caption{}
+    \label{fig:ang_6_r}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.15\textwidth}
+    \includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_7_46_r}
+     \vspace{-15pt} \caption{}
+    \label{fig:ang_7_r}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.15\textwidth}
+    \includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_8_46_r}
+    \vspace{-15pt} \caption{}
+    \label{fig:ang_8_r}
+  \end{subfigure}
+   \begin{subfigure}[b]{0.15\textwidth}
+  \includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_9_46_r}
+    \vspace{-15pt} \caption{}
+    \label{fig:ang_9_r}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.15\textwidth}
+    \includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_12_46_r}
+     \vspace{-15pt} \caption{}
+    \label{fig:ang_12_r}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.15\textwidth}
+    \includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_14_46_r}
+    \vspace{-15pt} \caption{}
+    \label{fig:ang_14_r}
+  \end{subfigure}\\
+	\caption{\textit{3-body angle distribution functions} Distribution of angle formed between nearest neighbors  (\protect\subref{fig:rg_6_f},\protect\subref{fig:rg_6_r})  \(\rho_N\) = 0.065 (\protect\subref{fig:ang_7_f},\protect\subref{fig:ang_7_r}) \(\rho_N\) = 0.097 (\protect\subref{fig:ang_8_f},\protect\subref{fig:ang_8_r}) \(\rho_N\) = 0.129, (\protect\subref{fig:ang_9_f},\protect\subref{fig:ang_9_r}) \(\rho_N\) = 0.163, (\protect\subref{fig:ang_12_f},\protect\subref{fig:ang_12_r}) \(\rho_N\) = 0.260 (\protect\subref{fig:ang_14_f},\protect\subref{fig:ang_14_r}) \(\rho_N\) = 0.325.}
 	\label{fig:3body_angle_dist}
+\end{figure}
+
+%\begin{figure}[h!]
+%	\centering
+%	\textbf{FLEXIBLE} \\
+%	(a)~\includegraphics[width=0.28\linewidth]{g_r_6_46_f_o_o} 
+%	(b)~\includegraphics[width=0.28\linewidth]{g_r_7_46_f_o_o}
+%	(c)~\includegraphics[width=0.28\linewidth]{g_r_8_46_f_o_o}
+%	(a)~\includegraphics[trim={0.25cm 0.25cm 0.25cm 0.15cm},clip,width=0.28\linewidth]{ang_3B_6_46_f} 
+%	(b)~\includegraphics[trim={0.25cm 0.25cm 0.25cm 0.15cm},clip,width=0.28\linewidth]{ang_3B_7_46_f}
+%	(c)~\includegraphics[trim={0.25cm 0.25cm 0.25cm 0.15cm},clip,width=0.28\linewidth]{ang_3B_8_46_f}
+%	\textbf{RIGID} \\
+%	(d)~\includegraphics[width=0.28\linewidth]{g_r_6_46_r_o_o} 
+%	(e)~\includegraphics[width=0.28\linewidth]{g_r_7_46_r_o_o}
+%	 (f)~\includegraphics[width=0.28\linewidth]{g_r_8_46_r_o_o}
+%	(f)~\includegraphics[trim={0.25cm 0.25cm 0.25cm 0.15cm},clip,width=0.28\linewidth]{ang_3B_6_46_r} 
+%	(g)~\includegraphics[trim={0.25cm 0.25cm 0.25cm 0.15cm},clip,width=0.28\linewidth]{ang_3B_7_46_r}
+%	(h)~\includegraphics[trim={0.25cm 0.25cm 0.25cm 0.15cm},clip,width=0.28\linewidth]{ang_3B_8_46_r}
+%	\vspace{-10pt}
+%	\caption{\textit{Oxygen-oxygen radial distribution functions}. Two-dimensional radial distribution functions in the plane parallel to the graphene plates (a,d) \(\rho_N\) = 0.065 (b,e) \(\rho_N\) = 0.097 (c,f) \(\rho_N\) = 0.129.}
+%	\label{fig:gr}
+%\end{figure}
+
+  \begin{figure}[htbp!]
+   \centering
+   \textbf{FLEXIBLE} \\
+  \begin{subfigure}[b]{0.15\textwidth}
+    \includegraphics[width=.99\textwidth]{g_r_6_46_f_o_o}
+    \vspace{-15pt} \caption{}
+    \label{fig:rg_6_f}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.15\textwidth}
+    \includegraphics[width=.99\textwidth]{g_r_7_46_f_o_o}
+     \vspace{-15pt} \caption{}
+    \label{fig:rg_7_f}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.15\textwidth}
+    \includegraphics[width=.99\textwidth]{g_r_8_46_f_o_o}
+    \vspace{-15pt} \caption{}
+    \label{fig:rg_8_f}
+  \end{subfigure}
+    \begin{subfigure}[b]{0.15\textwidth}
+    \includegraphics[width=.99\textwidth]{g_r_9_46_f_o_o}
+    \vspace{-15pt} \caption{}
+    \label{fig:rg_9_f}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.15\textwidth}
+    \includegraphics[width=.99\textwidth]{g_r_12_46_f_o_o}
+     \vspace{-15pt} \caption{}
+    \label{fig:rg_12_f}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.15\textwidth}
+    \includegraphics[width=.99\textwidth]{g_r_14_46_f_o_o}
+    \vspace{-15pt} \caption{}
+    \label{fig:rg_14_f}
+  \end{subfigure} \\  \vspace{-10pt} 
+ % \hfill
+ \textbf{RIGID} \\
+  \begin{subfigure}[b]{0.15\textwidth}
+    \includegraphics[width=.99\textwidth]{g_r_6_46_r_o_o}
+     \vspace{-15pt} \caption{}
+    \label{fig:rg_6_r}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.15\textwidth}
+    \includegraphics[width=.99\textwidth]{g_r_7_46_r_o_o}
+     \vspace{-15pt} \caption{}
+    \label{fig:rg_7_r}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.15\textwidth}
+    \includegraphics[width=.99\textwidth]{g_r_8_46_r_o_o}
+    \vspace{-15pt} \caption{}
+    \label{fig:rg_8_r}
+  \end{subfigure}
+   \begin{subfigure}[b]{0.15\textwidth}
+  \includegraphics[width=.99\textwidth]{g_r_9_46_r_o_o}
+    \vspace{-15pt} \caption{}
+    \label{fig:rg_9_r}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.15\textwidth}
+    \includegraphics[width=.99\textwidth]{g_r_10_46_r_o_o}
+     \vspace{-15pt} \caption{}
+    \label{fig:rg_12_r}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.15\textwidth}
+    \includegraphics[width=.99\textwidth]{g_r_10_46_r_o_o}
+    \vspace{-15pt} \caption{}
+    \label{fig:rg_14_r}
+  \end{subfigure}\\
+  \caption{\textit{Oxygen-oxygen radial distribution functions} (\protect\subref{fig:rg_6_f},\protect\subref{fig:rg_6_r})  \(\rho_N\) = 0.065 (\protect\subref{fig:rg_7_f},\protect\subref{fig:rg_7_r}) \(\rho_N\) = 0.097 (\protect\subref{fig:rg_8_f},\protect\subref{fig:rg_8_r}) \(\rho_N\) = 0.129, (\protect\subref{fig:rg_9_f},\protect\subref{fig:rg_9_r}) \(\rho_N\) = 0.163, (\protect\subref{fig:rg_12_f},\protect\subref{fig:rg_12_r}) \(\rho_N\) = 0.260 (\protect\subref{fig:rg_14_f},\protect\subref{fig:rg_14_r}) \(\rho_N\) = 0.325.}
+  \label{fig:gr}
 \end{figure}
 
 \begin{figure}[h!]
 	\centering
-	\textbf{FLEXIBLE} \\
-	(a)~\includegraphics[width=0.28\linewidth]{g_r_6_46_f_o_o} 
-	(b)~\includegraphics[width=0.28\linewidth]{g_r_7_46_f_o_o}
-	(c)~\includegraphics[width=0.28\linewidth]{g_r_8_46_f_o_o}
-	\textbf{RIGID} \\
-	(d)~\includegraphics[width=0.28\linewidth]{g_r_6_46_r_o_o} 
-	(e)~\includegraphics[width=0.28\linewidth]{g_r_7_46_r_o_o}
-	 (f)~\includegraphics[width=0.28\linewidth]{g_r_8_46_r_o_o}
-	\vspace{-10pt}
-	\caption{\textit{Oxygen-oxygen radial distribution functions} Two-dimensional radial distribution functions in the plane parallel to the graphene plates (a,d) \(\rho_N\) = 0.065 (b,e) \(\rho_N\) = 0.097 (c,f) \(\rho_N\) = 0.129.}
-	\label{fig:gr}
+	\begin{subfigure}[b]{0.49\textwidth}
+    \includegraphics[trim={0.25cm 0.25cm 0.25cm 0.15cm},clip,width=\textwidth]{msd_2D_f}
+     \vspace{-15pt} \caption{}
+    \label{fig:msd_f}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.49\textwidth}
+    \includegraphics[trim={0.25cm 0.25cm 0.25cm 0.15cm},clip,width=1\textwidth]{msd_2D_r}
+     \vspace{-15pt} \caption{}
+    \label{fig:msd_r}
+  \end{subfigure}
+	\caption{\textit{Water in-plane mean square displacement}. Mean squared in-plane displacement of water molecules (\protect\subref{fig:msd_f}) flexible systems, (\protect\subref{fig:msd_r}) rigid systems. The inserts plot the estimated diffusion coefficient as a function of number density.}
+	\label{fig:msd_both}
+\end{figure}
+
+\begin{figure}[h!]
+	\centering
+    \includegraphics[trim={0.25cm 0.25cm 0.25cm 0.15cm},clip,width=0.4\textwidth]{diffusion_coeff_2D_f_r}
+	\caption{\textit{Comparison of estimated diffusion coefficients}. The estimated diffusion coefficient as a function of number density.}
+	\label{fig:msd}
 \end{figure}
 
 \clearpage

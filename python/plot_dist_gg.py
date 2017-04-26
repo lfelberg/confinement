@@ -1,7 +1,8 @@
 import sys
 import numpy as np
-import matplotlib.pyplot as plt
 import matplotlib, scipy
+import matplotlib.pyplot as plt
+from scipy.signal import argrelextrema
 from matplotlib.ticker import *
 MaxNLocator.default_params['nbins']=5
 
@@ -19,43 +20,42 @@ def plot_scatter(csv, sep, ln, itr):
     ax.yaxis.set_major_locator(MaxNLocator())
     
     leg = str(sep)+r'$\AA$ Sep, '+'L='+str(ln)+r'$\AA$'
-
-    Y = csv.dat[csv.key.index("dgg")]; 
-    print(min(Y), max(Y))
-   #y_okay = Y > sep-3.5; Y = Y[y_okay]
-   #X = csv.dat[csv.key.index("dg1"),y_okay]/Y.astype(float)
-    X = csv.dat[csv.key.index("dg1")]/Y.astype(float)
-    plt.hist2d(X, Y, bins=(nbins,nbins), range=([0,1], [5,14]),cmap=plt.get_cmap('plasma'))
-    ax.set_xlim([0.2,0.8]); ax.set_ylim([5,14])
+    Y = csv.dat[csv.key.index("dgg")]; yr = [5,17]
+    yy = Y < sep + float(sep)*0.3; Y = Y[yy]
+    X = csv.dat[csv.key.index("dg1"),yy]/Y.astype(float)
+    print(min(Y), max(Y), min(X), max(X))
+    plt.hist2d(X, Y, bins=(nbins,nbins), range=([0,1], yr),cmap=plt.get_cmap('plasma'))
+    ax.set_xlim([0.2,0.8]); ax.set_ylim(yr)
 
     ax.set_xlabel("$x/d_{gg}$",fontsize= 8)
-    ax.set_ylabel("$d_{gg} \, (\AA$)",fontsize= 8)
+    ax.set_ylabel("$d_{gg} \, (\AA)$",fontsize= 8)
     plt.savefig(csv.csvfname[:-3]+'.png',bbox_inches = 'tight',)
     plt.close()
 
     # finding graphene separation dist(s)
     bil = [9,12] #list of initial seps that form 2 diff layers in flexible
+    nbins = 50
     y,x = np.histogram(Y, bins=nbins); dx = x[1]-x[0]
     x = x[:-1] + dx/2.;y = y/sum(y.astype(float))/dx
     if sep in bil and itr != 'r':
         params = [sep-2, sep-1, 1.0, 1.0, 1.0, 1.0]
         fp,_ = scipy.optimize.curve_fit(double, x, y, p0=params)
         fit = double(x, *fp);
-        tit = "$d_{{gg1}}$: {0:.4f} $\AA$, $d_{{gg2}}$: {1:.4f} $\AA$".format(fp[0],fp[1])
+        tit = "$d_{{gg1}}$: {0:.2f}$\AA$, $d_{{gg2}}$: {1:.2f}$\AA$".format(fp[0],fp[1])
     else:
         params = [np.mean(Y), 1.0, -1.0]
         fp,_ = scipy.optimize.curve_fit(skew, x, y, p0=params)
         fit = skew(x, *fp);
-        tit = "$d_{{gg}}$: {0:.4f} $\AA$".format(fp[0])
-    print(tit)
+        tit = "$d_{{gg}}$: {0:.2f}$\AA$".format(fp[0])
+    print("GG sep maxes: ", x[argrelextrema(y, np.greater)], np.mean(Y))
     f = plt.figure(1, figsize = (1.0, 1.0))
     ax, ct, leg = f.add_subplot(111), 0, []
     ax.xaxis.set_major_locator(MaxNLocator())
     ax.yaxis.set_major_locator(MaxNLocator())
-    matplotlib.rcParams['font.size'] = 5; nbins = 200
+    matplotlib.rcParams['font.size'] = 5;
     ax.bar(x, y, width=dx,color = "y",edgecolor = "none"); ax.plot(x,fit)
-    ax.set_xlabel("$d_{gg} \, (\AA$)",fontsize=7);ax.set_xlim([6.,16.])
-    ax.set_ylabel("Probability ($1/\AA$)",fontsize=7);ax.set_ylim([0.,2.5])
+    ax.set_xlabel("$d_{gg} \, (\AA$)",fontsize=7);ax.set_xlim([6.,25.])
+    ax.set_ylabel("Probability $(1/\AA)$",fontsize=7);ax.set_ylim([0.,2.5])
     ax.set_title(tit)
     plt.savefig(csv.csvfname[:-3]+'g_sep_fit.png',bbox_inches = 'tight',)
     plt.close()
@@ -69,28 +69,26 @@ def plot_scatter(csv, sep, ln, itr):
     bil = [9,12] #list of initial seps that form 2 diff layers in flexible
     y,x = np.histogram(X, bins=nbins); dx = x[1]-x[0]
     x = x[:-1] + dx/2.;y = y/sum(y.astype(float))/dx
-    if sep > 11 or (sep == 9 and itr != 'r'):
+    if (sep > 11 and sep < 16) or (sep == 9 and itr != 'r'):
         params = [0.37, 0.5, 0.60, 0.01, 0.01, 0.01, 0.15, 0.45, 0.45]
         fp,_=scipy.optimize.curve_fit(triple,x,y,p0=params); fit=triple(x, *fp);
-        print(fp)
         tit = "$x/d_{{gg1}}$: {0:.2f}$\AA$, $x/d_{{gg2}}$: {1:.2f}$\AA$, $x/d_{{gg3}}$: {2:.2f}$\AA$".format(fp[0],fp[1],fp[2])
     elif sep > 8:
         params = [0.30, 0.69, 0.01, 0.01, 0.4, 0.4]
         fp,_ = scipy.optimize.curve_fit(double, x, y, p0=params)
         fit = double(x, *fp);
-        print(fp)
         tit = "$x/d_{{gg1}}$: {0:.2f}$\AA$, $x/d_{{gg2}}$: {1:.2f}$\AA$".format(fp[0],fp[1])
     else:
         params = [np.mean(X), 1.0, -1.0]
         fp,_ = scipy.optimize.curve_fit(skew, x, y, p0=params)
         fit = skew(x, *fp);
         tit = "$x/d_{{gg}}$: {0:.2f}$\AA$".format(fp[0])
-    print(tit)
+   #print(tit)
+    print("X position maxes: ", x[argrelextrema(y, np.greater)])
     f = plt.figure(1, figsize = (1.0, 1.0))
     ax, ct, leg = f.add_subplot(111), 0, []
     ax.xaxis.set_major_locator(MaxNLocator())
     ax.yaxis.set_major_locator(MaxNLocator())
-    matplotlib.rcParams['font.size'] = 5; nbins = 200
     ax.bar(x, y, width=dx,color = "y",edgecolor = "none"); ax.plot(x,fit)
     ax.set_xlabel("$x/d_{gg}$",fontsize=7); ax.set_xlim([0.2,0.8])
     ax.set_ylabel("Probability",fontsize=7); ax.set_ylim([0.,15])

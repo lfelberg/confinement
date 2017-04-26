@@ -28,7 +28,7 @@ class CSVFile:
                 dt.append(dat)                                                     
                 rw += 1 
         self.dat = np.array((dt)).T
-        print("Keys: ", self.key, " and dat shape ", self.dat.shape)
+       #print("Keys: ", self.key, " and dat shape ", self.dat.shape)
 
     def find_keyword(self, word):
         '''Find locations of key dim, where given word is found'''
