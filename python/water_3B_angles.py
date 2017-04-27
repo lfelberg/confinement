@@ -2,6 +2,7 @@ import sys
 import numpy as np
 
 from water_3B_angles_util import cal_ang
+from util import translate_pbc
 from xyzfile import XYZFile
 from volfile import VolFile
 
@@ -18,11 +19,30 @@ def get_angles(xyz, volC):
         di1, di2, th1 = [],[],[]
         rng = volC.get_rng_i(i) # pbc range
         in_wat = xyz.atom[i,oi,:]; ou_wat = xyz.atom[i,oou,:];
+        in_wat[1:,0] = translate_pbc(in_wat[0,0], in_wat[1:,0], rng[0])
+        ou_wat[1:,0] = translate_pbc(ou_wat[0,0], ou_wat[1:,0], rng[0])
 
-        d1,d2,t1=cal_ang(in_wat,rng)
-        di1+=d1;di2+=d2;th1+=t1;
-        d1,d2,t1=cal_ang(ou_wat,rng)
-        di1+=d1;di2+=d2;th1+=t1;
+        if ("_6_" in xyz.xyzfname or "_7_" in xyz.xyzfname 
+            or "_8_" in xyz.xyzfname): nm = 2
+        elif ("_9_" in xyz.xyzfname or "_10_" in xyz.xyzfname 
+            or "_11_" in xyz.xyzfname or "_12_" in xyz.xyzfname): nm = 3
+        elif ("_13_" in xyz.xyzfname or "_14_" in xyz.xyzfname 
+            or "_16_" in xyz.xyzfname): nm = 4
+
+        in_bn = np.linspace(min(in_wat[:,0]),max(in_wat[:,0]), num=nm)
+        b_in = np.digitize(in_wat[:,0], in_bn)
+        ou_bn = np.linspace(min(ou_wat[:,0]),max(ou_wat[:,0]), num=nm)
+        print(in_bn, ou_bn)
+        b_ou = np.digitize(ou_wat[:,0], ou_bn)
+        
+        for j in range(len(in_bn)):
+            print(sum((b_in==j).astype(int)))
+            if sum((b_in==j).astype(int))>10:
+               d1,d2,t1=cal_ang(in_wat[b_in == j],rng)
+               di1+=d1;di2+=d2;th1+=t1;
+            if sum((b_ou==j).astype(int))>10:
+               d1,d2,t1=cal_ang(ou_wat[b_ou == j],rng)
+               di1+=d1;di2+=d2;th1+=t1;
 
         d1s += [di1];d2s += [di2];t1s += [th1];
     return list([d1s, d2s, t1s]) 
@@ -55,7 +75,7 @@ def main():
     volC = VolFile("run"+nm+".vol"); xyz_cl = XYZFile(xyzname, volC)
 
     angs = get_angles(xyz_cl, volC)
-    print_angles(angs, "run"+nm+"_3B_angles.csv")
+    print_angles(angs, "run"+nm+"_3B_angles_layers.csv")
 
 if __name__=="__main__":
     main()

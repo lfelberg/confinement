@@ -20,13 +20,16 @@ def get_plt_lst(csv_nm):
     dim = csv_nm.split("_")[2]
     if dim == "3D": cls = [1]
     # flexible
-    elif sep_siz == 9:  cls = [2,23,25,26,11,12]
-    elif sep_siz == 10: cls = [3,18,14,15,27]
+    elif sep_siz == 9:  cls = [15,30] #4,14,15,28,30]
+    elif sep_siz == 10: cls = [4, 6, 7, 17, 18,]
+    elif sep_siz == 11: cls = [4, 7, 18, 36]
+    elif sep_siz == 12: cls = [9,21,22,41,]
+    elif sep_siz == 13: cls = [5, 8, 12, 13, 22, 25, 34, 45]
 
     # rigid
    #elif sep_siz == 9:  cls = [5,15,18,27]
    #elif sep_siz == 10: cls = [3,4,5,14,]
-    elif sep_siz == 12: cls = [3,18,19,31,32,7,8,17,20,]
+   #elif sep_siz == 12: cls = [3,18,19,31,32,7,8,17,20,]
     elif sep_siz == 14: cls = [2,19,29,38,4,7,8,11,12,23,24,] #27]
     elif sep_siz == 16: cls = [2,4,13]
 
@@ -45,14 +48,15 @@ def plot_scatter(plt_nm, csvL, sep, ln):
         for j in range(len(csvL[i])):
            cls = get_plt_lst(csvL[i][j].csvfname)
           #cls = []
-          #for k in range(3,len(csvL[i][j].dat)-2):
-          #    if max(csvL[i][j].dat[k]) < 6. and sum(csvL[i][j].dat[k]) > 0.1: cls.append(k)
+          #for k in range(3,len(csvL[i][j].dat)):
+          #    if max(csvL[i][j].dat[k]) < 5.5 and sum(csvL[i][j].dat[k]) > 0.1: cls.append(k)
            ct=0; print(cls)
           #for k in cls:
+          #   #ax.plot((0,20), (ct+1,ct+1),color = colorL[ct])
           #    ax.plot(csvL[i][j].dat[0], csvL[i][j].dat[k]+ct, 
           #    label = "x="+csvL[i][j].key[k][1:-2], color = colorL[ct])
           #    ct += 1
-           ax.plot(csvL[i][j].dat[0], np.mean(csvL[i][j].dat[cls],axis=0)+ct,  color = colorL[ct])
+           ax.plot(csvL[i][j].dat[0], np.mean(csvL[i][j].dat[cls],axis=0)/1.00+ct,  color = colorL[ct])
    #ax.legend(ncol = 1, columnspacing = 0.4,
    #    fontsize =  5 , handletextpad = 0.2,
    #    handlelength = 1.3, borderaxespad = -0.9,

@@ -56,7 +56,7 @@ def plot_scatter(plt_nm, csvL, loc, sep, ln, itr):
                 print("{0:.3f},{1:.5f}".format(dens[sep[i]],m/4.*A2_PS_TO_M2_S*(1e9)))
                 ax.plot(range(len(csvL[i][j][k].dat[0])), 
                         csvL[i][j][k].dat[loc], color=colorL[ct])
-                leg += [r'$\rho_N=${0:.2f}'.format(dens[sep[i]])]
+                leg += [r'$\rho_{{2D}}=${0:.2f}'.format(dens[sep[i]])]
                 ct += 1
     ax.set_xlim([0,1000])
     ax.set_ylim([0,6000])
@@ -64,14 +64,15 @@ def plot_scatter(plt_nm, csvL, loc, sep, ln, itr):
     ax.legend(leg, loc = 2, ncol = 1, columnspacing = 0.4,
         fontsize =  5 , handletextpad = 0.2, handlelength = 1.3,
         borderaxespad = -0.9, bbox_to_anchor = bbox   )
-    ax.set_xlabel("Time (ps)",fontsize=10); ax.set_ylabel("MSD ($\AA^2$)",fontsize=10)
+    ax.set_xlabel("Time (ps)",fontsize=10); 
+    ax.set_ylabel("$MSD_{||} \,\, (\AA^2)$",fontsize=10)
     plt.savefig(plt_nm+csvL[i][j][k].key[loc]+'.png', bbox_inches = 'tight',) 
 
     fn = 'diffusion_coeff_2D.png'
     im = plt.imread(fn, format='png')
     xl = ax.get_xlim(); yl = ax.get_ylim()
-   #newax = f.add_axes([0.135, 0.43, 0.45, 0.97], anchor='SW',) # for flex
-    newax = f.add_axes([0.285, 0.23, 0.60, 0.97], anchor='SW',) # rigid
+    newax = f.add_axes([0.135, 0.43, 0.45, 0.97], anchor='SW',) # for flex
+   #newax = f.add_axes([0.285, 0.23, 0.60, 0.97], anchor='SW',) # rigid
     newax.imshow(im, extent=[0, 1,0., 1.]) #, zorder=19)
     newax.axis('off')
     plt.savefig(plt_nm+csvL[i][j][k].key[loc]+'_insert.png',bbox_inches='tight',)

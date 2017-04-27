@@ -13,7 +13,7 @@ colorL = [[0,0,0], [0,0,1], [1, 0,0], [.93, .53, .18]]
 
 def plot_scatter(csv, sep, ln, itr):
     '''Using data from a histogram, plot several'''
-    nbins = 70
+    nbins = 100
     f = plt.figure(1, figsize = (1.5, 1.5)); ax = f.add_subplot(111)
     ax.xaxis.set_major_locator(MaxNLocator())
     ax.yaxis.set_major_locator(MaxNLocator())
@@ -21,8 +21,7 @@ def plot_scatter(csv, sep, ln, itr):
     angles = csv.dat[csv.find_keyword('the1')].flatten(); rng = [0, 180]
     y,x = np.histogram(angles, bins=nbins, range=rng); dx = x[1]-x[0]
     x = x[:-1] + dx/2.;y = y/sum(y.astype(float))/dx
-   #ax.bar(x, y, width=dx, color = "k",edgecolor = "none");
-    plt.plot(x, y, color = "k") #,edgecolor = "none");
+    plt.plot(x, y, color = "k")
     ax.set_xlim(rng); ax.set_ylim([0,0.02])
 
     ax.set_xlabel(r"3 body angle ($^{\circ}$)",fontsize= 8)
@@ -44,6 +43,12 @@ def plot_scatter(csv, sep, ln, itr):
    #ax.set_title(tit)
     print("Angle maxes: ", x[argrelextrema(y, np.greater)])
    #plt.savefig(csv.csvfname[:-4]+'_fit.png',bbox_inches='tight'); plt.close()
+
+   #ft_fl = open(csv.csvfname[:-3]+'_hist.csv', 'w')
+   #ft_fl.write("bin,hist\n")
+   #for xx in range(len(x)): 
+   #    ft_fl.write("{0:.3f},{1:.4f}\n".format(x[xx],y[xx]))
+   #ft_fl.close()
 
     # Plotting and fitting NN distribution
     f = plt.figure(1, figsize = (1.5, 1.5)); ax = f.add_subplot(111)
