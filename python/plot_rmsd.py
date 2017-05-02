@@ -49,8 +49,8 @@ def plot_scatter(plt_nm, csvL, loc, sep, ln, itr):
     for i in range(len(csvL)):
         for j in range(len(csvL[i])):
             for k in range(len(csvL[i][j])):
-                m,b = np.polyfit(csvL[i][j][k].dat[0,200:300],
-                                 csvL[i][j][k].dat[loc,200:300],1)
+                m,b = np.polyfit(csvL[i][j][k].dat[0,150:300],
+                                 csvL[i][j][k].dat[loc,150:300],1)
                #m,b = np.polyfit(csvL[i][j][k].dat[0,20:],
                #                 csvL[i][j][k].dat[loc,20:],1)
                 print("{0:.3f},{1:.5f}".format(dens[sep[i]],m/4.*A2_PS_TO_M2_S*(1e9)))
@@ -71,8 +71,8 @@ def plot_scatter(plt_nm, csvL, loc, sep, ln, itr):
     fn = 'diffusion_coeff_2D.png'
     im = plt.imread(fn, format='png')
     xl = ax.get_xlim(); yl = ax.get_ylim()
-    newax = f.add_axes([0.135, 0.43, 0.45, 0.97], anchor='SW',) # for flex
-   #newax = f.add_axes([0.285, 0.23, 0.60, 0.97], anchor='SW',) # rigid
+   #newax = f.add_axes([0.135, 0.40, 0.48, 0.97], anchor='SW',) # for flex
+    newax = f.add_axes([0.295, 0.23, 0.60, 0.97], anchor='SW',) # rigid
     newax.imshow(im, extent=[0, 1,0., 1.]) #, zorder=19)
     newax.axis('off')
     plt.savefig(plt_nm+csvL[i][j][k].key[loc]+'_insert.png',bbox_inches='tight',)

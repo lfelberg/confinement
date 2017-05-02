@@ -24,13 +24,13 @@ def plot_scatter(csv):
     flexb = csv.dat[csv.find_keyword('df_m2_s')].flatten(); 
    #plt.plot(dens, flexb, 'k.--', label = "flexible")
     plt.plot(dens, rigid, 'b.--',label = "rigid")
-    ax.set_xlim([0.,0.35]); ax.set_ylim([0,6.02])
+    ax.set_xlim([0.,0.40]); ax.set_ylim([0,6])
    #ax.set_yscale("log", nonposy='clip')
 
    #ax.legend(loc = 0, ncol = 1, fontsize=7, columnspacing = 0.4,)
     ax.set_xlabel(r"$\rho_{2D}$",fontsize= 10)
     ax.set_ylabel(r"$\mathcal{D}_{||} \times 10^9\, (m^2/s)$",fontsize= 10)
-    plt.savefig(csv.csvfname[:-4]+'_r.png',bbox_inches = 'tight',transparent=True)
+    plt.savefig(csv.csvfname[:-4]+'_f.png',bbox_inches = 'tight'  ,transparent=True)
     plt.close()
 
 def main():                                                                        

@@ -31,7 +31,7 @@ def get_plt_lst(csv_nm):
    #elif sep_siz == 10: cls = [3,4,5,14,]
    #elif sep_siz == 12: cls = [3,18,19,31,32,7,8,17,20,]
     elif sep_siz == 14: cls = [2,19,29,38,4,7,8,11,12,23,24,] #27]
-    elif sep_siz == 16: cls = [2,4,13]
+    elif sep_siz == 16: cls = [3,6,7,11,14,19,31,32,40,46]
 
     else: cls = [1] # dont have this sep size saved
     return cls
@@ -48,7 +48,7 @@ def plot_scatter(plt_nm, csvL, sep, ln):
         for j in range(len(csvL[i])):
            cls = get_plt_lst(csvL[i][j].csvfname)
           #cls = []
-          #for k in range(3,len(csvL[i][j].dat)):
+          #for k in range(31,len(csvL[i][j].dat)):
           #    if max(csvL[i][j].dat[k]) < 5.5 and sum(csvL[i][j].dat[k]) > 0.1: cls.append(k)
            ct=0; print(cls)
           #for k in cls:

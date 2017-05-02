@@ -5,6 +5,7 @@
 msd_[2-3]D_[0-9]*
 dist_3B_*
 *_o_h.png
+*.pptx
 
 *.xyz
 
