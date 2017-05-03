@@ -13,7 +13,7 @@ colorL = [[0,0,0], [0,0,1], [1, 0,0], [.93, .53, .18]]
 
 def plot_scatter(csv, sep, ln, itr):
     '''Using data from a histogram, plot several'''
-    nbins = 100
+    nbins = 70
     f = plt.figure(1, figsize = (1.5, 1.5)); ax = f.add_subplot(111)
     ax.xaxis.set_major_locator(MaxNLocator())
     ax.yaxis.set_major_locator(MaxNLocator())
@@ -32,17 +32,8 @@ def plot_scatter(csv, sep, ln, itr):
     plt.plot((109.,109.), (0,10), 'r-')
     plt.plot((160.,160.), (0,10), 'b-')
     params = [90.0, 120., 1.0, 1.0, 1.0, 1.0]
-   #fp,_ = scipy.optimize.curve_fit(double, x, y, p0=params)
-   #fit = double(x, *fp);  ax.plot(x,fit)
-   #tit =r"$A_{{3B_1}}$: {0:.2f}$^{{\circ}}$, $A_{{3B_2}}$: {1:.2f}$^{{\circ}}$".format(
-   #       fp[0],fp[1]);#print(tit, fp); 
-   #params = [np.mean(angles), 21.5,-0.01]
-   #fp,_ = scipy.optimize.curve_fit(skew, x, y, p0=params)
-   #fit = skew(x, *params);  ax.plot(x,fit)
-   #tit = r'$A_{{3B}}$: {0:.2f}$^{{\circ}}$'.format(fp[0])
-   #ax.set_title(tit)
     print("Angle maxes: ", x[argrelextrema(y, np.greater)])
-   #plt.savefig(csv.csvfname[:-4]+'_fit.png',bbox_inches='tight'); plt.close()
+    plt.savefig(csv.csvfname[:-4]+'_fit.png',bbox_inches='tight'); plt.close()
 
    #ft_fl = open(csv.csvfname[:-3]+'_hist.csv', 'w')
    #ft_fl.write("bin,hist\n")
@@ -64,13 +55,7 @@ def plot_scatter(csv, sep, ln, itr):
     ax.set_ylabel("Probability ($1/\AA$)",fontsize= 8)
     plt.savefig(csv.csvfname[:-10]+'dists.png',bbox_inches = 'tight',)
 
-   #params = [np.mean(dists), 1.0, -1.0]
-   #fp,_ = scipy.optimize.curve_fit(skew, x, y, p0=params)
-   #fit = skew(x, *fp); tit = "$d_{{NN}}$: {0:.2f}$\AA$".format(fp[0])
-   #ax.plot(x,fit);  
     print("Near neighbor maxes: ", x[argrelextrema(y, np.greater)])
-   #ax.set_title(tit)
-   #plt.savefig(csv.csvfname[:-10]+'dists_fit.png',bbox_inches = 'tight',)
     plt.close()
 
 def main():                                                                        

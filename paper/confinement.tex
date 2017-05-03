@@ -140,90 +140,46 @@ For all simulations, the dynamics timestep was set at 2.0 femtoseconds.
 
 \subsection*{Analysis}
 
-\subsubsection*{Energy calculations}
+\subsection*{Results}
 
-The excess Gibbs free energy (G\textsubscript{excess}) of the confined water was calculated as the sum of the excess enthalpy (H\textsubscript{excess}) and the excess entropy (S\textsubscript{excess}) as follows:
-\begin{equation}
-    G\textsubscript{excess}  =  H_{\text{excess}} - T  S_{\text{excess}}
-\end{equation}
-
-Where is H\textsubscript{excess} defined as \textbf{\color{red}this is from \cite{Huggins2012}}. 
-\begin{equation}
-    H_{\text{excess}} = E_{\text{interaction}} - RT
-\end{equation}
-
-Where E\textsubscript{excess} is computed from long-range and pair interactions. Bonded energetics (bond stretching, angle bending) are not included because the water mode is rigid. Calculations of the excess entropy are detailed in the next section and have been taken from the method detailed by Huggins \cite{Huggins2012}.
-
-\subsubsection*{Entropy calculations}
-
-The molecular pair correlation function in water is a function of five angles and the intermolecular separation, as depicted in Figure \textbf{\color{red}OMG figure}. Using the pair correlation function, the excess entropy can be calculated as:
-\begin{equation}
-    S_{\text{excess}} = - \frac{1}{2} k_B \rho \int_V [ g(r, \omega) ln \, g(r, \omega) - g(r, \omega) + 1 ] d \mathbf{r} \, d\omega
-\end{equation}
-Where k\textsubscript{B} is Boltzmann's constant, \(\rho\) is the number density of bulk water and \(g(r, \omega)\) is the correlation function. This entropy is further divided into translational (S\textsubscript{trans}) and orientational (S\textsubscript{or}) components:
-\begin{equation}
-    S_{\text{excess}} = S_{\text{trans}} + S_{\text{or}}
-\end{equation}
-For this notation it is useful to separated the correlation function into a angle independent component and a conditional probability of the angles:
-\begin{equation}
-    g(r, \omega) = g(r) g(\omega | r)
-\end{equation}
-Now S\textsubscript{trans} and S\textsubscript{or} are written as follows:
-\begin{equation}
-    S_{\text{trans}} = - \frac{1}{2} k_B \rho \int_V [ g(r) ln \,  g(r) - g(r) + 1 ] d \mathbf{r} 
-\end{equation}
-\begin{equation}
-   \begin{split}
-    S_{\text{trans}} = & - \frac{1}{2} k_B \rho \int_0^\pi sin \theta d \theta \int_0^{2\pi} d \phi \int_0^\infty   [ g(r) ln\,  g(r) - g(r) + 1 ] r^2 dr \\
-     = &  - {2} \pi k_B \rho \int_0^\infty   [ g(r) ln \,  g(r) - g(r) + 1 ] r^2 dr 
-  \end{split}
-\end{equation}
-And the orientation component integrates over all five angles as a conditional probability of pair distance (r). The five angles contain symmetry such that the integration ranges are modified as given in Table \ref{table:ent_angles}.
-\begin{table}[ht!]
-\centering
-\begin{tabular}{|c|r|r|}
-\hline
-\textbf{Angle} & \multicolumn{1}{c|}{\textbf{Original Range}} & \multicolumn{1}{c|}{\textbf{Actual Range}} \\ \hline
-\( \theta_1\) & \([0, \pi]\)                             & \([0, \pi]\)                           \\ \hline
-\( \theta_2\) & \([0, \pi]\)                             & \([0, \pi]\)                           \\ \hline
-\( \chi_1\)   & \([0, 2\pi]\)                            & \([0, \pi]\)                           \\ \hline
-\( \chi_2\)   & \([0, 2\pi]\)                            & \([0, \pi]\)                           \\ \hline
-\( \phi\)      & \([0, 2\pi]\)                            & \([0, \pi]\)                           \\ \hline
-\end{tabular}
-\caption{\textit{Range of angles for five Euler angles of pair distribution functions.} The first column is the range used for full scheme, the second column is actual range used due to the symmetry of water.}
-\label{table:ent_angles}
-\end{table}
-\begin{equation}
- \begin{split}
-    S_{\text{or}} = & - \frac{1}{2} k_B \rho \int_V g(r) S_{\text{shell}} (r) d \textbf{r} \\
-                        = & - \frac{1}{2} k_B \rho \int_0^\pi sin \theta d \theta \int_0^{2\pi} d \phi \int_0^\infty g(r) S_{\text{shell}} (r) r^2 dr
-\end{split}
-\end{equation}
-Where S\textsubscript{shell} is given as:
-\begin{equation}
-    S_{\text{shell}} = \frac{1}{\Omega} \int g(\omega | r) ln \, g(\omega | r) d\omega
-\end{equation}
-Where the integrand (\( \int d\omega\)) is:
-\begin{equation}
- \begin{split}
-    \int d\omega & = \int sin \, \theta_1 d \theta_1 sin \, \theta_2 d \theta_2 d\phi_1 d\phi_2 d\chi_1 d\chi_2 \\
-        & =  2\pi \int_0^\pi sin \, \theta_1 d \theta_1 \int_0^\pi sin \, \theta_2 d \theta_2 \int_0^\pi d\phi\int_0^\pi d\chi_1 \int_0^\pi d\chi_2 
- \end{split}
-\end{equation}
-And \(\Omega\) is the integral over all angles:
-\begin{equation}
-    \Omega = 2\pi \int_0^\pi sin \, \theta_1 d \theta_1 \int_0^\pi sin \, \theta_2 d \theta_2 \int_0^\pi d\phi\int_0^\pi d\chi_1 \int_0^\pi d\chi_2 = 2 \pi * 2 * 2 * \pi * \pi * \pi = 8 \pi^4
-\end{equation}
-Although the \(2\pi\) before the integrand is ignored because it will cancel with the normalization. For each of the angles, the distribution function is normalized such that:
-\begin{equation}
-    \frac{1}{\Omega} \int g(\omega | r ) \, d \omega = 1  
-\end{equation}
+\begin{itemize}
+	\item Effect of varying the 2D density of the water. 
+	\begin{itemize}
+		\item Flexible waters: there is a bending of the graphene layers to accommodate intermediate 
+		         amounts of water.
+		\item Rigid walls exhibit striking transitions between 1 to 2 and 2 to 3 water layer separation distances.
+		         See figure \ref{fig:dgg}
+		\item After enough water is added to have a 3 layer system, the increase in plate separation is much
+			more smooth
+		\item This transition is not present in the flexible case.
+	\end{itemize}
+	\item Effect of varying wall rigidity and 2D density on the structure of the water. 
+	\begin{itemize}
+		\item For 1 layer, increased density leads to increased order. When the density is low, the rigid system is 
+		         very liquid-like and has a very high MSD. For both systems as density increases from 0.097 
+		         (7 \r A sep) to 0.129 (8 \r A sep), the water forms a much more well defined ice.
+		\item For the 2 layer system, we observe that the rigid system forms a hexagonal ice with pockets of gas, 
+			whereas the flexible has a more liquid like structure, with smaller air pockets.
+		\item After a density of 0.227 (11 \r A) the systems appear visually similar, with liquid-like permeating layers.
+	\end{itemize}
+	\item Graphene and water structure and transport. 
+	\begin{itemize}
+		\item It is very interesting to note that the 2D diffusion coefficients computed for the rigid vs the flexible 
+			systems differ, even at the largest confinement distances. 
+		\item The lowest density (0.065) has markedly different diffusion coefficients. For the flexible, the diffusion coefficient is many orders of magnitude smaller than the others because the pinched graphene creates such a rigid ice structure. In addition, the pinch reduces diffusion to one dimension.
+		\item For 0.097 (7 \r A sep) to 0.129 (8 \r A sep), as the liquid transitions to ice, the diffusion coefficient drops and the flexible D is larger for both densities.
+		\item For 0.163 (9 \r A sep) to 0.192 (10 \r A sep) the rigid system D decreases further, owing to the hexagonal ice structure.
+		\item The trends for the rest, I need to think about, and want to study a bit more/make sure the numbers are right before drawing lots of conclusions
+	\end{itemize}
+\end{itemize}     
 
 \begin{figure}[h!]
 	\centering
-	(a)~\includegraphics[width=0.45\linewidth]{d6L46_side} 
-	(b)~\includegraphics[width=0.40\linewidth]{d12L46_side}
-	\caption{\textit{Snapshots of flexible confined systems.} Graphene carbons in grey, water oxygens in red and water hydrogens in white. (a) 6 \r A separated system (b) 12 \r A separated system. }
+	(a)~\includegraphics[width=0.11\linewidth]{6A_f2} 
+	\includegraphics[width=0.24\linewidth]{6A_f3}
+	(b)~\includegraphics[width=0.15\linewidth]{6A_r2} 
+	\includegraphics[width=0.39\linewidth]{6A_r3}
+	\caption{\textit{Snapshots of flexible confined systems.} Graphene carbons in grey, water oxygens in red and water hydrogens in white. (a) flexible walled system (b) rigid walled system. }
 	\label{fig:snapshot}
 \end{figure}
 
@@ -248,7 +204,7 @@ Although the \(2\pi\) before the integrand is ignored because it will cancel wit
 	(h)~\includegraphics[trim={0.35cm 0.25cm 0.75cm 0.15cm},clip,width=0.15\linewidth]{dgg_v_x_10_46_r}
 	(i)~\includegraphics[trim={0.35cm 0.25cm 0.75cm 0.15cm},clip,width=0.15\linewidth]{dgg_v_x_12_46_r}
 	(j)~\includegraphics[trim={0.35cm 0.25cm 0.75cm 0.15cm},clip,width=0.15\linewidth]{dgg_v_x_14_46_r}
-	\caption{\textit{Oxygen-oxygen radial distribution functions} Two-dimensional radial distribution functions in the plane parallel to the graphene plates (a,f) \(\rho_N\) = 0.065, (b,g) \(\rho_N\) = 0.16, (c,h) \(\rho_N\) = 0.26, (d,i) \(\rho_N\) = 0.33.}
+	\caption{\textit{Oxygen-oxygen radial distribution functions} Two-dimensional radial distribution functions in the plane parallel to the graphene plates (a,f) \(\rho_{2D}\) = 0.065, (b,g) \(\rho_{2D}\) = 0.16, (c,h) \(\rho_{2D}\) = 0.26, (d,i) \(\rho_{2D}\) = 0.33.}
 	\label{fig:density_vs_dgg}
 \end{figure}
 
@@ -266,24 +222,12 @@ Although the \(2\pi\) before the integrand is ignored because it will cancel wit
 	(h)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{dgg_fit_10_46_r}
 	(i)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{dgg_fit_12_46_r}
 	(j)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{dgg_fit_14_46_r}
-	\caption{\textit{Graphene-graphene separation}. Distribution of graphene-graphene separations. (a,f) \(\rho_N\) = 0.065, (b,g) \(\rho_N\) = 0.16, (c,h) \(\rho_N\) = 0.26, (d,i) \(\rho_N\) = 0.33.}
+	\caption{\textit{Graphene-graphene separation}. Distribution of graphene-graphene separations. (a,f) \(\rho_{2D}\) = 0.065, (b,g) \(\rho_{2D}\) = 0.16, (c,h) \(\rho_{2D}\) = 0.26, (d,i) \(\rho_{2D}\) = 0.33.}
 	\label{fig:dgg_distribution}
 \end{figure}
 
 \begin{figure}[h!]
 	\centering
-%	\textbf{FLEXIBLE} \\
-%	(a)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{ang_3B_6_46_f} 
-%	(b)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{ang_3B_7_46_f}
-%	(c)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{ang_3B_8_46_f}
-%	(d)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{ang_3B_12_46_f}
-%	(e)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{ang_3B_14_46_f} \\
-%	\textbf{RIGID} \\
-%	(f)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{ang_3B_6_46_r} 
-%	(g)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{ang_3B_7_46_r}
-%	(h)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{ang_3B_8_46_r}
-%	(i)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{ang_3B_12_46_r}
-%	(j)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{ang_3B_14_46_r}
 	   \textbf{FLEXIBLE} \\
   \begin{subfigure}[b]{0.15\textwidth}
     \includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_6_46_f}
@@ -347,45 +291,12 @@ Although the \(2\pi\) before the integrand is ignored because it will cancel wit
     \vspace{-15pt} \caption{}
     \label{fig:ang_14_r}
   \end{subfigure}\\
-	\caption{\textit{3-body angle distribution functions} Distribution of angle formed between nearest neighbors  (\protect\subref{fig:rg_6_f},\protect\subref{fig:rg_6_r})  \(\rho_N\) = 0.065 (\protect\subref{fig:ang_7_f},\protect\subref{fig:ang_7_r}) \(\rho_N\) = 0.097 (\protect\subref{fig:ang_8_f},\protect\subref{fig:ang_8_r}) \(\rho_N\) = 0.129, (\protect\subref{fig:ang_9_f},\protect\subref{fig:ang_9_r}) \(\rho_N\) = 0.163, (\protect\subref{fig:ang_12_f},\protect\subref{fig:ang_12_r}) \(\rho_N\) = 0.260 (\protect\subref{fig:ang_14_f},\protect\subref{fig:ang_14_r}) \(\rho_N\) = 0.325.}
+	\caption{\textit{3-body angle distribution functions} Distribution of angle formed between nearest neighbors  (\protect\subref{fig:rg_6_f},\protect\subref{fig:rg_6_r})  \(\rho_{2D}\) = 0.065 (\protect\subref{fig:ang_7_f},\protect\subref{fig:ang_7_r}) \(\rho_{2D}\) = 0.097 (\protect\subref{fig:ang_8_f},\protect\subref{fig:ang_8_r}) \(\rho_{2D}\) = 0.129, (\protect\subref{fig:ang_9_f},\protect\subref{fig:ang_9_r}) \(\rho_{2D}\) = 0.163, (\protect\subref{fig:ang_12_f},\protect\subref{fig:ang_12_r}) \(\rho_{2D}\) = 0.260 (\protect\subref{fig:ang_14_f},\protect\subref{fig:ang_14_r}) \(\rho_{2D}\) = 0.325.}
 	\label{fig:3body_angle_dist}
 \end{figure}
 
-%\begin{figure}[h!]
-%	\centering
-%	\textbf{FLEXIBLE} \\
-%	(a)~\includegraphics[width=0.28\linewidth]{g_r_6_46_f_o_o} 
-%	(b)~\includegraphics[width=0.28\linewidth]{g_r_7_46_f_o_o}
-%	(c)~\includegraphics[width=0.28\linewidth]{g_r_8_46_f_o_o}
-%	(a)~\includegraphics[trim={0.25cm 0.25cm 0.25cm 0.15cm},clip,width=0.28\linewidth]{ang_3B_6_46_f} 
-%	(b)~\includegraphics[trim={0.25cm 0.25cm 0.25cm 0.15cm},clip,width=0.28\linewidth]{ang_3B_7_46_f}
-%	(c)~\includegraphics[trim={0.25cm 0.25cm 0.25cm 0.15cm},clip,width=0.28\linewidth]{ang_3B_8_46_f}
-%	\textbf{RIGID} \\
-%	(d)~\includegraphics[width=0.28\linewidth]{g_r_6_46_r_o_o} 
-%	(e)~\includegraphics[width=0.28\linewidth]{g_r_7_46_r_o_o}
-%	 (f)~\includegraphics[width=0.28\linewidth]{g_r_8_46_r_o_o}
-%	(f)~\includegraphics[trim={0.25cm 0.25cm 0.25cm 0.15cm},clip,width=0.28\linewidth]{ang_3B_6_46_r} 
-%	(g)~\includegraphics[trim={0.25cm 0.25cm 0.25cm 0.15cm},clip,width=0.28\linewidth]{ang_3B_7_46_r}
-%	(h)~\includegraphics[trim={0.25cm 0.25cm 0.25cm 0.15cm},clip,width=0.28\linewidth]{ang_3B_8_46_r}
-%	\vspace{-10pt}
-%	\caption{\textit{Oxygen-oxygen radial distribution functions}. Two-dimensional radial distribution functions in the plane parallel to the graphene plates (a,d) \(\rho_N\) = 0.065 (b,e) \(\rho_N\) = 0.097 (c,f) \(\rho_N\) = 0.129.}
-%	\label{fig:gr}
-%\end{figure}
-
 \begin{figure}[h!]
 	\centering
-%	\textbf{FLEXIBLE} \\
-%	(a)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{ang_3B_6_46_f} 
-%	(b)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{ang_3B_7_46_f}
-%	(c)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{ang_3B_8_46_f}
-%	(d)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{ang_3B_12_46_f}
-%	(e)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{ang_3B_14_46_f} \\
-%	\textbf{RIGID} \\
-%	(f)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{ang_3B_6_46_r} 
-%	(g)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{ang_3B_7_46_r}
-%	(h)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{ang_3B_8_46_r}
-%	(i)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{ang_3B_12_46_r}
-%	(j)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{ang_3B_14_46_r}
 	   \textbf{FLEXIBLE} \\
   \begin{subfigure}[b]{0.15\textwidth}
     \includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_10_46_f}
@@ -401,8 +312,12 @@ Although the \(2\pi\) before the integrand is ignored because it will cancel wit
     \includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_13_46_f}
     \vspace{-15pt} \caption{}
     \label{fig:ang_13_f}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.15\textwidth}
+    \includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_16_46_f}
+     \vspace{-15pt} \caption{}
+    \label{fig:ang_16_f}
   \end{subfigure} \\     \vspace{-10pt} 
- % \hfill
  \textbf{RIGID} \\
   \begin{subfigure}[b]{0.15\textwidth}
     \includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_10_46_r}
@@ -418,8 +333,13 @@ Although the \(2\pi\) before the integrand is ignored because it will cancel wit
     \includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_13_46_r}
      \vspace{-15pt} \caption{}
     \label{fig:ang_13_r}
+  \end{subfigure}
+   \begin{subfigure}[b]{0.15\textwidth}
+    \includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_16_46_r}
+     \vspace{-15pt} \caption{}
+    \label{fig:ang_16_r}
   \end{subfigure}\\
-	\caption{}%\textit{3-body angle distribution functions} Distribution of angle formed between nearest neighbors  (\protect\subref{fig:rg_6_f},\protect\subref{fig:rg_6_r})  \(\rho_N\) = 0.065 (\protect\subref{fig:ang_7_f},\protect\subref{fig:ang_7_r}) \(\rho_N\) = 0.097 (\protect\subref{fig:ang_8_f},\protect\subref{fig:ang_8_r}) \(\rho_N\) = 0.129, (\protect\subref{fig:ang_9_f},\protect\subref{fig:ang_9_r}) \(\rho_N\) = 0.163, (\protect\subref{fig:ang_12_f},\protect\subref{fig:ang_12_r}) \(\rho_N\) = 0.260 (\protect\subref{fig:ang_14_f},\protect\subref{fig:ang_14_r}) \(\rho_N\) = 0.325.}
+	\caption{\textit{3-body angle distribution functions} Distribution of angle formed between nearest neighbors  (\protect\subref{fig:ang_10_f},\protect\subref{fig:ang_10_r})  \(\rho_{2D}\) = 0.196 (\protect\subref{fig:ang_11_f},\protect\subref{fig:ang_11_r}) \(\rho_{2D}\) = 0.227 (\protect\subref{fig:ang_13_f},\protect\subref{fig:ang_13_r}) \(\rho_{2D}\) = 0.293, (\protect\subref{fig:ang_16_f},\protect\subref{fig:ang_16_r}) \(\rho_{2D}\) = 0.390.}
 	\label{fig:3body_angle_dist_2}
 \end{figure}
 
@@ -488,7 +408,7 @@ Although the \(2\pi\) before the integrand is ignored because it will cancel wit
     \vspace{-15pt} \caption{}
     \label{fig:rg_14_r}
   \end{subfigure}\\
-  \caption{\textit{Oxygen-oxygen radial distribution functions} (\protect\subref{fig:rg_6_f},\protect\subref{fig:rg_6_r})  \(\rho_N\) = 0.065 (\protect\subref{fig:rg_7_f},\protect\subref{fig:rg_7_r}) \(\rho_N\) = 0.097 (\protect\subref{fig:rg_8_f},\protect\subref{fig:rg_8_r}) \(\rho_N\) = 0.129, (\protect\subref{fig:rg_9_f},\protect\subref{fig:rg_9_r}) \(\rho_N\) = 0.163, (\protect\subref{fig:rg_12_f},\protect\subref{fig:rg_12_r}) \(\rho_N\) = 0.260 (\protect\subref{fig:rg_14_f},\protect\subref{fig:rg_14_r}) \(\rho_N\) = 0.325.}
+  \caption{\textit{Oxygen-oxygen radial distribution functions} (\protect\subref{fig:rg_6_f},\protect\subref{fig:rg_6_r})  \(\rho_{2D}\) = 0.065 (\protect\subref{fig:rg_7_f},\protect\subref{fig:rg_7_r}) \(\rho_{2D}\) = 0.097 (\protect\subref{fig:rg_8_f},\protect\subref{fig:rg_8_r}) \(\rho_{2D}\) = 0.129, (\protect\subref{fig:rg_9_f},\protect\subref{fig:rg_9_r}) \(\rho_{2D}\) = 0.163, (\protect\subref{fig:rg_12_f},\protect\subref{fig:rg_12_r}) \(\rho_{2D}\) = 0.260 (\protect\subref{fig:rg_14_f},\protect\subref{fig:rg_14_r}) \(\rho_{2D}\) = 0.325.}
   \label{fig:gr}
 \end{figure}
 
@@ -585,7 +505,84 @@ two sheets??
 %improper\_coeff 1 1.1 -1 1  \# CA-CA-CA-HA for benzene 
 
 
+\subsubsection*{Energy calculations}
 
+The excess Gibbs free energy (G\textsubscript{excess}) of the confined water was calculated as the sum of the excess enthalpy (H\textsubscript{excess}) and the excess entropy (S\textsubscript{excess}) as follows:
+\begin{equation}
+    G\textsubscript{excess}  =  H_{\text{excess}} - T  S_{\text{excess}}
+\end{equation}
+
+Where is H\textsubscript{excess} defined as \textbf{\color{red}this is from \cite{Huggins2012}}. 
+\begin{equation}
+    H_{\text{excess}} = E_{\text{interaction}} - RT
+\end{equation}
+
+Where E\textsubscript{excess} is computed from long-range and pair interactions. Bonded energetics (bond stretching, angle bending) are not included because the water mode is rigid. Calculations of the excess entropy are detailed in the next section and have been taken from the method detailed by Huggins \cite{Huggins2012}.
+
+\subsubsection*{Entropy calculations}
+
+The molecular pair correlation function in water is a function of five angles and the intermolecular separation, as depicted in Figure \textbf{\color{red}OMG figure}. Using the pair correlation function, the excess entropy can be calculated as:
+\begin{equation}
+    S_{\text{excess}} = - \frac{1}{2} k_B \rho \int_V [ g(r, \omega) ln \, g(r, \omega) - g(r, \omega) + 1 ] d \mathbf{r} \, d\omega
+\end{equation}
+Where k\textsubscript{B} is Boltzmann's constant, \(\rho\) is the number density of bulk water and \(g(r, \omega)\) is the correlation function. This entropy is further divided into translational (S\textsubscript{trans}) and orientational (S\textsubscript{or}) components:
+\begin{equation}
+    S_{\text{excess}} = S_{\text{trans}} + S_{\text{or}}
+\end{equation}
+For this notation it is useful to separated the correlation function into a angle independent component and a conditional probability of the angles:
+\begin{equation}
+    g(r, \omega) = g(r) g(\omega | r)
+\end{equation}
+Now S\textsubscript{trans} and S\textsubscript{or} are written as follows:
+\begin{equation}
+    S_{\text{trans}} = - \frac{1}{2} k_B \rho \int_V [ g(r) ln \,  g(r) - g(r) + 1 ] d \mathbf{r} 
+\end{equation}
+\begin{equation}
+   \begin{split}
+    S_{\text{trans}} = & - \frac{1}{2} k_B \rho \int_0^\pi sin \theta d \theta \int_0^{2\pi} d \phi \int_0^\infty   [ g(r) ln\,  g(r) - g(r) + 1 ] r^2 dr \\
+     = &  - {2} \pi k_B \rho \int_0^\infty   [ g(r) ln \,  g(r) - g(r) + 1 ] r^2 dr 
+  \end{split}
+\end{equation}
+And the orientation component integrates over all five angles as a conditional probability of pair distance (r). The five angles contain symmetry such that the integration ranges are modified as given in Table \ref{table:ent_angles}.
+\begin{table}[ht!]
+\centering
+\begin{tabular}{|c|r|r|}
+\hline
+\textbf{Angle} & \multicolumn{1}{c|}{\textbf{Original Range}} & \multicolumn{1}{c|}{\textbf{Actual Range}} \\ \hline
+\( \theta_1\) & \([0, \pi]\)                             & \([0, \pi]\)                           \\ \hline
+\( \theta_2\) & \([0, \pi]\)                             & \([0, \pi]\)                           \\ \hline
+\( \chi_1\)   & \([0, 2\pi]\)                            & \([0, \pi]\)                           \\ \hline
+\( \chi_2\)   & \([0, 2\pi]\)                            & \([0, \pi]\)                           \\ \hline
+\( \phi\)      & \([0, 2\pi]\)                            & \([0, \pi]\)                           \\ \hline
+\end{tabular}
+\caption{\textit{Range of angles for five Euler angles of pair distribution functions.} The first column is the range used for full scheme, the second column is actual range used due to the symmetry of water.}
+\label{table:ent_angles}
+\end{table}
+\begin{equation}
+ \begin{split}
+    S_{\text{or}} = & - \frac{1}{2} k_B \rho \int_V g(r) S_{\text{shell}} (r) d \textbf{r} \\
+                        = & - \frac{1}{2} k_B \rho \int_0^\pi sin \theta d \theta \int_0^{2\pi} d \phi \int_0^\infty g(r) S_{\text{shell}} (r) r^2 dr
+\end{split}
+\end{equation}
+Where S\textsubscript{shell} is given as:
+\begin{equation}
+    S_{\text{shell}} = \frac{1}{\Omega} \int g(\omega | r) ln \, g(\omega | r) d\omega
+\end{equation}
+Where the integrand (\( \int d\omega\)) is:
+\begin{equation}
+ \begin{split}
+    \int d\omega & = \int sin \, \theta_1 d \theta_1 sin \, \theta_2 d \theta_2 d\phi_1 d\phi_2 d\chi_1 d\chi_2 \\
+        & =  2\pi \int_0^\pi sin \, \theta_1 d \theta_1 \int_0^\pi sin \, \theta_2 d \theta_2 \int_0^\pi d\phi\int_0^\pi d\chi_1 \int_0^\pi d\chi_2 
+ \end{split}
+\end{equation}
+And \(\Omega\) is the integral over all angles:
+\begin{equation}
+    \Omega = 2\pi \int_0^\pi sin \, \theta_1 d \theta_1 \int_0^\pi sin \, \theta_2 d \theta_2 \int_0^\pi d\phi\int_0^\pi d\chi_1 \int_0^\pi d\chi_2 = 2 \pi * 2 * 2 * \pi * \pi * \pi = 8 \pi^4
+\end{equation}
+Although the \(2\pi\) before the integrand is ignored because it will cancel with the normalization. For each of the angles, the distribution function is normalized such that:
+\begin{equation}
+    \frac{1}{\Omega} \int g(\omega | r ) \, d \omega = 1  
+\end{equation}
 
 
 

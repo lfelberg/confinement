@@ -58,8 +58,8 @@ def plot_scatter(plt_nm, csvL, loc, sep, ln, itr):
                         csvL[i][j][k].dat[loc], color=colorL[ct])
                 leg += [r'$\rho_{{2D}}=${0:.2f}'.format(dens[sep[i]])]
                 ct += 1
-    ax.set_xlim([0,1000])
-    ax.set_ylim([0,6000])
+   #ax.set_xlim([0,1000])
+   #ax.set_ylim([0,6000])
     bbox = [1.1, 0.95]
     ax.legend(leg, loc = 2, ncol = 1, columnspacing = 0.4,
         fontsize =  5 , handletextpad = 0.2, handlelength = 1.3,
@@ -69,14 +69,14 @@ def plot_scatter(plt_nm, csvL, loc, sep, ln, itr):
     plt.savefig(plt_nm+csvL[i][j][k].key[loc]+'.png', bbox_inches = 'tight',) 
 
     fn = 'diffusion_coeff_2D.png'
-    im = plt.imread(fn, format='png')
-    xl = ax.get_xlim(); yl = ax.get_ylim()
+   #im = plt.imread(fn, format='png')
+   #xl = ax.get_xlim(); yl = ax.get_ylim()
    #newax = f.add_axes([0.135, 0.40, 0.48, 0.97], anchor='SW',) # for flex
-    newax = f.add_axes([0.295, 0.23, 0.60, 0.97], anchor='SW',) # rigid
-    newax.imshow(im, extent=[0, 1,0., 1.]) #, zorder=19)
-    newax.axis('off')
-    plt.savefig(plt_nm+csvL[i][j][k].key[loc]+'_insert.png',bbox_inches='tight',)
-    plt.close()
+   #newax = f.add_axes([0.295, 0.23, 0.60, 0.97], anchor='SW',) # rigid
+   #newax.imshow(im, extent=[0, 1,0., 1.]) #, zorder=19)
+   #newax.axis('off')
+   #plt.savefig(plt_nm+csvL[i][j][k].key[loc]+'_insert.png',bbox_inches='tight',)
+   #plt.close()
 
 def main():
     '''For a collection of data, get info from csv and then plot,

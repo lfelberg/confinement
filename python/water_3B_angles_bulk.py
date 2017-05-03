@@ -12,16 +12,25 @@ def get_angles(xyz, volC):
     # find water oxys, hyds
     oo = xyz.get_type_i(WOXY); bnz = 5
     d1s, d2s, t1s, = [],[],[]
+    ocrd = xyz.atom[:,oo]
 
     for i in range(1,len(xyz.atom)): # for each time snapshot, except first
-   #for i in range(1,2):
-        di1, di2, th1 = [],[],[]
+        di1, di2, th1, nm = [],[],[], 20
         rng = volC.get_rng_i(i) # pbc range
 
-        d1,d2,t1=cal_ang(xyz.atom[i,oo,:],rng)
-        di1+=d1;di2+=d2;th1+=t1;
+        w_bn = np.linspace(min(ocrd[i,:,0]),max(ocrd[i,:,0]), num=nm)
+        b_w = np.digitize(ocrd[i,:,0], w_bn)
+        
+        for j in range(4,len(w_bn)-3):
+            if sum((b_w==j).astype(int))>10:
+               d1,d2,t1=cal_ang(ocrd[i,b_w == j],rng)
+               di1+=d1;di2+=d2;th1+=t1;
+       #d1,d2,t1=cal_ang(xyz.atom[i,oo,:],rng)
+       #di1+=d1;di2+=d2;th1+=t1;
 
-        d1s += [di1];d2s += [di2];t1s += [th1];
+       #d1s += [di1];d2s += [di2];t1s += [th1];
+        d1s += di1;d2s += di2;t1s += th1;
+    print(len(d1s), len(t1s))
     return list([d1s, d2s, t1s]) 
 
 def print_angles(angls, fname):
@@ -29,18 +38,27 @@ def print_angles(angls, fname):
        angls = [ [d1],[d2],[thet1]]'''
     f = open(fname, 'w'); 
     nsnap, stn = len(angls[0]), ''
-    vals = ['dis1_','dis2_','the1_']
-    for i in range(nsnap):
-        for j in range(len(vals)):
-            stn += "{0}{1},".format(vals[j],i)
+    vals = ['dis1','dis2','the1']
+    for j in range(len(vals)): stn += "{0},".format(vals[j])
     f.write(stn[:-1]+'\n')
 
-    for k in range(len(angls[0][0])):
+    for j in range(nsnap):
         st = ""
-        for j in range(nsnap):
-            for i in range(len(vals)):
-                st += "{0:.5f},".format(angls[i][j][k])
+        for i in range(len(vals)):
+            st += "{0:.5f},".format(angls[i][j])
         f.write("{0}\n".format(st[:-1]))
+
+   #for i in range(nsnap):
+   #    for j in range(len(vals)):
+   #        stn += "{0}{1},".format(vals[j],i)
+   #f.write(stn[:-1]+'\n')
+
+   #for k in range(len(angls[0][0])):
+   #    st = ""
+   #    for j in range(nsnap):
+   #        for i in range(len(vals)):
+   #            st += "{0:.5f},".format(angls[i][j][k])
+   #    f.write("{0}\n".format(st[:-1]))
     f.close()
 
 def main():
@@ -52,7 +70,7 @@ def main():
     volC = VolFile("run"+nm+".vol"); xyz_cl = XYZFile(xyzname, volC)
 
     angs = get_angles(xyz_cl, volC)
-    print_angles(angs, "run"+nm+"_3B_angles.csv")
+    print_angles(angs, "run"+nm+"_3B_angles_layers.csv")
 
 if __name__=="__main__":
     main()
