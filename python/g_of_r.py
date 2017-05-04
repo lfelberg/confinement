@@ -44,7 +44,7 @@ def get_gr(xyz, volC, grPair):
     ty0 = xyz.get_type_i(grPair[0]); ty1 = xyz.get_type_i(grPair[1]); bnz = 2
     g_r_3, g_r_2_m, rng_m = [], [], np.zeros((3))
 
-    bnsz = 0.7; x_bn = np.arange(0, volC.get_x_max()+bnsz, bnsz); 
+    bnsz = 0.6; x_bn = np.arange(0, volC.get_x_max()+bnsz, bnsz); 
     xb_ct=np.zeros((len(x_bn),2)); xb_his=np.zeros((len(x_bn),2,len(HIS)-1))
 
     # for the g(r) pairs, need to get groups on the same wall side
@@ -85,11 +85,11 @@ def get_gr(xyz, volC, grPair):
             xb_his[0,1,:] += gr2;xb_ct[0,1] += pr_ct2;
         else:
             for j in range(len(x_bn)):
-                if sum((b00==j).astype(int))>1 and sum((b10==j).astype(int))>1:
+                if sum((b00==j).astype(int))>50 and sum((b10==j).astype(int))>50:
                    gr2, pr_ct2 = gr_cal(c00[b00==j],c10[b10==j], rng[1:], sm)
                    xb_his[j,1,:] += gr2;xb_ct[j,1] += pr_ct2;
                    
-                if sum((b01==j).astype(int))>1 and sum((b11==j).astype(int))>1:
+                if sum((b01==j).astype(int))>50 and sum((b11==j).astype(int))>50:
                    gr2, pr_ct2 = gr_cal(c01[b01==j],c11[b11==j], rng[1:], sm)
                    xb_his[j,1,:] += gr2;xb_ct[j,1] += pr_ct2;
 
