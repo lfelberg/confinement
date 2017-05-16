@@ -49,22 +49,23 @@ def plot_scatter(plt_nm, csvL, loc, sep, ln, itr):
     for i in range(len(csvL)):
         for j in range(len(csvL[i])):
             for k in range(len(csvL[i][j])):
-                st = 500
-                en = 1000
+                st = 100
+                en = 400
                 xd = csvL[i][j][k].dat[0,st:en]; yd = csvL[i][j][k].dat[loc,st:en]
                 m,b = np.polyfit(xd,yd,1)
                 print("{0:.3f},{1:.5f}".format(dens[sep[i]],m/4.*A2_PS_TO_M2_S*(1e9)))
                 ax.plot(csvL[i][j][k].dat[0], 
                         csvL[i][j][k].dat[loc], color=colorL[ct])
-                ax.plot(xd, xd*m + b, "r")
-                leg += [r'$\rho_{{2D}}=${0:.2f}'.format(dens[sep[i]])]
+               #ax.plot(xd, xd*m + b, "r")
+               #leg += [r'$\rho_{{2D}}=${0:.2f}'.format(dens[sep[i]])]
+                leg += [r'{0}'.format(ct)]
                 ct += 1
-   #ax.set_xlim([0,4500])
-   #ax.set_ylim([0,6000])
+   #ax.set_xlim([0,1000])
+   #ax.set_ylim([0,1000])
     bbox = [1.1, 0.95]
-   #ax.legend(leg, loc = 2, ncol = 1, columnspacing = 0.4,
-   #    fontsize =  5 , handletextpad = 0.2, handlelength = 1.3,
-   #    borderaxespad = -0.9, bbox_to_anchor = bbox   )
+    ax.legend(leg, loc = 2, ncol = 1, columnspacing = 0.4,
+        fontsize =  5 , handletextpad = 0.2, handlelength = 1.3,
+        borderaxespad = -0.9, bbox_to_anchor = bbox   )
     ax.set_xlabel("Time (ps)",fontsize=10); 
     ax.set_ylabel("$MSD_{||} \,\, (\AA^2)$",fontsize=10)
     plt.savefig(plt_nm+csvL[i][j][k].key[loc]+'.png', bbox_inches = 'tight',) 
