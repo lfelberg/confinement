@@ -39,6 +39,11 @@ def get_dist(xyz, dims):
                     w_d1.append(d1); w_d2.append(d2)
                     dgg = len(d1) * [abs(c2_x - c1_x)]
                     cc_d.append(dgg)
+                else:
+                    c1_p = c1[np.all(np.array([c1_yy==yy,c1_zz==zz]),axis=0),0]
+                    c2_p = c2[np.all(np.array([c2_yy==yy,c2_zz==zz]),axis=0),0]
+                    w_d1.append(0.0); w_d2.append(0.0)
+                    cc_d.append([abs(c2_x - c1_x)])
     w_d1 = list(itertools.chain(*w_d1)); w_d2 = list(itertools.chain(*w_d2))
     return w_d1, w_d2, list(itertools.chain(*cc_d))
 

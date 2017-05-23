@@ -38,7 +38,7 @@ def plot_scatter(plt_nm, csvL, sep, ln):
     matplotlib.rcParams.update({'font.size': 8})
     ax.xaxis.set_major_locator(MaxNLocator())
     ax.yaxis.set_major_locator(MaxNLocator())
-    cos = [colorL[0], colorL[1], colorL[-3]]
+    cos = [colorL[-1], colorL[0], colorL[1], colorL[-4]]
     for i in range(len(csvL)):
         for j in range(len(csvL[i])):
            cls = get_plt_lst(csvL[i][j].csvfname); dat = csvL[i][j].dat
@@ -51,16 +51,20 @@ def plot_scatter(plt_nm, csvL, sep, ln):
           #for k in cls:
           #    ax.plot(dat[0], dat[k]+0 , label="x="+csvL[i][j].key[k][1:-2], color = colorL[ct])
           #    ct += 1
+
+           if "bulk" != dens[int(fn[3])]: lg = "{0:.3f}".format(dens[int(fn[3])])
+           else:                          lg = "bulk"
            ax.plot(dat[0], np.mean(dat[cls],axis=0), 
-                   color = cos[ct], label="{0:.3f}".format(dens[int(fn[3])]))
+                   color = cos[ct], label=lg)
           #ax.plot(dat[0], np.mean(dat[cls],axis=0)+ct*4,  color = cos[ct])
           #plt.text(6.0, ct*4+2.05, r'$\rho_{{2D}}={0:.3f}$'.format(dens[int(fn[3])]),
           #         color = cos[ct])
            ct += 1
-   #ax.legend(ncol = 1, columnspacing = 0.4,
+   #ax.legend(ncol = 4, columnspacing = 0.4,
    #    fontsize =  5 , handletextpad = 0.2,
    #    handlelength = 1.3, borderaxespad = -0.9,
-   #    bbox_to_anchor = (0.9,0.9),
+   #   #bbox_to_anchor = (0.9,0.9),
+   #    bbox_to_anchor = (1.2,1.2),
    #    )
     ax.set_xlim([0,12.0]); ax.set_ylim([0,4.0])
    #ax.set_xlim([0,12.0]); ax.set_ylim([0,13.0])
@@ -71,6 +75,14 @@ def plot_scatter(plt_nm, csvL, sep, ln):
     ax.yaxis.labelpad = -0.6; ax.xaxis.labelpad = -0.6
     fname = plt_nm+mn+csvL[i][j].csvfname[-7:-4]+".png"
     plt.savefig(fname, format='png', bbox_inches = 'tight', dpi=300) 
+
+   #fn = 'ang_3B_'+mn[:-1]+'.png'
+   #im = plt.imread(fn, format='png')
+   #xl = ax.get_xlim(); yl = ax.get_ylim()
+   #newax = f.add_axes([0.455, 0.37, 0.50, 0.47], anchor='SW',) # rigid
+   #newax.imshow(im, extent=[0, 1,0., 1.]) #, zorder=19)
+   #newax.axis('off')
+   #plt.savefig(plt_nm+mn+csvL[i][j].csvfname[-7:-4]+'_insert.png',bbox_inches='tight',)
     plt.close()
 
 def main():                                                                        
