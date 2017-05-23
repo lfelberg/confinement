@@ -51,7 +51,7 @@ Berkeley, California 94720, USA}
 
 \section*{Introduction}
 
-The properties and phase behavior of water under nanoconfinement are remarkably different than those in bulk, with important implications for nanotechnological applications and biological processes\cite{Lucent2007, Holt2006, Levinger2002, Nair2012}. Driven by the pursuit to understand the physics underlying the anomalous behavior of water under hydrophobic nanoconfinement, topics such as low-dimensional ice formation \cite{Algara-Siller2015, Koga2001} (which remains controversial \cite{Zhou2015}), unconventional solid-liquid and liquid-liquid phase transitions  \cite{Mochizuki2015,Han2010,Giovambattista2009,Zhu2015}, or hydrophobic evaporation (i.e. liquid-gas phase transitions) \cite{Sharma2012,Altabet2017,Head-Gordon2008,Hummer2001}, have been extensively studied over the last decade. It is important to note that the literature on confined water is vast, and the references cited in this letter are representative, but by no means exhaustive. 
+The properties and phase behavior of water under nanoconfinement are remarkably different than those in bulk, with important implications for nanotechnological applications and biological processes \cite{Lucent2007, Holt2006, Levinger2002, Nair2012}. Driven by the pursuit to understand the physics underlying the anomalous behavior of water under hydrophobic nanoconfinement, topics such as low-dimensional ice formation \cite{Algara-Siller2015, Koga2001} (which remains controversial \cite{Zhou2015}), unconventional solid-liquid and liquid-liquid phase transitions  \cite{Mochizuki2015,Han2010,Giovambattista2009,Zhu2015}, or hydrophobic evaporation (i.e. liquid-gas phase transitions) \cite{Sharma2012,Altabet2017,Head-Gordon2008,Hummer2001}, have been extensively studied over the last decade. It is important to note that the literature on confined water is vast, and the references cited in this letter are representative, but by no means exhaustive. 
 
 When water is confined under slit nanocapillaries, such as in between graphene sheets, it exhibits strong density fluctuations in the direction of confinement, signature of a layered structure. The surface effect persists to distances of about 5 \r A \cite{Cicero2008,Chialvo2016}, suggesting that configurations of up to three layers of water should be stable under planar confinement. Indeed, multilayered ice phases up to trilayers have been observed \cite{Algara-Siller2015,Satarifard2017}. A requirement to form crystalline arrangements, besides low temperatures or high confinement pressures (in the order of GPa at room temperature \cite{Algara-Siller2015,Satarifard2017}), is that the confinement distance and the amount of water are commensurate, i.e. the density of water is such that individual layers can develop in-plane long-range order \cite{Satarifard2017,Chen2017,Corsetti2016}. When the density is too high or two low, all other control parameters constant, the confinement becomes incommensurate, the water cannot develop long-range in-plane order, and more disordered phases prevail. In the case of a monolayer, before the transition from ice to a liquid phase \cite{Han2010}, a puckered configuration forms \cite{Kaneko2014,Zhu2016}. The solid-liquid phase transition triggered by incommensurability is also observed for other multilayered phases of ice \cite{Zhu2015}. Interestingly, at higher temperatures or lower pressures where liquid phases are more stable, liquid-liquid transitions are also triggered by differences in commensurability. For example, a transition between a bilayer liquid phase and a trilayer heterogeneous fluid, as the density was increased, has been reported \cite{Giovambattista2009}. The heterogeneous liquid consists of a layered structure with relatively highly ordered layers close to the confining surfaces, and a highly disordered intermediate layer. A recent study where oscillations in the shear viscosity of confined water of several orders of magnitude where observed over changes in the confinement distance as small as one \r Angstrom \cite{Neek-Amal2016}, is another example of the significant effect of commensurability in confined systems.
 
@@ -140,324 +140,89 @@ For all simulations, the dynamics timestep was set at 2.0 femtoseconds.
 
 \subsection*{Analysis}
 
+For the analysis, the first 3 nanoseconds of each trajectory was discarded and quantitative system properties were calculated and averaged over 3500 snapshots. \\
+
+\textit{Pair correlation functions:} Lateral pair correlation functions (g(R)s) between water oxygens were computed. The confining scale was in many instances comparable to the distance scale of water pair interaction lengthscales, therefore instead of computing a traditional 3D g(R), a lateral or 2D g(R) was computed as follows: water oxygens were histogrammed into 0.6\r A bins according to their x axis position (the graphene sheets fall in the y-z plane). Oxygens identified to be in the same bin were used to calculate a pair-correlation function, which was averaged for all bins. \\%During the pairwise calculations, only oxygens confined between the same graphene sheets were considered.
+
+\textit{3-body angle distributions:} \\
+
+\textit{Graphene-graphene distances and water-graphene distances:} \\
+
+\textit{Mean square displacement calculations:} \\
+
 \subsection*{Results}
 
-\begin{itemize}
-	\item Effect of varying the 2D density of the water. 
-	\begin{itemize}
-		\item Flexible waters: there is a bending of the graphene layers to accommodate intermediate 
-		         amounts of water.
-		\item Rigid walls exhibit striking transitions between 1 to 2 and 2 to 3 water layer separation distances.
-		         See figure \ref{fig:dgg}
-		\item After enough water is added to have a 3 layer system, the increase in plate separation is much
-			more smooth
-		\item This transition is not present in the flexible case.
-	\end{itemize}
-	\item Effect of varying wall rigidity and 2D density on the structure of the water. 
-	\begin{itemize}
-		\item For 1 layer, increased density leads to increased order. When the density is low, the rigid system is 
-		         very liquid-like and has a very high MSD. For both systems as density increases from 0.097 
-		         (7 \r A sep) to 0.129 (8 \r A sep), the water forms a much more well defined ice.
-		\item For the 2 layer system, we observe that the rigid system forms a hexagonal ice with pockets of gas, 
-			whereas the flexible has a more liquid like structure, with smaller air pockets.
-		\item After a density of 0.227 (11 \r A) the systems appear visually similar, with liquid-like permeating layers.
-	\end{itemize}
-	\item Graphene and water structure and transport. 
-	\begin{itemize}
-		\item It is very interesting to note that the 2D diffusion coefficients computed for the rigid vs the flexible 
-			systems differ, even at the largest confinement distances. 
-		\item The lowest density (0.065) has markedly different diffusion coefficients. For the flexible, the diffusion coefficient is many orders of magnitude smaller than the others because the pinched graphene creates such a rigid ice structure. In addition, the pinch reduces diffusion to one dimension.
-		\item For 0.097 (7 \r A sep) to 0.129 (8 \r A sep), as the liquid transitions to ice, the diffusion coefficient drops and the flexible D is larger for both densities.
-		\item For 0.163 (9 \r A sep) to 0.192 (10 \r A sep) the rigid system D decreases further, owing to the hexagonal ice structure.
-		\item The trends for the rest, I need to think about, and want to study a bit more/make sure the numbers are right before drawing lots of conclusions
-	\end{itemize}
-\end{itemize}     
+\subsection*{Rigid graphene systems}
 
-\clearpage
+In the rigid systems, the structure and dynamics of the water is determined by the two-dimensional density of the water and the separation of the graphene sheets. At the smallest separation distances, equivalent to approximately one water layer, the systems were initialized to varying graphene separation distances: \(\rho_{2D} = 0.065\) corresponds to an initial separation of 6\r A, \(\rho_{2D} = 0.097\) to 7\r A and \(\rho_{2D} =0.129\) to 8\r A, respectively. Interestingly, after simulation in the NpT ensemble, each system equilibrated to an average graphene-graphene separation (\(d_{gg}\)) of approximately 6.75\r A, see Figure \ref{}, which depicts the graphene-graphene separation as a function of \(\rho_{2D}\) and Figure \ref{fig:dgg_2}, panel (v), which shows a visual representation of the system in VMD \cite{Humphrey1996}. The effect of maintaining a similar \(d_{gg}\) while varying the two-dimensional density was seen in the changing structure of the water, apparent in variations in water oxygen pair correlation functions of Figure \ref{fig:gr_ang_6_7_8_r}. As the density increased from 0.065 (bottom black curve) to 0.130 (top blue curve), the curve becomes increasingly correlated, indicating the development of a more structured phase of water. This transition is further supported by examining the trends in 3-body water oxygen intermolecular angles. Here, examining the change from low 2D density to high, there is a depopulation of intermediate (120-150 degrees) and peaks at \(\sim\)90 and \(\sim\)160 degrees become more pronounced, a further indication of increasing structure and ice-ification of the system. Visually examining the systems allows further insight into this transition. At the lowest 2D density, it is easy to visually access the system and observe a region of low density gas and high density disordered liquid. As the density increases, the low-density gas region disappears and the liquid transition to ice. The exact structure of these systems is examined in the next section.
 
-\begin{itemize}
-	\item Rigid as reference
-	\begin{itemize}
-		\item Rigid walls exhibit striking transitions between 1 to 2 and 2 to 3 water layer separation distances.
-		         See figure \ref{fig:dgg}
-		\item 1 layer: discuss about water
-		\item 2 layer: discuss about water
-		\item 3 layer: discuss about water
-	\end{itemize}
-	\item Flexible confinement
-	\begin{itemize}
-		\item Focus on the differences between R and F, or go thru the same order as with rigid.
-		\item For 1 layer, increased density leads to increased order. When the density is low, the rigid system is 
-		         very liquid-like and has a very high MSD. For both systems as density increases from 0.097 
-		         (7 \r A sep) to 0.129 (8 \r A sep), the water forms a much more well defined ice.
-		\item For the 2 layer system, we observe that the rigid system forms a hexagonal ice with pockets of gas, 
-			whereas the flexible has a more liquid like structure, with smaller air pockets.
-		\item After a density of 0.227 (11 \r A) the systems appear visually similar, with liquid-like permeating layers.
-	\end{itemize}
-	\item Graphene and water structure and transport. 
-	\begin{itemize}
-		\item It is very interesting to note that the 2D diffusion coefficients computed for the rigid vs the flexible 
-			systems differ, even at the largest confinement distances. 
-		\item The lowest density (0.065) has markedly different diffusion coefficients. For the flexible, the diffusion coefficient is many orders of magnitude smaller than the others because the pinched graphene creates such a rigid ice structure. In addition, the pinch reduces diffusion to one dimension.
-		\item For 0.097 (7 \r A sep) to 0.129 (8 \r A sep), as the liquid transitions to ice, the diffusion coefficient drops and the flexible D is larger for both densities.
-		\item For 0.163 (9 \r A sep) to 0.192 (10 \r A sep) the rigid system D decreases further, owing to the hexagonal ice structure.
-		\item The trends for the rest, I need to think about, and want to study a bit more/make sure the numbers are right before drawing lots of conclusions
-	\end{itemize}
-\end{itemize}  
+As \(\rho_{2D}\) is increased from 0.129 to 0.163 in the rigid systems, the graphene-graphene separation has an almost first-order-like transition, from 6.75\r A to 9.50\r A, which corresponds to a transition from a monolayer between the graphene sheets to a bilayer (Figure \ref{fig:dgg_2}, panel (iii)). Again, we observe that the variations in the average \(d_{gg}\) are small, while the 2D density was varied from 0.163 to 0.227. However, in contrast to the rigid monolayer, which showed a trend of increasing order as a function of increasing density, the bilayer produces the opposite trend. At lowest densities, 0.163 and 0.196, the system shows more order, which disappears at \(\rho_{2D}=\)0.227, see Figure \ref{fig:gr_ang_9_10_11_r}. Visual examination of these systems supports this conclusion. At low densities, the system separates into a low density gas region and a region of high density crystal/ice, which transitions to a disordered liquid at \(\rho_{2D}=\)0.227.
+
+A second transition occurs between \(\rho_{2D}=\)0.260 and 0.293. As seen in Figure \ref{fig:dgg_1}, the average \(d_{gg}\) increases to 10.14\r A, while the system still maintains a bilayer formation. But when the density increases to 0.293, the system is now distinctly trilayered (Figure \ref{fig:dgg_2}, panel (i)). Now as the density increases, we observe a more gradual increase in \(d_{gg}\) spacing from 10.14\r A at \(\rho_{2D}=\)0.260 to 14.47\r A at \(\rho_{2D}=\)0.390. Additionally, as more water is introduced into the system, the effects of varying 2D density become less notable in structural metrics. Lateral pair-correlation functions and 3-body angle distributions are relatively indistinguishable between \(\rho_{2D}=\)0.260, 0.325 and 0.390. \textbf{\color{red} Figure \ref{fig:gr_ang_12_14_16_r} and \ref{fig:gr_ang_12_14_16_f} can probably be moved to SI?}
+
+\subsection*{Flexible graphene systems}
+
+The transitions in rigid systems and structures observed as a function of 2D number density are indeed interesting, but a further layer of complexity is added when flexibility is introduced to the graphene wall. Differences between the lowest 2D number density are evident by simple visual comparison of Figure \ref{fig:dgg_2}, panels (v) and (vi). In the flexible system, the graphene walls were observed to bend and form pockets of pinched water clusters, see Figure \ref{fig:dgg_2}, panel (vi). Contrastingly, the rigid system of analogous number density was observed to form a liquid region, and a low density vapor region. The effect of the pinched or bent walls is also very immediate on the water structure (Figure \ref{fig:gr_ang_6_7_8_f}), forming the most ordered ice of all systems observed, confirmed in lateral g(r)s and 3-body angle distributions.
+
 
 \begin{figure}[h!]
 	\centering
-	(a)~\includegraphics[width=0.11\linewidth]{6A_f2} 
-	\includegraphics[width=0.24\linewidth]{6A_f3}
-	(b)~\includegraphics[width=0.15\linewidth]{6A_r2} 
-	\includegraphics[width=0.39\linewidth]{6A_r3}
-	\caption{\textit{Snapshots of flexible confined systems.} Graphene carbons in grey, water oxygens in red and water hydrogens in white. (a) flexible walled system (b) rigid walled system. }
-	\label{fig:snapshot}
-\end{figure}
-
-\begin{figure}[h!]
-	\centering
-	\includegraphics[width=0.45\linewidth]{d_gg_r} 
-	\caption{\textit{Average graphene-graphene separation as a function of 2D-number density.}}
+	\begin{subfigure}[b]{0.49\textwidth}
+    		\includegraphics[trim={0.35cm 0.25cm 0.05cm 0.05cm},clip,width=.99\textwidth]{d_gg_r}
+     		\caption{}
+    		\label{fig:dgg_1}
+  	\end{subfigure}
+	\begin{subfigure}[b]{0.49\textwidth}
+    		\includegraphics[width=.99\textwidth]{dgg_snaps6}
+     		\caption{}
+    		\label{fig:dgg_2}
+  	\end{subfigure}
+	\caption{\textit{Plot and snapshots of average graphene-graphene separation as a function of 2D-number density.} \textbf{(\protect\subref{fig:dgg_1})} Plot of average graphene-graphene separation as a function of 2D-number density. Multi refers to the instances in the flexible case where coexistence between multiple numbers of water layers was observed. \textbf{(\protect\subref{fig:dgg_2}, left)} Snapshots of water-graphene systems as a function of increasing 2D-density, water oxygens are red, graphene carbons are grey and water hydrogens are not displayed for clarity. Magenta diamonds correspond to flexible systems of 2D-densities with multiple numbers of water layers. Images not drawn to size. \textbf{(\protect\subref{fig:dgg_2}, right)} 2D histogram of the distance of water to a reference wall versus the graphene-graphene separation distance, warmer colors representing a higher number of observations.}
 	\label{fig:dgg}
 \end{figure}
 
 \begin{figure}[h!]
 	\centering
+ 	\textbf{RIGID} \\
+  \begin{subfigure}[b]{0.278\textwidth}
+    \includegraphics[trim={0.25cm 0.25cm 0.25cm 0.15cm},clip,width=0.99\textwidth]{g_r_2D_6_7_8_1_1_r}
+    \includegraphics[trim={0.25cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_6_7_8_r}
+    \caption{}
+    \label{fig:gr_ang_6_7_8_r}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.22\textwidth}
+    \includegraphics[trim={1.05cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{g_r_2D_9_10_11_1_1_r}
+    \includegraphics[trim={1.05cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_9_10_11_r}
+   \caption{}
+    \label{fig:gr_ang_9_10_11_r}
+  \end{subfigure} 
+    \begin{subfigure}[b]{0.22\textwidth}
+    \includegraphics[trim={1.05cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{g_r_2D_12_14_16_1_1_r}
+    \includegraphics[trim={1.05cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_12_14_16_r}
+    \caption{}
+    \label{fig:gr_ang_12_14_16_r}
+  \end{subfigure} \\  
 	\textbf{FLEXIBLE} \\
-	(a)~\includegraphics[trim={0.35cm 0.25cm 0.75cm 0.15cm},clip,width=0.15\linewidth]{dgg_v_x_6_46_f} 
-	(b)~\includegraphics[trim={0.35cm 0.25cm 0.75cm 0.15cm},clip,width=0.15\linewidth]{dgg_v_x_9_46_f}
-	(c)~\includegraphics[trim={0.35cm 0.25cm 0.75cm 0.15cm},clip,width=0.15\linewidth]{dgg_v_x_10_46_f}
-	(d)~\includegraphics[trim={0.35cm 0.25cm 0.75cm 0.15cm},clip,width=0.15\linewidth]{dgg_v_x_12_46_f}
-	(e)~\includegraphics[trim={0.35cm 0.25cm 0.75cm 0.15cm},clip,width=0.15\linewidth]{dgg_v_x_14_46_f}
-	\textbf{RIGID} \\
-	(f)~\includegraphics[trim={0.35cm 0.25cm 0.75cm 0.15cm},clip,width=0.15\linewidth]{dgg_v_x_6_46_r} 
-	(g)~\includegraphics[trim={0.35cm 0.25cm 0.75cm 0.15cm},clip,width=0.15\linewidth]{dgg_v_x_9_46_r}
-	(h)~\includegraphics[trim={0.35cm 0.25cm 0.75cm 0.15cm},clip,width=0.15\linewidth]{dgg_v_x_10_46_r}
-	(i)~\includegraphics[trim={0.35cm 0.25cm 0.75cm 0.15cm},clip,width=0.15\linewidth]{dgg_v_x_12_46_r}
-	(j)~\includegraphics[trim={0.35cm 0.25cm 0.75cm 0.15cm},clip,width=0.15\linewidth]{dgg_v_x_14_46_r}
-	\caption{\textit{Oxygen-oxygen radial distribution functions} Two-dimensional radial distribution functions in the plane parallel to the graphene plates (a,f) \(\rho_{2D}\) = 0.065, (b,g) \(\rho_{2D}\) = 0.16, (c,h) \(\rho_{2D}\) = 0.26, (d,i) \(\rho_{2D}\) = 0.33.}
-	\label{fig:density_vs_dgg}
-\end{figure}
-
-\begin{figure}[h!]
-	\centering
-	\textbf{FLEXIBLE} \\
-	(a)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{dgg_fit_6_46_f} 
-	(b)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{dgg_fit_9_46_f}
-	(c)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{dgg_fit_10_46_f}
-	(d)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{dgg_fit_12_46_f}
-	(d)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{dgg_fit_14_46_f} \\  \vspace{-5pt} 
-	\textbf{RIGID} \\
-	(f)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{dgg_fit_6_46_r} 
-	(g)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{dgg_fit_9_46_r}
-	(h)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{dgg_fit_10_46_r}
-	(i)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{dgg_fit_12_46_r}
-	(j)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{dgg_fit_14_46_r}
-	\caption{\textit{Graphene-graphene separation}. Distribution of graphene-graphene separations. (a,f) \(\rho_{2D}\) = 0.065, (b,g) \(\rho_{2D}\) = 0.16, (c,h) \(\rho_{2D}\) = 0.26, (d,i) \(\rho_{2D}\) = 0.33.}
-	\label{fig:dgg_distribution}
-\end{figure}
-
-\begin{figure}[h!]
-	\centering
-	   \textbf{FLEXIBLE} \\
-  \begin{subfigure}[b]{0.15\textwidth}
-    \includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_6_46_f}
-    \vspace{-15pt} \caption{}
-    \label{fig:ang_6_f}
+  \begin{subfigure}[b]{0.278\textwidth}
+    \includegraphics[trim={0.25cm 0.25cm 0.25cm 0.15cm},clip,width=0.99\textwidth]{g_r_2D_6_7_8_1_1_f}
+    \includegraphics[trim={0.25cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_6_7_8_f}
+    \caption{}
+    \label{fig:gr_ang_6_7_8_f}
   \end{subfigure}
-  \begin{subfigure}[b]{0.15\textwidth}
-    \includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_7_46_f}
-     \vspace{-15pt} \caption{}
-    \label{fig:ang_7_f}
-  \end{subfigure}
-  \begin{subfigure}[b]{0.15\textwidth}
-    \includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_8_46_f}
-    \vspace{-15pt} \caption{}
-    \label{fig:ang_8_f}
-  \end{subfigure}
-    \begin{subfigure}[b]{0.15\textwidth}
-    \includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_9_46_f}
-    \vspace{-15pt} \caption{}
-    \label{fig:ang_9_f}
-  \end{subfigure}
-  \begin{subfigure}[b]{0.15\textwidth}
-    \includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_12_46_f}
-     \vspace{-15pt} \caption{}
-    \label{fig:ang_12_f}
-  \end{subfigure}
-  \begin{subfigure}[b]{0.15\textwidth}
-    \includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_14_46_f}
-    \vspace{-15pt} \caption{}
-    \label{fig:ang_14_f}
-  \end{subfigure} \\     \vspace{-10pt} 
- % \hfill
- \textbf{RIGID} \\
-  \begin{subfigure}[b]{0.15\textwidth}
-    \includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_6_46_r}
-     \vspace{-15pt} \caption{}
-    \label{fig:ang_6_r}
-  \end{subfigure}
-  \begin{subfigure}[b]{0.15\textwidth}
-    \includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_7_46_r}
-     \vspace{-15pt} \caption{}
-    \label{fig:ang_7_r}
-  \end{subfigure}
-  \begin{subfigure}[b]{0.15\textwidth}
-    \includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_8_46_r}
-    \vspace{-15pt} \caption{}
-    \label{fig:ang_8_r}
-  \end{subfigure}
-   \begin{subfigure}[b]{0.15\textwidth}
-  \includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_9_46_r}
-    \vspace{-15pt} \caption{}
-    \label{fig:ang_9_r}
-  \end{subfigure}
-  \begin{subfigure}[b]{0.15\textwidth}
-    \includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_12_46_r}
-     \vspace{-15pt} \caption{}
-    \label{fig:ang_12_r}
-  \end{subfigure}
-  \begin{subfigure}[b]{0.15\textwidth}
-    \includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_14_46_r}
-    \vspace{-15pt} \caption{}
-    \label{fig:ang_14_r}
-  \end{subfigure}\\
-	\caption{\textit{3-body angle distribution functions} Distribution of angle formed between nearest neighbors  (\protect\subref{fig:rg_6_f},\protect\subref{fig:rg_6_r})  \(\rho_{2D}\) = 0.065 (\protect\subref{fig:ang_7_f},\protect\subref{fig:ang_7_r}) \(\rho_{2D}\) = 0.097 (\protect\subref{fig:ang_8_f},\protect\subref{fig:ang_8_r}) \(\rho_{2D}\) = 0.129, (\protect\subref{fig:ang_9_f},\protect\subref{fig:ang_9_r}) \(\rho_{2D}\) = 0.163, (\protect\subref{fig:ang_12_f},\protect\subref{fig:ang_12_r}) \(\rho_{2D}\) = 0.260 (\protect\subref{fig:ang_14_f},\protect\subref{fig:ang_14_r}) \(\rho_{2D}\) = 0.325.}
-	\label{fig:3body_angle_dist}
-\end{figure}
-
-\begin{figure}[h!]
-	\centering
-	   \textbf{FLEXIBLE} \\
-  \begin{subfigure}[b]{0.15\textwidth}
-    \includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_10_46_f}
-    \vspace{-15pt} \caption{}
-    \label{fig:ang_10_f}
-  \end{subfigure}
-  \begin{subfigure}[b]{0.15\textwidth}
-    \includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_11_46_f}
-     \vspace{-15pt} \caption{}
-    \label{fig:ang_11_f}
-  \end{subfigure}
-  \begin{subfigure}[b]{0.15\textwidth}
-    \includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_13_46_f}
-    \vspace{-15pt} \caption{}
-    \label{fig:ang_13_f}
-  \end{subfigure}
-  \begin{subfigure}[b]{0.15\textwidth}
-    \includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_16_46_f}
-     \vspace{-15pt} \caption{}
-    \label{fig:ang_16_f}
-  \end{subfigure} \\     \vspace{-10pt} 
- \textbf{RIGID} \\
-  \begin{subfigure}[b]{0.15\textwidth}
-    \includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_10_46_r}
-     \vspace{-15pt} \caption{}
-    \label{fig:ang_10_r}
-  \end{subfigure}
-  \begin{subfigure}[b]{0.15\textwidth}
-    \includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_11_46_r}
-     \vspace{-15pt} \caption{}
-    \label{fig:ang_11_r}
-  \end{subfigure}
-    \begin{subfigure}[b]{0.15\textwidth}
-    \includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_13_46_r}
-     \vspace{-15pt} \caption{}
-    \label{fig:ang_13_r}
-  \end{subfigure}
-   \begin{subfigure}[b]{0.15\textwidth}
-    \includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_16_46_r}
-     \vspace{-15pt} \caption{}
-    \label{fig:ang_16_r}
-  \end{subfigure}\\
-	\caption{\textit{3-body angle distribution functions} Distribution of angle formed between nearest neighbors  (\protect\subref{fig:ang_10_f},\protect\subref{fig:ang_10_r})  \(\rho_{2D}\) = 0.196 (\protect\subref{fig:ang_11_f},\protect\subref{fig:ang_11_r}) \(\rho_{2D}\) = 0.227 (\protect\subref{fig:ang_13_f},\protect\subref{fig:ang_13_r}) \(\rho_{2D}\) = 0.293, (\protect\subref{fig:ang_16_f},\protect\subref{fig:ang_16_r}) \(\rho_{2D}\) = 0.390.}
-	\label{fig:3body_angle_dist_2}
-\end{figure}
-
-  \begin{figure}[htbp!]
-   \centering
-   \textbf{FLEXIBLE} \\
-  \begin{subfigure}[b]{0.15\textwidth}
-    \includegraphics[width=.99\textwidth]{g_r_6_46_f_o_o}
-    \vspace{-15pt} \caption{}
-    \label{fig:rg_6_f}
-  \end{subfigure}
-  \begin{subfigure}[b]{0.15\textwidth}
-    \includegraphics[width=.99\textwidth]{g_r_7_46_f_o_o}
-     \vspace{-15pt} \caption{}
-    \label{fig:rg_7_f}
-  \end{subfigure}
-  \begin{subfigure}[b]{0.15\textwidth}
-    \includegraphics[width=.99\textwidth]{g_r_8_46_f_o_o}
-    \vspace{-15pt} \caption{}
-    \label{fig:rg_8_f}
-  \end{subfigure}
-    \begin{subfigure}[b]{0.15\textwidth}
-    \includegraphics[width=.99\textwidth]{g_r_9_46_f_o_o}
-    \vspace{-15pt} \caption{}
-    \label{fig:rg_9_f}
-  \end{subfigure}
-  \begin{subfigure}[b]{0.15\textwidth}
-    \includegraphics[width=.99\textwidth]{g_r_12_46_f_o_o}
-     \vspace{-15pt} \caption{}
-    \label{fig:rg_12_f}
-  \end{subfigure}
-  \begin{subfigure}[b]{0.15\textwidth}
-    \includegraphics[width=.99\textwidth]{g_r_14_46_f_o_o}
-    \vspace{-15pt} \caption{}
-    \label{fig:rg_14_f}
-  \end{subfigure} \\  \vspace{-10pt} 
- % \hfill
- \textbf{RIGID} \\
-  \begin{subfigure}[b]{0.15\textwidth}
-    \includegraphics[width=.99\textwidth]{g_r_6_46_r_o_o}
-     \vspace{-15pt} \caption{}
-    \label{fig:rg_6_r}
-  \end{subfigure}
-  \begin{subfigure}[b]{0.15\textwidth}
-    \includegraphics[width=.99\textwidth]{g_r_7_46_r_o_o}
-     \vspace{-15pt} \caption{}
-    \label{fig:rg_7_r}
-  \end{subfigure}
-  \begin{subfigure}[b]{0.15\textwidth}
-    \includegraphics[width=.99\textwidth]{g_r_8_46_r_o_o}
-    \vspace{-15pt} \caption{}
-    \label{fig:rg_8_r}
-  \end{subfigure}
-   \begin{subfigure}[b]{0.15\textwidth}
-  \includegraphics[width=.99\textwidth]{g_r_9_46_r_o_o}
-    \vspace{-15pt} \caption{}
-    \label{fig:rg_9_r}
-  \end{subfigure}
-  \begin{subfigure}[b]{0.15\textwidth}
-    \includegraphics[width=.99\textwidth]{g_r_12_46_r_o_o}
-     \vspace{-15pt} \caption{}
-    \label{fig:rg_12_r}
-  \end{subfigure}
-  \begin{subfigure}[b]{0.15\textwidth}
-    \includegraphics[width=.99\textwidth]{g_r_14_46_r_o_o}
-    \vspace{-15pt} \caption{}
-    \label{fig:rg_14_r}
-  \end{subfigure}\\
-  \caption{\textit{Oxygen-oxygen radial distribution functions} (\protect\subref{fig:rg_6_f},\protect\subref{fig:rg_6_r})  \(\rho_{2D}\) = 0.065 (\protect\subref{fig:rg_7_f},\protect\subref{fig:rg_7_r}) \(\rho_{2D}\) = 0.097 (\protect\subref{fig:rg_8_f},\protect\subref{fig:rg_8_r}) \(\rho_{2D}\) = 0.129, (\protect\subref{fig:rg_9_f},\protect\subref{fig:rg_9_r}) \(\rho_{2D}\) = 0.163, (\protect\subref{fig:rg_12_f},\protect\subref{fig:rg_12_r}) \(\rho_{2D}\) = 0.260 (\protect\subref{fig:rg_14_f},\protect\subref{fig:rg_14_r}) \(\rho_{2D}\) = 0.325.}
-  \label{fig:gr}
-\end{figure}
-
-\begin{figure}[h!]
-	\centering
-	\begin{subfigure}[b]{0.49\textwidth}
-    \includegraphics[trim={0.25cm 0.25cm 0.25cm 0.15cm},clip,width=\textwidth]{msd_2D_f}
-     \vspace{-15pt} \caption{}
-    \label{fig:msd_f}
-  \end{subfigure}
-  \begin{subfigure}[b]{0.49\textwidth}
-    \includegraphics[trim={0.25cm 0.25cm 0.25cm 0.15cm},clip,width=1\textwidth]{msd_2D_r}
-     \vspace{-15pt} \caption{}
-    \label{fig:msd_r}
-  \end{subfigure}
-	\caption{\textit{Water in-plane mean square displacement}. Mean squared in-plane displacement of water molecules (\protect\subref{fig:msd_f}) flexible systems, (\protect\subref{fig:msd_r}) rigid systems. The inserts plot the estimated diffusion coefficient as a function of number density.}
-	\label{fig:msd_both}
+  \begin{subfigure}[b]{0.22\textwidth}
+    \includegraphics[trim={1.05cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{g_r_2D_9_10_11_1_1_f}
+    \includegraphics[trim={1.05cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_9_10_11_f}
+   \caption{}
+    \label{fig:gr_ang_9_10_11_f}
+  \end{subfigure} 
+    \begin{subfigure}[b]{0.22\textwidth}
+    \includegraphics[trim={1.05cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{g_r_2D_12_14_16_1_1_f}
+    \includegraphics[trim={1.05cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_12_14_16_f}
+    \caption{}
+    \label{fig:gr_ang_12_14_16_f}
+  \end{subfigure} \\  
+	\caption{\textit{Lateral oxygen-oxygen pair correlation functions and three-body angle distributions.} Distribution of water oxygen distances (top panels) and distribution of intralayer 3B angle formed between and given oxygen and its 2 nearest neighbors. (\protect\subref{fig:gr_ang_6_7_8_r},\protect\subref{fig:gr_ang_6_7_8_f}) Monolayer systems, (\protect\subref{fig:gr_ang_9_10_11_r},\protect\subref{fig:gr_ang_9_10_11_f}) Bilayer systems, (\protect\subref{fig:gr_ang_12_14_16_r},\protect\subref{fig:gr_ang_12_14_16_f}) Trilayer systems. G(r) curves have been shifted for clarity.}
+	\label{fig:gr_all}
 \end{figure}
 
 \begin{figure}[h!]
@@ -470,6 +235,318 @@ For all simulations, the dynamics timestep was set at 2.0 femtoseconds.
 \clearpage
 \printbibliography
 \end{document}
+
+
+%\begin{itemize}
+%	\item Effect of varying the 2D density of the water. 
+%	\begin{itemize}
+%		\item Flexible waters: there is a bending of the graphene layers to accommodate intermediate 
+%		         amounts of water.
+%		\item Rigid walls exhibit striking transitions between 1 to 2 and 2 to 3 water layer separation distances.
+%		         See figure \ref{fig:dgg}
+%		\item After enough water is added to have a 3 layer system, the increase in plate separation is much
+%			more smooth
+%		\item This transition is not present in the flexible case.
+%	\end{itemize}
+%	\item Effect of varying wall rigidity and 2D density on the structure of the water. 
+%	\begin{itemize}
+%		\item For 1 layer, increased density leads to increased order. When the density is low, the rigid system is 
+%		         very liquid-like and has a very high MSD. For both systems as density increases from 0.097 
+%		         (7 \r A sep) to 0.129 (8 \r A sep), the water forms a much more well defined ice.
+%		\item For the 2 layer system, we observe that the rigid system forms a hexagonal ice with pockets of gas, 
+%			whereas the flexible has a more liquid like structure, with smaller air pockets.
+%		\item After a density of 0.227 (11 \r A) the systems appear visually similar, with liquid-like permeating layers.
+%	\end{itemize}
+%	\item Graphene and water structure and transport. 
+%	\begin{itemize}
+%		\item It is very interesting to note that the 2D diffusion coefficients computed for the rigid vs the flexible 
+%			systems differ, even at the largest confinement distances. 
+%		\item The lowest density (0.065) has markedly different diffusion coefficients. For the flexible, the diffusion coefficient is many orders of magnitude smaller than the others because the pinched graphene creates such a rigid ice structure. In addition, the pinch reduces diffusion to one dimension.
+%		\item For 0.097 (7 \r A sep) to 0.129 (8 \r A sep), as the liquid transitions to ice, the diffusion coefficient drops and the flexible D is larger for both densities.
+%		\item For 0.163 (9 \r A sep) to 0.192 (10 \r A sep) the rigid system D decreases further, owing to the hexagonal ice structure.
+%		\item The trends for the rest, I need to think about, and want to study a bit more/make sure the numbers are right before drawing lots of conclusions
+%	\end{itemize}
+%\end{itemize}     
+%\clearpage
+
+%\begin{itemize}
+%	\item Rigid as reference
+%	\begin{itemize}
+%		\item Rigid walls exhibit striking transitions between 1 to 2 and 2 to 3 water layer separation distances.
+%		         See figure \ref{fig:dgg}
+%		\item 1 layer: discuss about water
+%		\item 2 layer: discuss about water
+%		\item 3 layer: discuss about water
+%	\end{itemize}
+%	\item Flexible confinement
+%	\begin{itemize}
+%		\item Focus on the differences between R and F, or go thru the same order as with rigid.
+%		\item For 1 layer, increased density leads to increased order. When the density is low, the rigid system is 
+%		         very liquid-like and has a very high MSD. For both systems as density increases from 0.097 
+%		         (7 \r A sep) to 0.129 (8 \r A sep), the water forms a much more well defined ice.
+%		\item For the 2 layer system, we observe that the rigid system forms a hexagonal ice with pockets of gas, 
+%			whereas the flexible has a more liquid like structure, with smaller air pockets.
+%		\item After a density of 0.227 (11 \r A) the systems appear visually similar, with liquid-like permeating layers.
+%	\end{itemize}
+%	\item Graphene and water structure and transport. 
+%	\begin{itemize}
+%		\item It is very interesting to note that the 2D diffusion coefficients computed for the rigid vs the flexible 
+%			systems differ, even at the largest confinement distances. 
+%		\item The lowest density (0.065) has markedly different diffusion coefficients. For the flexible, the diffusion coefficient is many orders of magnitude smaller than the others because the pinched graphene creates such a rigid ice structure. In addition, the pinch reduces diffusion to one dimension.
+%		\item For 0.097 (7 \r A sep) to 0.129 (8 \r A sep), as the liquid transitions to ice, the diffusion coefficient drops and the flexible D is larger for both densities.
+%		\item For 0.163 (9 \r A sep) to 0.192 (10 \r A sep) the rigid system D decreases further, owing to the hexagonal ice structure.
+%		\item The trends for the rest, I need to think about, and want to study a bit more/make sure the numbers are right before drawing lots of conclusions
+%	\end{itemize}
+%\end{itemize}  
+
+
+%\begin{figure}[h!]
+%	\centering
+%	\textbf{FLEXIBLE} \\
+%	(a)~\includegraphics[trim={0.35cm 0.25cm 0.75cm 0.15cm},clip,width=0.15\linewidth]{dgg_v_x_6_46_f} 
+%	(b)~\includegraphics[trim={0.35cm 0.25cm 0.75cm 0.15cm},clip,width=0.15\linewidth]{dgg_v_x_9_46_f}
+%	(c)~\includegraphics[trim={0.35cm 0.25cm 0.75cm 0.15cm},clip,width=0.15\linewidth]{dgg_v_x_10_46_f}
+%	(d)~\includegraphics[trim={0.35cm 0.25cm 0.75cm 0.15cm},clip,width=0.15\linewidth]{dgg_v_x_12_46_f}
+%	(e)~\includegraphics[trim={0.35cm 0.25cm 0.75cm 0.15cm},clip,width=0.15\linewidth]{dgg_v_x_14_46_f}
+%	\textbf{RIGID} \\
+%	(f)~\includegraphics[trim={0.35cm 0.25cm 0.75cm 0.15cm},clip,width=0.15\linewidth]{dgg_v_x_6_46_r} 
+%	(g)~\includegraphics[trim={0.35cm 0.25cm 0.75cm 0.15cm},clip,width=0.15\linewidth]{dgg_v_x_9_46_r}
+%	(h)~\includegraphics[trim={0.35cm 0.25cm 0.75cm 0.15cm},clip,width=0.15\linewidth]{dgg_v_x_10_46_r}
+%	(i)~\includegraphics[trim={0.35cm 0.25cm 0.75cm 0.15cm},clip,width=0.15\linewidth]{dgg_v_x_12_46_r}
+%	(j)~\includegraphics[trim={0.35cm 0.25cm 0.75cm 0.15cm},clip,width=0.15\linewidth]{dgg_v_x_14_46_r}
+%	\caption{\textit{Oxygen-oxygen radial distribution functions} Two-dimensional radial distribution functions in the plane parallel to the graphene plates (a,f) \(\rho_{2D}\) = 0.065, (b,g) \(\rho_{2D}\) = 0.16, (c,h) \(\rho_{2D}\) = 0.26, (d,i) \(\rho_{2D}\) = 0.33.}
+%	\label{fig:density_vs_dgg}
+%\end{figure}
+
+%\begin{figure}[h!]
+%	\centering
+%	\textbf{FLEXIBLE} \\
+%	(a)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{dgg_fit_6_46_f} 
+%	(b)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{dgg_fit_9_46_f}
+%	(c)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{dgg_fit_10_46_f}
+%	(d)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{dgg_fit_12_46_f}
+%	(d)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{dgg_fit_14_46_f} \\  \vspace{-5pt} 
+%	\textbf{RIGID} \\
+%	(f)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{dgg_fit_6_46_r} 
+%	(g)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{dgg_fit_9_46_r}
+%	(h)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{dgg_fit_10_46_r}
+%	(i)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{dgg_fit_12_46_r}
+%	(j)~\includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=0.15\linewidth]{dgg_fit_14_46_r}
+%	\caption{\textit{Graphene-graphene separation}. Distribution of graphene-graphene separations. (a,f) \(\rho_{2D}\) = 0.065, (b,g) \(\rho_{2D}\) = 0.16, (c,h) \(\rho_{2D}\) = 0.26, (d,i) \(\rho_{2D}\) = 0.33.}
+%	\label{fig:dgg_distribution}
+%\end{figure}
+%
+%\begin{figure}[h!]
+%	\centering
+%	   \textbf{FLEXIBLE} \\
+%  \begin{subfigure}[b]{0.15\textwidth}
+%    \includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_6_46_f}
+%    \vspace{-15pt} \caption{}
+%    \label{fig:ang_6_f}
+%  \end{subfigure}
+%  \begin{subfigure}[b]{0.15\textwidth}
+%    \includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_7_46_f}
+%     \vspace{-15pt} \caption{}
+%    \label{fig:ang_7_f}
+%  \end{subfigure}
+%  \begin{subfigure}[b]{0.15\textwidth}
+%    \includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_8_46_f}
+%    \vspace{-15pt} \caption{}
+%    \label{fig:ang_8_f}
+%  \end{subfigure}
+%    \begin{subfigure}[b]{0.15\textwidth}
+%    \includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_9_46_f}
+%    \vspace{-15pt} \caption{}
+%    \label{fig:ang_9_f}
+%  \end{subfigure}
+%  \begin{subfigure}[b]{0.15\textwidth}
+%    \includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_12_46_f}
+%     \vspace{-15pt} \caption{}
+%    \label{fig:ang_12_f}
+%  \end{subfigure}
+%  \begin{subfigure}[b]{0.15\textwidth}
+%    \includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_14_46_f}
+%    \vspace{-15pt} \caption{}
+%    \label{fig:ang_14_f}
+%  \end{subfigure} \\     \vspace{-10pt} 
+% % \hfill
+% \textbf{RIGID} \\
+%  \begin{subfigure}[b]{0.15\textwidth}
+%    \includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_6_46_r}
+%     \vspace{-15pt} \caption{}
+%    \label{fig:ang_6_r}
+%  \end{subfigure}
+%  \begin{subfigure}[b]{0.15\textwidth}
+%    \includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_7_46_r}
+%     \vspace{-15pt} \caption{}
+%    \label{fig:ang_7_r}
+%  \end{subfigure}
+%  \begin{subfigure}[b]{0.15\textwidth}
+%    \includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_8_46_r}
+%    \vspace{-15pt} \caption{}
+%    \label{fig:ang_8_r}
+%  \end{subfigure}
+%   \begin{subfigure}[b]{0.15\textwidth}
+%  \includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_9_46_r}
+%    \vspace{-15pt} \caption{}
+%    \label{fig:ang_9_r}
+%  \end{subfigure}
+%  \begin{subfigure}[b]{0.15\textwidth}
+%    \includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_12_46_r}
+%     \vspace{-15pt} \caption{}
+%    \label{fig:ang_12_r}
+%  \end{subfigure}
+%  \begin{subfigure}[b]{0.15\textwidth}
+%    \includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_14_46_r}
+%    \vspace{-15pt} \caption{}
+%    \label{fig:ang_14_r}
+%  \end{subfigure}\\
+%	\caption{\textit{3-body angle distribution functions} Distribution of angle formed between nearest neighbors  (\protect\subref{fig:rg_6_f},\protect\subref{fig:rg_6_r})  \(\rho_{2D}\) = 0.065 (\protect\subref{fig:ang_7_f},\protect\subref{fig:ang_7_r}) \(\rho_{2D}\) = 0.097 (\protect\subref{fig:ang_8_f},\protect\subref{fig:ang_8_r}) \(\rho_{2D}\) = 0.129, (\protect\subref{fig:ang_9_f},\protect\subref{fig:ang_9_r}) \(\rho_{2D}\) = 0.163, (\protect\subref{fig:ang_12_f},\protect\subref{fig:ang_12_r}) \(\rho_{2D}\) = 0.260 (\protect\subref{fig:ang_14_f},\protect\subref{fig:ang_14_r}) \(\rho_{2D}\) = 0.325.}
+%	\label{fig:3body_angle_dist}
+%\end{figure}
+%
+%\begin{figure}[h!]
+%	\centering
+%	   \textbf{FLEXIBLE} \\
+%  \begin{subfigure}[b]{0.15\textwidth}
+%    \includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_10_46_f}
+%    \vspace{-15pt} \caption{}
+%    \label{fig:ang_10_f}
+%  \end{subfigure}
+%  \begin{subfigure}[b]{0.15\textwidth}
+%    \includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_11_46_f}
+%     \vspace{-15pt} \caption{}
+%    \label{fig:ang_11_f}
+%  \end{subfigure}
+%  \begin{subfigure}[b]{0.15\textwidth}
+%    \includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_13_46_f}
+%    \vspace{-15pt} \caption{}
+%    \label{fig:ang_13_f}
+%  \end{subfigure}
+%  \begin{subfigure}[b]{0.15\textwidth}
+%    \includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_16_46_f}
+%     \vspace{-15pt} \caption{}
+%    \label{fig:ang_16_f}
+%  \end{subfigure} \\     \vspace{-10pt} 
+% \textbf{RIGID} \\
+%  \begin{subfigure}[b]{0.15\textwidth}
+%    \includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_10_46_r}
+%     \vspace{-15pt} \caption{}
+%    \label{fig:ang_10_r}
+%  \end{subfigure}
+%  \begin{subfigure}[b]{0.15\textwidth}
+%    \includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_11_46_r}
+%     \vspace{-15pt} \caption{}
+%    \label{fig:ang_11_r}
+%  \end{subfigure}
+%    \begin{subfigure}[b]{0.15\textwidth}
+%    \includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_13_46_r}
+%     \vspace{-15pt} \caption{}
+%    \label{fig:ang_13_r}
+%  \end{subfigure}
+%   \begin{subfigure}[b]{0.15\textwidth}
+%    \includegraphics[trim={0.3cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_16_46_r}
+%     \vspace{-15pt} \caption{}
+%    \label{fig:ang_16_r}
+%  \end{subfigure}\\
+%	\caption{\textit{3-body angle distribution functions} Distribution of angle formed between nearest neighbors  (\protect\subref{fig:ang_10_f},\protect\subref{fig:ang_10_r})  \(\rho_{2D}\) = 0.196 (\protect\subref{fig:ang_11_f},\protect\subref{fig:ang_11_r}) \(\rho_{2D}\) = 0.227 (\protect\subref{fig:ang_13_f},\protect\subref{fig:ang_13_r}) \(\rho_{2D}\) = 0.293, (\protect\subref{fig:ang_16_f},\protect\subref{fig:ang_16_r}) \(\rho_{2D}\) = 0.390.}
+%	\label{fig:3body_angle_dist_2}
+%\end{figure}
+%
+%  \begin{figure}[htbp!]
+%   \centering
+%   \textbf{FLEXIBLE} \\
+%  \begin{subfigure}[b]{0.15\textwidth}
+%    \includegraphics[width=.99\textwidth]{g_r_6_46_f_o_o}
+%    \vspace{-15pt} \caption{}
+%    \label{fig:rg_6_f}
+%  \end{subfigure}
+%  \begin{subfigure}[b]{0.15\textwidth}
+%    \includegraphics[width=.99\textwidth]{g_r_7_46_f_o_o}
+%     \vspace{-15pt} \caption{}
+%    \label{fig:rg_7_f}
+%  \end{subfigure}
+%  \begin{subfigure}[b]{0.15\textwidth}
+%    \includegraphics[width=.99\textwidth]{g_r_8_46_f_o_o}
+%    \vspace{-15pt} \caption{}
+%    \label{fig:rg_8_f}
+%  \end{subfigure}
+%    \begin{subfigure}[b]{0.15\textwidth}
+%    \includegraphics[width=.99\textwidth]{g_r_9_46_f_o_o}
+%    \vspace{-15pt} \caption{}
+%    \label{fig:rg_9_f}
+%  \end{subfigure}
+%  \begin{subfigure}[b]{0.15\textwidth}
+%    \includegraphics[width=.99\textwidth]{g_r_12_46_f_o_o}
+%     \vspace{-15pt} \caption{}
+%    \label{fig:rg_12_f}
+%  \end{subfigure}
+%  \begin{subfigure}[b]{0.15\textwidth}
+%    \includegraphics[width=.99\textwidth]{g_r_14_46_f_o_o}
+%    \vspace{-15pt} \caption{}
+%    \label{fig:rg_14_f}
+%  \end{subfigure} \\  \vspace{-10pt} 
+% % \hfill
+% \textbf{RIGID} \\
+%  \begin{subfigure}[b]{0.15\textwidth}
+%    \includegraphics[width=.99\textwidth]{g_r_6_46_r_o_o}
+%     \vspace{-15pt} \caption{}
+%    \label{fig:rg_6_r}
+%  \end{subfigure}
+%  \begin{subfigure}[b]{0.15\textwidth}
+%    \includegraphics[width=.99\textwidth]{g_r_7_46_r_o_o}
+%     \vspace{-15pt} \caption{}
+%    \label{fig:rg_7_r}
+%  \end{subfigure}
+%  \begin{subfigure}[b]{0.15\textwidth}
+%    \includegraphics[width=.99\textwidth]{g_r_8_46_r_o_o}
+%    \vspace{-15pt} \caption{}
+%    \label{fig:rg_8_r}
+%  \end{subfigure}
+%   \begin{subfigure}[b]{0.15\textwidth}
+%  \includegraphics[width=.99\textwidth]{g_r_9_46_r_o_o}
+%    \vspace{-15pt} \caption{}
+%    \label{fig:rg_9_r}
+%  \end{subfigure}
+%  \begin{subfigure}[b]{0.15\textwidth}
+%    \includegraphics[width=.99\textwidth]{g_r_12_46_r_o_o}
+%     \vspace{-15pt} \caption{}
+%    \label{fig:rg_12_r}
+%  \end{subfigure}
+%  \begin{subfigure}[b]{0.15\textwidth}
+%    \includegraphics[width=.99\textwidth]{g_r_14_46_r_o_o}
+%    \vspace{-15pt} \caption{}
+%    \label{fig:rg_14_r}
+%  \end{subfigure}\\
+%  \caption{\textit{Oxygen-oxygen radial distribution functions} (\protect\subref{fig:rg_6_f},\protect\subref{fig:rg_6_r})  \(\rho_{2D}\) = 0.065 (\protect\subref{fig:rg_7_f},\protect\subref{fig:rg_7_r}) \(\rho_{2D}\) = 0.097 (\protect\subref{fig:rg_8_f},\protect\subref{fig:rg_8_r}) \(\rho_{2D}\) = 0.129, (\protect\subref{fig:rg_9_f},\protect\subref{fig:rg_9_r}) \(\rho_{2D}\) = 0.163, (\protect\subref{fig:rg_12_f},\protect\subref{fig:rg_12_r}) \(\rho_{2D}\) = 0.260 (\protect\subref{fig:rg_14_f},\protect\subref{fig:rg_14_r}) \(\rho_{2D}\) = 0.325.}
+%  \label{fig:gr}
+%\end{figure}
+
+%\begin{figure}[h!]
+%	\centering
+%	(a)~\includegraphics[width=0.11\linewidth]{6A_f2} 
+%	\includegraphics[width=0.24\linewidth]{6A_f3}
+%	(b)~\includegraphics[width=0.15\linewidth]{6A_r2} 
+%	\includegraphics[width=0.39\linewidth]{6A_r3}
+%	\caption{\textit{Snapshots of flexible confined systems.} Graphene carbons in grey, water oxygens in red and water hydrogens in white. (a) flexible walled system (b) rigid walled system. }
+%	\label{fig:snapshot}
+%\end{figure}
+
+%\begin{figure}[h!]
+%	\centering
+%	\begin{subfigure}[b]{0.49\textwidth}
+%    \includegraphics[trim={0.25cm 0.25cm 0.25cm 0.15cm},clip,width=\textwidth]{msd_2D_f}
+%     \vspace{-15pt} \caption{}
+%    \label{fig:msd_f}
+%  \end{subfigure}
+%  \begin{subfigure}[b]{0.49\textwidth}
+%    \includegraphics[trim={0.25cm 0.25cm 0.25cm 0.15cm},clip,width=1\textwidth]{msd_2D_r}
+%     \vspace{-15pt} \caption{}
+%    \label{fig:msd_r}
+%  \end{subfigure}
+%	\caption{\textit{Water in-plane mean square displacement}. Mean squared in-plane displacement of water molecules (\protect\subref{fig:msd_f}) flexible systems, (\protect\subref{fig:msd_r}) rigid systems. The inserts plot the estimated diffusion coefficient as a function of number density.}
+%	\label{fig:msd_both}
+%\end{figure}
 
 \clearpage
 

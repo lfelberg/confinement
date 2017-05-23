@@ -35,27 +35,27 @@ def plot_scatter(csv, sep, ln, itr):
     print("Angle maxes: ", x[argrelextrema(y, np.greater)])
     plt.savefig(csv.csvfname[:-4]+'_fit.png',bbox_inches='tight'); plt.close()
 
-   #ft_fl = open(csv.csvfname[:-3]+'_hist.csv', 'w')
-   #ft_fl.write("bin,hist\n")
-   #for xx in range(len(x)): 
-   #    ft_fl.write("{0:.3f},{1:.4f}\n".format(x[xx],y[xx]))
-   #ft_fl.close()
+    ft_fl = open(csv.csvfname[:-4]+'_hist.csv', 'w')
+    ft_fl.write("bin,hist\n")
+    for xx in range(len(x)): 
+        ft_fl.write("{0:.3f},{1:.4f}\n".format(x[xx],y[xx]))
+    ft_fl.close()
 
     # Plotting and fitting NN distribution
-    f = plt.figure(1, figsize = (1.5, 1.5)); ax = f.add_subplot(111)
-    ax.xaxis.set_major_locator(MaxNLocator())
-    ax.yaxis.set_major_locator(MaxNLocator())
-    dists = csv.dat[csv.find_keyword('dis')].flatten()
-    y,x = np.histogram(dists, bins=nbins, range=[1.5,4.]); dx = x[1]-x[0]
-    x = x[:-1] + dx/2.;y = y/sum(y.astype(float))/dx
-    ax.bar(x, y, width=dx, color = "k",edgecolor = "none");
-    ax.set_xlim([1.5,4.0]); ax.set_ylim([0, 6])
+   #f = plt.figure(1, figsize = (1.5, 1.5)); ax = f.add_subplot(111)
+   #ax.xaxis.set_major_locator(MaxNLocator())
+   #ax.yaxis.set_major_locator(MaxNLocator())
+   #dists = csv.dat[csv.find_keyword('dis')].flatten()
+   #y,x = np.histogram(dists, bins=nbins, range=[1.5,4.]); dx = x[1]-x[0]
+   #x = x[:-1] + dx/2.;y = y/sum(y.astype(float))/dx
+   #ax.bar(x, y, width=dx, color = "k",edgecolor = "none");
+   #ax.set_xlim([1.5,4.0]); ax.set_ylim([0, 6])
 
-    ax.set_xlabel("Near neigh dist ($\AA$)",fontsize= 8)
-    ax.set_ylabel("Probability ($1/\AA$)",fontsize= 8)
-    plt.savefig(csv.csvfname[:-10]+'dists.png',bbox_inches = 'tight',)
+   #ax.set_xlabel("Near neigh dist ($\AA$)",fontsize= 8)
+   #ax.set_ylabel("Probability ($1/\AA$)",fontsize= 8)
+   #plt.savefig(csv.csvfname[:-10]+'dists.png',bbox_inches = 'tight',)
 
-    print("Near neighbor maxes: ", x[argrelextrema(y, np.greater)])
+   #print("Near neighbor maxes: ", x[argrelextrema(y, np.greater)])
     plt.close()
 
 def main():                                                                        

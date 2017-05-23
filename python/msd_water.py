@@ -12,18 +12,19 @@ OXY = 1
 def trans_coords(coords, rng):
     ''' Method to translate coordinates so that each step is within 1 box
         of the previous. This is to account for the total MSD. '''
-    cnew = np.zeros(coords.shape); cnew[0] = coords[0]
-
-    st = "{0}\nAtom".format(len(coords[0]))
-
+    cnew = np.zeros((coords.shape[0],1)); #cnew[0] = coords[0]
+    cnew[0] = np.mean(cnew[0], axis=0)# for calc msd of com
+   #st = "{0}\nAtom".format(len(coords[0]))
     for i in range(len(coords)-1):
         cnew[i+1] = translate_pbc(cnew[i], coords[i+1], rng[i])
-        cnew[i] = cnew[i] - np.mean(cnew[i], axis=0)
-        print(st)
-        for j in range(len(coords[0])): print("{0} {1} {2} {3}".format(8,*coords[i,j,:]))
-    cnew[-1] = cnew[-1] - np.mean(cnew[-1], axis=0)
-    print(st)
-    for j in range(len(coords[0])): print("{0} {1} {2} {3}".format(8,*coords[-1,j,:]))
+        cnew[i] = np.mean(cnew[i], axis=0) # for calc msd of com
+       #cnew[i] = cnew[i] - np.mean(cnew[i], axis=0)
+       #print(st)
+       #for j in range(len(coords[0])): print("{0} {1} {2} {3}".format(8,*coords[i,j,:]))
+   #cnew[-1] = cnew[-1] - np.mean(cnew[-1], axis=0)
+    cnew[-1] = np.mean(cnew[-1], axis=0) # for calc msd of com
+   #print(st)
+   #for j in range(len(coords[0])): print("{0} {1} {2} {3}".format(8,*coords[-1,j,:]))
     return cnew
 
 def get_msd(xyz, volC):

@@ -25,7 +25,7 @@ def plot_scatter(csv):
             ff.append(dens[j]); fl.append(flexb[0][j])
             ff.append(dens[j]); fl.append(flexb[1][j])
         else:  df.append(dens[j]); flx.append(flexb[0][j])
-    plt.plot(ff, fl, 'mD')
+    plt.plot(ff, fl, 'mD', label = "multi")
     plt.plot(df, flx, 'k.', label = "flexible")
     plt.plot(dens, rigid, 'b.',label = "rigid")
     ax.set_xlim([0.,0.35]);#ax.set_ylim([0,0.02])
