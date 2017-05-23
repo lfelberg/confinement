@@ -129,12 +129,7 @@ and 1000 fs (0.1 and 1.0 ps), respectively. The dynamical integration
 scheme was velocity-Verlet \cite{Swope1982}.
 For all simulations, the dynamics timestep was set at 2.0 femtoseconds. 
 
-\textit{Analysis:} For the analysis, the first 3 nanoseconds of each trajectory was discarded and quantitative system properties were calculated and averaged over 3500 snapshots. Lateral pair correlation functions (g(R)s) between water oxygens were computed. The confining scale was in many instances comparable to the distance scale of water pair interaction lengthscales, therefore instead of computing a traditional 3D g(R), a lateral or 2D g(R) was computed as follows: water oxygens were histogrammed into 0.6\r A bins according to their x axis position (the graphene sheets fall in the y-z plane). Oxygens identified to be in the same bin were used to calculate a pair-correlation function, which was averaged for all bins. %During the pairwise calculations, only oxygens confined between the same graphene sheets were considered.
-3-body angle distributions 
-
-\textit{Graphene-graphene distances and water-graphene distances:} \\
-
-\textit{Mean square displacement calculations:} \\
+\textit{Analysis:} For the analysis, the first 3 nanoseconds of each trajectory was discarded and quantitative system properties were calculated and averaged over 3500 snapshots. Lateral pair correlation functions (g(R)s) between water oxygens were computed. The confining scale was in many instances comparable to the distance scale of water pair interaction lengthscales, therefore instead of computing a traditional 3D g(R), a lateral, or 2D, g(R) was computed as follows: water oxygens were histogrammed into 0.6\r A bins according to their x axis position (the graphene sheets fall in the y-z plane). Oxygens identified to be in the same bin were used to calculate a pair-correlation function, which was averaged for all bins. 3-body angle distributions were computed to analyze the in-plane water structure as follows. Like the lateral g(R)s, the oxygen atoms were binned according to their x-axis positions and then the two nearest neighbors were found for each oxygen. The angle computed is formed between the closest neighboring oxygen, the oxygen itself and the second closest neighbor. Graphene-graphene distances and water-graphene distances were considered to understand the effect of the flexible walls as well as to calculate the out-of-plane distribution of waters between the walls. For simplicity, the position of the waters was calculated with respect to a reference wall (one of the two in the simulation box), by considering the distance to the water oxygen. Finally, mean square displacement calculations were made performing a 
 
 \subsection*{Results}
 
