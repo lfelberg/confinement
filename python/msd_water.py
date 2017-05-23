@@ -12,7 +12,7 @@ OXY = 1
 def trans_coords(coords, rng):
     ''' Method to translate coordinates so that each step is within 1 box
         of the previous. This is to account for the total MSD. '''
-    cnew = np.zeros((coords.shape[0],1,3)); #cnew = np.zeros(coords.shape); cnew[0] = coords[0]
+    cnew = np.zeros((coords.shape[0],1,3)); #cnew = np.zeros(coords.shape); tcnew[0] = coords[0]
     cnew[0] = np.mean(cnew[0], axis=0)# for calc msd of com
    #st = "{0}\nAtom".format(len(coords[0]))
    #for i in range(len(coords)-1):
