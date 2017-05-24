@@ -7,7 +7,7 @@ from volfile import VolFile
 from util    import d_pbc, translate_pbc, translate_1st_im
 
 GRAPHENE = 3
-SPAC = 2.5
+SPAC = 3.5
 
 def get_dist(xyz, dims):
     '''Method to get the distance between graphene walls, and graphene
@@ -29,6 +29,8 @@ def get_dist(xyz, dims):
         for yy in range(n_y_ed):
             for zz in range(n_z_ed):
                 o_p = np.all(np.array([o_yy==yy, o_zz==zz]),axis=0)
+                c1_p = sum(np.all(np.array([c1_yy==yy,c1_zz==zz]),axis=0).astype(int))
+                c2_p = sum(np.all(np.array([c1_yy==yy,c1_zz==zz]),axis=0).astype(int))
                 if sum(o_p.astype(int)) > 0:
                     o_w = translate_1st_im(oxC[o_p,0], rng[0])
                     c1_p = c1[np.all(np.array([c1_yy==yy,c1_zz==zz]),axis=0),0]
@@ -39,10 +41,11 @@ def get_dist(xyz, dims):
                     w_d1.append(d1); w_d2.append(d2)
                     dgg = len(d1) * [abs(c2_x - c1_x)]
                     cc_d.append(dgg)
-                else:
+                elif c1_p > 0 and c2_p > 0:
                     c1_p = c1[np.all(np.array([c1_yy==yy,c1_zz==zz]),axis=0),0]
                     c2_p = c2[np.all(np.array([c2_yy==yy,c2_zz==zz]),axis=0),0]
-                    w_d1.append(0.0); w_d2.append(0.0)
+                    c1_x = np.mean(c1_p); c2_x = np.mean(c2_p)
+                    w_d1.append([0.0]); w_d2.append([0.0])
                     cc_d.append([abs(c2_x - c1_x)])
     w_d1 = list(itertools.chain(*w_d1)); w_d2 = list(itertools.chain(*w_d2))
     return w_d1, w_d2, list(itertools.chain(*cc_d))
@@ -67,7 +70,7 @@ def main():
     volC = VolFile("run"+nm+".vol") 
     xyz_cl = XYZFile(xyzname, volC)
     dists = get_dist( xyz_cl, volC)
-    print_dist_to_c("run"+nm+".distgg", dists)
+    print_dist_to_c("run"+nm+".distgg_new", dists)
 
 if __name__=="__main__":
     main()

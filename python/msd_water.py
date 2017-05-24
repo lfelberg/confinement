@@ -12,17 +12,15 @@ OXY = 1
 def trans_coords(coords, rng):
     ''' Method to translate coordinates so that each step is within 1 box
         of the previous. This is to account for the total MSD. '''
-    cnew = np.zeros((coords.shape[0],1,3)); #cnew = np.zeros(coords.shape); tcnew[0] = coords[0]
+   #cnew = np.zeros((coords.shape[0],1,3)); # for calc msd of com
+    cnew = np.zeros(coords.shape); cnew[0] = coords[0]
     cnew[0] = np.mean(cnew[0], axis=0)# for calc msd of com
-   #st = "{0}\nAtom".format(len(coords[0]))
-   #for i in range(len(coords)-1):
-    for i in range(1,len(coords)):
-       #cnew[i+1] = translate_pbc(cnew[i], coords[i+1], rng[i])
-        cnew[i] = np.mean(translate_pbc(cnew[i-1], coords[i], rng[i-1]), axis=0) # for calc msd of com
-       #cnew[i] = cnew[i] - np.mean(cnew[i], axis=0)
-       #print(st)
-       #for j in range(len(coords[0])): print("{0} {1} {2} {3}".format(8,*coords[i,j,:]))
-   #cnew[-1] = cnew[-1] - np.mean(cnew[-1], axis=0)
+    for i in range(len(coords)-1):
+   #for i in range(1,len(coords)):
+        cnew[i+1] = translate_pbc(cnew[i], coords[i+1], rng[i])
+       #cnew[i] = np.mean(translate_pbc(cnew[i-1], coords[i], rng[i-1]), axis=0) # for calc msd of com
+        cnew[i] = cnew[i] - np.mean(cnew[i], axis=0)
+    cnew[-1] = cnew[-1] - np.mean(cnew[-1], axis=0)
    #print(st)
    #for j in range(len(coords[0])): print("{0} {1} {2} {3}".format(8,*coords[-1,j,:]))
     return cnew
@@ -33,8 +31,8 @@ def get_msd(xyz, volC):
     tOX = xyz.get_type_i(OXY)
     nsnaps = len(xyz.atom)-1 # number of snaps in XYZ, remove 0th frame
     nOX = np.sum(tOX.astype(int))
-   #msd = np.zeros((nsnaps,nOX,3)) # saving msd for each oxygen
-    msd = np.zeros((nsnaps,1,3)) # msd of com
+    msd = np.zeros((nsnaps,nOX,3)) # saving msd for each oxygen
+   #msd = np.zeros((nsnaps,1,3)) # msd of com
     ms_mean = np.arange(nsnaps,0,-1.)[:, np.newaxis, np.newaxis]
 
     ocrd = trans_coords(xyz.atom[1:,tOX],volC.get_rng()[1:]) # don't use 1st snap
@@ -69,11 +67,11 @@ def main():
     xyzname=sys.argv[1]; sep=sys.argv[2]; ln=sys.argv[3]; itr=sys.argv[4]
 
     nm = str(sep)+"_"+str(ln)+"_"+str(itr)
-    volC = VolFile("run"+nm+".vol") 
+    volC = VolFile("new"+nm+".vol") 
     xyz_cl = XYZFile(xyzname, volC)
 
     msd = get_msd(xyz_cl, volC)
-    print_msd(msd, xyz_cl.time[3]-xyz_cl.time[2], 'msd_'+nm+".csv")
+    print_msd(msd, xyz_cl.time[3]-xyz_cl.time[2], 'msd_new'+nm+".csv")
 
 if __name__=="__main__":
     main()
