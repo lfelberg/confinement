@@ -33,7 +33,6 @@ def plot_scatter(csv, sep, ln, itr):
     plt.close()
 
     # finding graphene separation dist(s)
-    bil = [9,12] #list of initial seps that form 2 diff layers in flexible
     nbins = 50
     y,x = np.histogram(Y, bins=nbins); dx = x[1]-x[0]
     x = x[:-1] + dx/2.;y = y/sum(y.astype(float))/dx
@@ -48,13 +47,6 @@ def plot_scatter(csv, sep, ln, itr):
     plt.savefig(csv.csvfname[:-3]+'g_sep_fit.png',bbox_inches = 'tight',)
     plt.close()
 
-   #ft_fl = open(csv.csvfname[:-3]+'g_sep_fit.dat', 'w')
-   #ft_fl.write("bin,dat,fit\n")
-   #for xx in range(len(x)): 
-   #    ft_fl.write("{0:.3f},{1:.4f},{2:.4f}\n".format(x[xx],y[xx],fit[xx]))
-   #ft_fl.close()
-
-    bil = [9,12] #list of initial seps that form 2 diff layers in flexible
     y,x = np.histogram(X, bins=nbins); dx = x[1]-x[0]
     x = x[:-1] + dx/2.;y = y/sum(y.astype(float))/dx
     print("X position maxes: ", x[argrelextrema(y, np.greater)])
@@ -67,6 +59,19 @@ def plot_scatter(csv, sep, ln, itr):
     ax.set_ylabel("Probability",fontsize=7); ax.set_ylim([0.,15])
     plt.savefig(csv.csvfname[:-3]+'o_sep_fit.png',bbox_inches = 'tight',)
     plt.close()
+
+    nbins = 30
+    y,x = np.histogram(Y[X==0.0], bins=nbins); dx = x[1]-x[0]
+    x = x[:-1] + dx/2.;y = y/sum(y.astype(float))/dx
+    print("X position maxes: ", x[argrelextrema(y, np.greater)])
+    f = plt.figure(1, figsize = (1.0, 1.0))
+    ax, ct, leg = f.add_subplot(111), 0, []
+    ax.xaxis.set_major_locator(MaxNLocator())
+    ax.yaxis.set_major_locator(MaxNLocator())
+    plt.plot(x, y, color = "k")
+    ax.set_xlabel("$d_{gg}$",fontsize=7); #ax.set_xlim([0.2,0.8])
+    ax.set_ylabel("Probability",fontsize=7); #ax.set_ylim([0.,15])
+    plt.savefig(csv.csvfname[:-3]+'o_00.png',bbox_inches = 'tight',)
 
 def main():                                                                        
     '''For a collection of data, get info from csv and then plot,

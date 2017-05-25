@@ -54,8 +54,8 @@ def plot_scatter(plt_nm, csvL, loc, sep, ln, itr):
                 xd = csvL[i][j][k].dat[0,st:en]; yd = csvL[i][j][k].dat[loc,st:en]
                 m,b = np.polyfit(xd,yd,1)
                 print("{0:.3f},{1:.5f}".format(dens[sep[i]],m/4.*A2_PS_TO_M2_S*(1e9)))
-                ax.plot(csvL[i][j][k].dat[0], 
-                        csvL[i][j][k].dat[loc], color=colorL[ct])
+                ax.plot(csvL[i][j][k].dat[0][:-50], 
+                        csvL[i][j][k].dat[loc][:-50], color=colorL[ct])
                #ax.plot(xd, xd*m + b, "r")
                #leg += [r'$\rho_{{2D}}=${0:.2f}'.format(dens[sep[i]])]
                 leg += [r'{0}'.format(ct)]

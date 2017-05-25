@@ -12,34 +12,37 @@ OXY = 1
 def trans_coords(coords, rng):
     ''' Method to translate coordinates so that each step is within 1 box
         of the previous. This is to account for the total MSD. '''
-   #cnew = np.zeros((coords.shape[0],1,3)); # for calc msd of com
     cnew = np.zeros(coords.shape); cnew[0] = coords[0]
-    cnew[0] = np.mean(cnew[0], axis=0)# for calc msd of com
+    st = "{0}\nAtoms".format(coords.shape[1])
+
     for i in range(len(coords)-1):
-   #for i in range(1,len(coords)):
         cnew[i+1] = translate_pbc(cnew[i], coords[i+1], rng[i])
-       #cnew[i] = np.mean(translate_pbc(cnew[i-1], coords[i], rng[i-1]), axis=0) # for calc msd of com
         cnew[i] = cnew[i] - np.mean(cnew[i], axis=0)
+        print(st)
+        for j in range(len(coords[0])): print("{0} {1} {2} {3}".format(8,*cnew[i,j,:]))
     cnew[-1] = cnew[-1] - np.mean(cnew[-1], axis=0)
-   #print(st)
-   #for j in range(len(coords[0])): print("{0} {1} {2} {3}".format(8,*coords[-1,j,:]))
+
+    print(st)
+    for j in range(len(coords[0])): print("{0} {1} {2} {3}".format(8,*cnew[-1,j,:]))
+
     return cnew
 
 def get_msd(xyz, volC):
     '''Method to get the mean square displacement of water oxygens'''
     # find water oxygen atoms
-    tOX = xyz.get_type_i(OXY)
+    iOX,_ = xyz.get_inner_wat(); oOX,_ = xyz.get_outer_wat()
     nsnaps = len(xyz.atom)-1 # number of snaps in XYZ, remove 0th frame
-    nOX = np.sum(tOX.astype(int))
-    msd = np.zeros((nsnaps,nOX,3)) # saving msd for each oxygen
-   #msd = np.zeros((nsnaps,1,3)) # msd of com
+    nOX = xyz.get_ct_i(OXY)
+    msd = np.zeros((nsnaps,nOX,3)) #save msd for each oxy
     ms_mean = np.arange(nsnaps,0,-1.)[:, np.newaxis, np.newaxis]
 
-    ocrd = trans_coords(xyz.atom[1:,tOX],volC.get_rng()[1:]) # don't use 1st snap
+    oicd = trans_coords(xyz.atom[1:,iOX],volC.get_rng()[1:]) # don't use 1st snap
+    oocd = trans_coords(xyz.atom[1:,oOX],volC.get_rng()[1:]) # don't use 1st snap
     for i in range(nsnaps-1):
-        ms = d3(ocrd[np.newaxis,i], ocrd[i+1:])
-        print(ocrd[np.newaxis,i].shape, ocrd[i+1:].shape, ms.shape)
-        msd[1:nsnaps-i] += ms
+        ms = d3(oicd[np.newaxis,i], oicd[i+1:])
+        msd[1:nsnaps-i,:sum(iOX.astype(int))] += ms
+        ms = d3(oocd[np.newaxis,i], oocd[i+1:])
+        msd[1:nsnaps-i,sum(iOX.astype(int)):] += ms
     return msd/ms_mean
 
 def print_msd(msd, timstep, fname):

@@ -4,7 +4,7 @@ import matplotlib, scipy
 import matplotlib.pyplot as plt
 from scipy.signal import argrelextrema
 from matplotlib.ticker import *
-MaxNLocator.default_params['nbins']=4
+MaxNLocator.default_params['nbins']=3
 
 from csvfile import CSVFile
 
@@ -28,12 +28,12 @@ def plot_scatter(csv):
     plt.plot(ff, fl, 'mD', label = "multi")
     plt.plot(df, flx, 'k.', label = "flexible")
     plt.plot(dens, rigid, 'b.',label = "rigid")
-    ax.set_xlim([0.,0.35]);#ax.set_ylim([0,0.02])
+    ax.set_xlim([0.,0.35]);ax.set_ylim([3,15])
 
-    ax.legend(loc = 2, ncol = 1, columnspacing = 0.4,fontsize=7)
+    ax.legend(loc = 2, ncol = 1, columnspacing = 0.4,fontsize=6)
     ax.set_xlabel(r"$\rho_{2D}$",fontsize= 10)
     ax.set_ylabel(r"$\langle d_{gg} \rangle \,\, (\AA)$",fontsize= 10)
-    plt.savefig(csv.csvfname[:-4]+'_r.png',bbox_inches = 'tight',) #transparent=True)
+    plt.savefig(csv.csvfname[:-4]+'.png',bbox_inches = 'tight',) #transparent=True)
     plt.close()
 
 def main():                                                                        
