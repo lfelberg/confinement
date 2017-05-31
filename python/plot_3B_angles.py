@@ -33,9 +33,9 @@ def plot_scatter(csv, sep, ln, itr):
     plt.plot((160.,160.), (0,10), 'b-')
     params = [90.0, 120., 1.0, 1.0, 1.0, 1.0]
     print("Angle maxes: ", x[argrelextrema(y, np.greater)])
-    plt.savefig(csv.csvfname[:-4]+'_fit.png',bbox_inches='tight'); plt.close()
+   #plt.savefig(csv.csvfname[:-4]+'_fit.png',bbox_inches='tight'); plt.close()
 
-    ft_fl = open(csv.csvfname[:-4]+'_hist.csv', 'w')
+    ft_fl = open(csv.csvfname[:-11]+'_hist.csv', 'w')
     ft_fl.write("bin,hist\n")
     for xx in range(len(x)): 
         ft_fl.write("{0:.3f},{1:.4f}\n".format(x[xx],y[xx]))

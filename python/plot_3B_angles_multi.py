@@ -15,14 +15,14 @@ def plot_scatter(plt_nm, csvL, sep, ln):
    #matplotlib.rcParams.update({'font.size': 8})
     ax.xaxis.set_major_locator(MaxNLocator())
     ax.yaxis.set_major_locator(MaxNLocator())
-    cos = [colorL[-1], colorL[0], colorL[1], colorL[-4]]
     for i in range(len(csvL)):
         for j in range(len(csvL[i])):
            fn = csvL[i][j].csvfname.split("_")
-           if "bulk" != dens[int(fn[0][3:])]: lg = "{0:.3f}".format(dens[int(fn[0][3:])])
+           sep = int(fn[0][3:])
+           if "bulk" != dens[sep][0]: lg = "{0:.3f}".format(dens[sep][0])
            else:                          lg = "bulk"
            ax.plot(csvL[i][j].dat[0],csvL[i][j].dat[1],
-                   color = cos[ct], label=lg)
+                   color = dens[sep][1], label=lg)
            mn += fn[0][3:] + "_";  ct += 1
    #ax.legend(ncol = 1, columnspacing = -0.4,
    #    fontsize =  6 , handletextpad = -0.1,

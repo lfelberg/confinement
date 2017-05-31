@@ -13,14 +13,14 @@ A2_PS_TO_M2_S = A2_TO_M2*PS_TO_S
 colorL = [
           [0,0,0], 
           [1, 0, 0], 
+          [0,0,1], 
+          [0., 0.391, 0.], 
           [0.859, 0.078, 0.234], 
           [.93, .53, .18],
           [0.801, 0.586, 0.047],
-          [0., 0.391, 0.], 
           [0.289, 0.461, 1.],
           [0.289, 0., 0.508], 
           [0.777, 0.441, 0.441],
-          [0,0,1], 
           [0.777, 0.379, 0.078], 
           [0., 0.9297, 0.9297]
          ]
@@ -48,24 +48,25 @@ def plot_scatter(plt_nm, csvL, loc, sep, ln, itr):
 
     for i in range(len(csvL)):
         for j in range(len(csvL[i])):
+            mav = 0.0 
             for k in range(len(csvL[i][j])):
-                st = 100
-                en = 400
+                st = 400
+                en = 1500
                 xd = csvL[i][j][k].dat[0,st:en]; yd = csvL[i][j][k].dat[loc,st:en]
                 m,b = np.polyfit(xd,yd,1)
-                print("{0:.3f},{1:.5f}".format(dens[sep[i]],m/4.*A2_PS_TO_M2_S*(1e9)))
-                ax.plot(csvL[i][j][k].dat[0][:-50], 
-                        csvL[i][j][k].dat[loc][:-50], color=colorL[ct])
+                mav += m/4.*A2_PS_TO_M2_S*(1e9)
+                ax.plot(csvL[i][j][k].dat[0], 
+                        csvL[i][j][k].dat[loc], color=colorL[ct])
                #ax.plot(xd, xd*m + b, "r")
                #leg += [r'$\rho_{{2D}}=${0:.2f}'.format(dens[sep[i]])]
-                leg += [r'{0}'.format(ct)]
                 ct += 1
-   #ax.set_xlim([0,1000])
-   #ax.set_ylim([0,1000])
+            print("{0:.3f},{1:.7f}".format(dens[sep[i]],mav/float(len(csvL[i][j]))))
+   #ax.set_xlim([0,800])
+   #ax.set_ylim([0,800])
     bbox = [1.1, 0.95]
     ax.legend(leg, loc = 2, ncol = 1, columnspacing = 0.4,
-        fontsize =  5 , handletextpad = 0.2, handlelength = 1.3,
-        borderaxespad = -0.9, bbox_to_anchor = bbox   )
+        fontsize =  7 , handletextpad = 0.2, handlelength = 1.3,
+        borderaxespad =  0.2, )
     ax.set_xlabel("Time (ps)",fontsize=10); 
     ax.set_ylabel("$MSD_{||} \,\, (\AA^2)$",fontsize=10)
     plt.savefig(plt_nm+csvL[i][j][k].key[loc]+'.png', bbox_inches = 'tight',) 
@@ -91,7 +92,7 @@ def main():
     
     for i in range(spS, spE): sep.append(int(sys.argv[i]))
     for i in range(spE, lnE): ln.append(int(sys.argv[i]))
-    for i in range(lnE, itE): itr.append(int(sys.argv[i]))
+    for i in range(lnE, itE): itr.append(sys.argv[i])
     
     ext = sys.argv[itE]; loc = int(sys.argv[itE+1])
     csvL = []; 
@@ -104,7 +105,7 @@ def main():
                 cs.append(CSVFile(csvn+ext))
             csL.append(cs)
         csvL.append(csL)
-    print("Ext {0}, loc {1} = {2}".format(ext, loc, cs[-1].key[loc]), sep, ln, itr)
+   #print("Ext {0}, loc {1} = {2}".format(ext, loc, cs[-1].key[loc]), sep, ln, itr)
     plot_scatter(csvname+"_", csvL, loc, sep, ln, itr)
 
 if __name__=="__main__":

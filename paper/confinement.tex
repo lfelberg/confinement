@@ -49,6 +49,9 @@ Berkeley, California 94720, USA}
 
 \clearpage
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section*{Introduction}
 
 The properties and phase behavior of water under nanoconfinement are remarkably different than those in bulk, with important implications for nanotechnological applications and biological processes \cite{Lucent2007, Holt2006, Levinger2002, Nair2012}. Driven by the pursuit to understand the physics underlying the anomalous behavior of water under hydrophobic nanoconfinement, topics such as low-dimensional ice formation \cite{Algara-Siller2015, Koga2001} (which remains controversial \cite{Zhou2015}), unconventional solid-liquid and liquid-liquid phase transitions  \cite{Mochizuki2015,Han2010,Giovambattista2009,Zhu2015}, or hydrophobic evaporation (i.e. liquid-gas phase transitions) \cite{Sharma2012,Altabet2017,Head-Gordon2008,Hummer2001}, have been extensively studied over the last decade. It is important to note that the literature on confined water is vast, and the references cited in this letter are representative, but by no means exhaustive. 
@@ -59,8 +62,9 @@ What these studies have in common is the use of rigid confining surfaces, even w
 
 Here, we study the phase behavior of confined water under physically accurate flexible graphene sheets using molecular dynamics simulations at constant ambient temperature and pressure. We find that when the system is commensurate, the flexibility of the confining surfaces has only marginal effects on the phase behavior, justifying the use of rigid models to study commensurate configurations, such as ice phases. On the other hand, the flexibility of graphene has a tremendous impact on incommensurate configurations, where the graphene sheets bend to accommodate a novel biphasic layered state, where an n-layer and an (n+1)-layer phase coexist next to each other. This multiphase coexisting state is reminiscent of that observed under inhomogeneous confinement \cite{Qiu2015}, with the important difference that here the inhomogeneity is not enforced, but self-imposed by the system. When the same incommensurate systems are simulated under rigid confinement, disordered liquid phases, similar to the heterogeneous fluid described above, are observed. The biphasic multilayer state under flexible confinement persists across a relatively wide range of confining distances. We observe biphasic states at incommensurate confinement distances where 0 and 1, 1 and 2, and 2 and 3, layered phases coexist. The regions with water in the 0/1 state form ice domains with both rhombic and distorted-square lattices. Remarkably, increasing the temperature of the system can trigger the transition from the biphasic liquid state to the heterogeneous fluid phase. This study provides new comprehensive understanding of the phase behavior of confined water, and sheds light into the role of flexible confinement and its interplay with commensurability effects. Furthermore, our results, based on a realistic model of graphene, will be useful to interpret experimental results in the future, where carbon allotropes are ubiquitously employed.
 
-\clearpage
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section*{Methods}
 
 \textit{Models:} For this study, simulations of systems with parallel graphene plates with
@@ -113,7 +117,6 @@ Water hydrogen     & 0.5242                                                     
 \label{table:ff_parms_atoms}
 \end{table}
 
-
 \textit{Simulation protocols:} Simulations were performed with the LAMMPS software package \cite{Plimpton1995}. 
 Equilibration of initial configurations were performed as follows. Systems were run in 
 the NVE ensemble with a Langevin Thermostat at 298 Kelvin
@@ -129,23 +132,15 @@ and 1000 fs (0.1 and 1.0 ps), respectively. The dynamical integration
 scheme was velocity-Verlet \cite{Swope1982}.
 For all simulations, the dynamics timestep was set at 2.0 femtoseconds. 
 
-\textit{Analysis:} For the analysis, the first 3 nanoseconds of each trajectory was discarded and quantitative system properties were calculated and averaged over 3500 snapshots. Lateral pair correlation functions (g(R)s) between water oxygens were computed. The confining scale was in many instances comparable to the distance scale of water pair interaction lengthscales, therefore instead of computing a traditional 3D g(R), a lateral, or 2D, g(R) was computed as follows: water oxygens were histogrammed into 0.6\r A bins according to their x axis position (the graphene sheets fall in the y-z plane). Oxygens identified to be in the same bin were used to calculate a pair-correlation function, which was averaged for all bins. 3-body angle distributions were computed to analyze the in-plane water structure as follows. Like the lateral g(R)s, the oxygen atoms were binned according to their x-axis positions and then the two nearest neighbors were found for each oxygen. The angle computed is formed between the closest neighboring oxygen, the oxygen itself and the second closest neighbor. Graphene-graphene distances and water-graphene distances were considered to understand the effect of the flexible walls as well as to calculate the out-of-plane distribution of waters between the walls. For simplicity, the position of the waters was calculated with respect to a reference wall (one of the two in the simulation box), by considering the distance to the water oxygen. Finally, mean square displacement (MSD) calculations of water oxygens were made performing a sliding window, to allow for more statistics to be collected. For each timestep,\textit{t}, each atom was moved into the periodic image closest to itself in the previous timestep, \textit{t-1}, to ensure that the effects of the periodic boundary conditions were corrected for. The center of mass was the computed for the unwrapped coordinates and this center was subtracted from each atom to account for the effect of collective movement. In this way, displacement in each dimension was computed, but for an estimation of the diffusion coefficient, \(\mathcal{D}_{||}\), MSD in the dimension parallel to the graphene sheets was considered (MSD\textsubscript{||}). The slope of MSD\textsubscript{||} versus time, m, was calculated, and \(\mathcal{D}_{||}\) was computed according to the Einstein relation: \(\mathcal{D}_{||}\) = 4m.
+\textit{Analysis:} For the analysis, the first 3 nanoseconds of each trajectory was discarded and quantitative system properties were calculated and averaged over 3500 snapshots. Lateral pair correlation functions (g(R)s) between water oxygens were computed. The confining scale was in many instances comparable to the distance scale of water pair interaction lengthscales, therefore instead of computing a traditional 3D g(R), a lateral, or 2D, g(R) was computed as follows: water oxygens were histogrammed into 0.6\r A bins according to their x axis position (the graphene sheets fall in the y-z plane). Oxygens identified to be in the same bin were used to calculate a pair-correlation function, which was averaged for all bins. 3-body angle distributions were computed to analyze the in-plane water structure as follows. Like the lateral g(R)s, the oxygen atoms were binned according to their x-axis positions and then the two nearest neighbors were found for each oxygen. The angle computed is formed between the closest neighboring oxygen, the oxygen itself and the second closest neighbor. Graphene-graphene distances and water-graphene distances were considered to understand the effect of the flexible walls as well as to calculate the out-of-plane distribution of waters between the walls. For simplicity, the position of the waters was calculated with respect to a reference wall (one of the two in the simulation box), by considering the distance to the water oxygen. Finally, mean square displacement (MSD) calculations of water oxygens were made performing a sliding window, to allow for more statistics to be collected. For each timestep,\textit{t}, each atom was moved into the periodic image closest to itself in the previous timestep, \textit{t-1}, to ensure that the effects of the periodic boundary conditions were corrected for. The center of mass was the computed for the unwrapped coordinates and this center was subtracted from each atom to account for the effect of collective movement. In this way, displacement in each dimension was computed, but for an estimation of the diffusion coefficient, \(\mathcal{D}_{||}\), MSD in the dimension parallel to the graphene sheets was considered (MSD\textsubscript{||}). The slope of MSD\textsubscript{||} versus time, \textit{m}, was calculated, and \(\mathcal{D}_{||}\) was computed according to the Einstein relation: \(\mathcal{D}_{||}\) = 4\textit{m}.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection*{Results}
 
 All the systems studied here, both rigid and flexible, are simulated at room temperature and pressure. The only prescribed parameter for each system is the 2D density of water, \(\rho_{2D}\), calculated as the number of water molecules per interlayer divided by the area of the graphene sheet. This way we avoid making ambiguous measurements of the 3D density under confinement, which requires choosing an ill-defined excluded distance from the confining surfaces. The values of \(\rho_{2D}\), which span from 0.097 to 0.390, are chosen such that we can sample systems that range from an incomplete single layer to systems where 3 full layers can form, and everything in between.
-The out-of-plane phase behavior, or layering, is illustrated in Figure \ref{fig:dgg_1} that shows the dependence of the confining distance, \(d_{gg}\) on \(\rho_{2D}\), for both flexible and rigid cases. We observe three regimes characterized by gradual increments of \(d_{gg}\) with \(\rho_{2D}\), alternated by first-order phase transitions marked by abrupt changes in \(d_{gg}\). For the rigid case, our results agree well with previous studies (References). In the case of flexible confinement, the phase transition occurs at the same values of \(\rho_{2D}\) as for the rigid case, but the transition is qualitatively different and has not been previously reported. We observe a split in the \(d_{gg}\) distances, which corresponds to the simultaneous coexistence of a n-layer and an (n+1)-layer phases in the same system. The snapshots shown in Figure \ref{fig:dgg_2} (left panels) illustrate this coexistence, where each phase occupies a distinct region of the system.
-Besides the layering behavior illustrated in Figure \ref{fig:dgg_1} and Figure \ref{fig:dgg_2}, full characterization of the phases under confinement requires assessing the in-plane structure and dynamics of water, so we can discern among ice, liquid, gas, or more complicated behavior such as glass or heterogeneous liquid phases. In what follows, we review the change in behavior within each of the three regimes, namely from incomplete monolayer to full monolayer (\(\rho_{2D}=0.065\) to \(\rho_{2D}=0.097\)), from incomplete bilayer to full bilayer (\(\rho_{2D}=0.163\) to \(\rho_{2D}=0.196\)), and from incomplete trilayer to full trilayer (\(\rho_{2D}=0.260\) to \(\rho_{2D}=0.325\)), emphasizing the differences between rigid and flexible confinement.
- In the rigid case, as the density increased from 0.065 to 0.130, the RDF becomes substantially more structured (Fig \ref{fig:gr_ang_6_7_8_r}), which is also supported by the distributions of 3-body water oxygen intermolecular angles (Fig \ref{fig:gr_ang_6_7_8_r}), where there is a depopulation of intermediate (120-150 degrees) angles, and the distribution becomes clearly bimodal with peaks at 90 and 160 degrees, which are representative of ice XX and ice XX. These ice structures are shown in Figure XXa and b. Therefore, at the lowest 2D density, which is not enough to form a full monolayer, the system becomes a mix of low density gas and high density disordered liquid. As the density increases further, the low-density gas region disappears and the disordered liquid transitions to ice. The exact structure of these systems is examined in the next section.
-
-As \(\rho_{2D}\) is increased from 0.129 to 0.163 in the rigid systems, the graphene-graphene separation has an almost first-order-like transition, from 6.75\r A to 9.50\r A, which corresponds to a transition from a monolayer between the graphene sheets to a bilayer (Figure \ref{fig:dgg_2}, panel (iii)). Again, we observe that the variations in the average \(d_{gg}\) are small, while the 2D density was varied from 0.163 to 0.227. However, in contrast to the rigid monolayer, which showed a trend of increasing order as a function of increasing density, the bilayer produces the opposite trend. At lowest densities, 0.163 and 0.196, the system shows more order, which disappears at \(\rho_{2D}=\)0.227, see Figure \ref{fig:gr_ang_9_10_11_r}. Visual examination of these systems supports this conclusion. At low densities, the system separates into a low density gas region and a region of high density crystal/ice, which transitions to a disordered liquid at \(\rho_{2D}=\)0.227. A second transition occurs between \(\rho_{2D}=\)0.260 and 0.293. As seen in Figure \ref{fig:dgg_1}, the average \(d_{gg}\) increases to 10.14\r A, while the system still maintains a bilayer formation. But when the density increases to 0.293, the system is now distinctly trilayered (Figure \ref{fig:dgg_2}, panel (i)). Now as the density increases, we observe a more gradual increase in \(d_{gg}\) spacing from 10.14\r A at \(\rho_{2D}=\)0.260 to 14.47\r A at \(\rho_{2D}=\)0.390. Additionally, as more water is introduced into the system, the effects of varying 2D density become less notable in structural metrics. Lateral pair-correlation functions and 3-body angle distributions are relatively indistinguishable between \(\rho_{2D}=\)0.260, 0.325 and 0.390. \textbf{\color{red} Figure \ref{fig:gr_ang_12_14_16_r} and \ref{fig:gr_ang_12_14_16_f} can probably be moved to SI?}
-
-\subsection*{Flexible graphene systems}
-
-The transitions in rigid systems and structures observed as a function of 2D number density are indeed interesting, but a further layer of complexity is added when flexibility is introduced to the graphene wall. Differences between the lowest 2D number density are evident by simple visual comparison of Figure \ref{fig:dgg_2}, panels (v) and (vi). In the flexible system, the graphene walls were observed to bend and form pockets of pinched water clusters, see Figure \ref{fig:dgg_2}, panel (vi). Contrastingly, the rigid system of analogous number density was observed to form a liquid region, and a low density vapor region. The effect of the pinched or bent walls is also very immediate on the water structure (Figure \ref{fig:gr_ang_6_7_8_f}), forming the most ordered ice of all systems observed, confirmed in lateral g(r)s and 3-body angle distributions.
-
-%(3) If you haven't done so already, it'd be great if you can try those changes that we talked about to calculate the MSD so that we can really trust the values of Figure 3. Also, I wouldn't report the diffusivity in a logarithmic axis. Maybe you can exclude the first point of each series (which are really the outliers), plot the rest on a linear scale and then you can add the log plot as an inset. But we should focus on getting reliable values first.
-
+\textit{Layering}. The out-of-plane phase behavior, or layering, is illustrated in Figure \ref{fig:dgg_1} that shows the dependence of the confining distance, \(d_{gg}\) on \(\rho_{2D}\), for both flexible and rigid cases. We observe three regimes characterized by gradual increments of \(d_{gg}\) with \(\rho_{2D}\), alternated by first-order phase transitions marked by abrupt changes in \(d_{gg}\). For the rigid case, our results agree well with previous studies (References). In the case of flexible confinement, the phase transition occurs at the same values of \(\rho_{2D}\) as for the rigid case, but the transition is qualitatively different and has not been previously reported. We observe a split in the \(d_{gg}\) distances, which corresponds to the simultaneous coexistence of a n-layer and an (n+1)-layer phases in the same system. The snapshots shown in Figure \ref{fig:dgg_2} (left panels) illustrate this coexistence, where each phase occupies a distinct region of the system.
 
 \begin{figure}[h!]
 	\centering
@@ -156,7 +151,6 @@ The transitions in rigid systems and structures observed as a function of 2D num
 	\label{fig:dgg_1}
 \end{figure}
 
-
 \begin{figure}[h!]
 	\centering
 	\begin{subfigure}[b]{0.99\textwidth}
@@ -165,6 +159,17 @@ The transitions in rigid systems and structures observed as a function of 2D num
 	\caption{\textit{Snapshots of out-of-plane water layering and heatmap of water location and graphene-graphene separation.} \textbf{Snapshots.} Water-graphene systems as a function of increasing 2D-density, water oxygens are red, graphene carbons are grey and water hydrogens are not displayed for clarity. Panels (i), (ii) and (iii) correspond to flexible systems, and panels (iv), (v), and (vi) correspond to rigid systems. Images not drawn to size. \textbf{Heatmaps.} 2D histogram of the distance of water to a reference wall versus the graphene-graphene separation distance, warmer colors representing a higher number of observations.}
 	\label{fig:dgg_2}
 \end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\textit{In-plane structure}. Besides the layering behavior illustrated in Figure \ref{fig:dgg_1} and Figure \ref{fig:dgg_2}, full characterization of the phases under confinement requires assessing the in-plane structure and dynamics of water, so we can discern among ice, liquid, gas, or more complicated behavior such as glass or heterogeneous liquid phases. In what follows, we review the change in behavior within each of the three regimes, namely from incomplete monolayer to full monolayer (\(\rho_{2D}=0.065\) to \(\rho_{2D}=0.097\)), from incomplete bilayer to full bilayer (\(\rho_{2D}=0.163\) to \(\rho_{2D}=0.196\)), and from incomplete trilayer to full trilayer (\(\rho_{2D}=0.260\) to \(\rho_{2D}=0.325\)), emphasizing the differences between rigid and flexible confinement.
+ In the rigid case, as the density increased from 0.065 to 0.130, the RDF becomes substantially more structured (Fig \ref{fig:gr_ang_6_7_8_r}), which is also supported by the distributions of 3-body water oxygen intermolecular angles (Fig \ref{fig:gr_ang_6_7_8_r}), where there is a depopulation of intermediate (120-150 degrees) angles, and the distribution becomes clearly bimodal with peaks at 90 and 160 degrees, which are representative of square and rhombic ice. These ice structures are shown in Figure \ref{fig:gr_ang_6_7_8_r}. At the lowest 2D density, 0.063, there is not enough water to form a full monolayer, and the system becomes a mix of low density gas and high density disordered liquid. As the density increases further, the low-density gas region disappears and the disordered liquid transitions to ice. This is also confirmed by trends in the lateral self-diffusion coefficient \(\mathcal{D}_{||}\), Figure \ref{fig:msd}. At the lowest density, \(\mathcal{D}_{||}\) is approximately that of bulk water, but this value drops by several orders of magnitude as density is increased to 0.130. 
+
+In contrast to the rigid monolayer systems, the flexible monolayer systems display more variable properties due to the interaction between the variable density and the flexibility of the walls. At the lowest density, 0.063, the coexistence between 0 and 1 water layers eliminates the low density gas observed in the equivalent rigid system. Additionally, the pinned water region is highly structured ice, perhaps due to the lateral pressure of the graphene, an effect that has been previously observed and hypothesized (References). The high structure of this region is supported by RDF and 3-body angles (Fig \ref{fig:gr_ang_6_7_8_f}). As the density increases, the graphene walls flatten and the system is a mix of low density gas and high density disordered liquid, much like the lowest density rigid system. At \(\rho_{2D}=0.130\), the flexible system becomes more structured and ice-like, similar to its rigid equivalent. Again, the transition from ice to liquid/gas and back to ice is confirmed by the variation in \(\mathcal{D}_{||}\) (Fig \ref{fig:msd}). The exact structure of these systems is examined in the next section. 
+
+As density increases from 0.130 to 0.163, the systems transition from a monolayer to a bilayer system. In the rigid case, the bilayer forms a mixture of low density gas and ordered ice, at \(\rho_{2D}=\)0.163 and 0.196 (Fig\ref{fig:gr_ang_9_10_11_r}). The \(\mathcal{D}_{||}\) is orders of magnitude smaller than that of bulk water, confirming ice-like dynamics. The structure of this form of ice is discussed briefly in the next section. Finally, when density is increased to 0.227, this mixed structure disappears. The flexible system was not observed to form any ordered structure and was instead structurally similar to the rigid system at \(\rho_{2D}=\)0.227 (Fig \ref{fig:gr_ang_9_10_11_f}). It is interesting to note that in the flexible system with multi-water layer coexistence, two distinct RDFs were observed: one for water monolayer population and another for water in the bilayer. These distinct RDFs are included in Figure \ref{fig:gr_ang_9_10_11_f}.
+
+Finally, as the density was increased beyond 0.260, less variation in in-plane structure is observed between the rigid and flexible systems, and is therefore not reported. Differences are observed in the computed \(\mathcal{D}_{||}\), Figure \ref{fig:msd}, but both display trends approaching bulk water with increasing density. \(\mathcal{D}_{||}\) values for the rigid systems are in good agreement with previous studies (References), and the flexible trilayer values are generally larger than their rigid counterparts. 
 
 \setlength{\fboxsep}{0.75pt}%
 \setlength{\fboxrule}{1.2pt}%
@@ -190,7 +195,7 @@ The transitions in rigid systems and structures observed as a function of 2D num
     \caption{}
     \label{fig:gr_ang_6_7_8_f}
   \end{subfigure}}
-	\caption{\textit{Monolayer lateral oxygen-oxygen pair correlation functions, three-body angle distributions, and snapshots of monolayer systems.} (\protect\subref{fig:gr_ang_6_7_8_r}) rigid systems, (\protect\subref{fig:gr_ang_6_7_8_f}) flexible systems. \textbf{Top.} Distribution of water oxygen distances and distribution of intralayer 3B angle formed between and given oxygen and its 2 nearest neighbors. \textbf{Bottom.} Snapshots of systems from left to right: \(\rho_{2D}=\) 0.065, 0.097, 0.130.}
+	\caption{\textit{Monolayer lateral oxygen-oxygen pair correlation functions, three-body angle distributions, and snapshots of monolayer systems.} (\protect\subref{fig:gr_ang_6_7_8_r}) rigid systems, (\protect\subref{fig:gr_ang_6_7_8_f}) flexible systems. \textbf{Top.} Distribution of water oxygen distances and distribution of intralayer 3B angle formed between and given oxygen and its 2 nearest neighbors. \textbf{Bottom.} Snapshots of systems from left to right: \(\rho_{2D}=\) 0.065, 0.097, 0.130. Oxygens are in red, hydrogens are in white and for clarity, only one layer of water is depicted, and the graphene sheets are not displayed.}
 	\label{fig:struct_6_7_8}
 \end{figure}
 
@@ -215,127 +220,40 @@ The transitions in rigid systems and structures observed as a function of 2D num
     \caption{}
     \label{fig:gr_ang_9_10_11_f}
   \end{subfigure}}
-	\caption{\textit{Bilayer lateral oxygen-oxygen pair correlation functions, three-body angle distributions, and snapshots of monolayer systems.} (\protect\subref{fig:gr_ang_9_10_11_r}) rigid systems, (\protect\subref{fig:gr_ang_9_10_11_f}) flexible systems. \textbf{Top.} Distribution of water oxygen distances and distribution of intralayer 3B angle formed between and given oxygen and its 2 nearest neighbors. \textbf{Bottom.} Snapshots of systems from left to right: \(\rho_{2D}=\) 0.163, 0.196, 0.227.}
+	\caption{\textit{Bilayer lateral oxygen-oxygen pair correlation functions, three-body angle distributions, and snapshots of monolayer systems.} (\protect\subref{fig:gr_ang_9_10_11_r}) rigid systems, (\protect\subref{fig:gr_ang_9_10_11_f}) flexible systems. \textbf{Top.} Distribution of water oxygen distances and distribution of intralayer 3B angle formed between and given oxygen and its 2 nearest neighbors. \textbf{Bottom.} Snapshots of systems from left to right: \(\rho_{2D}=\) 0.163, 0.196, 0.227. Oxygens are in red, hydrogens are in white and for clarity, only one layer of water is depicted, and the graphene sheets are not displayed.}
 	\label{fig:struct_9_10_11}
 \end{figure}
 
 \begin{figure}[h!]
 	\centering
-    \includegraphics[trim={0.25cm 0.25cm 0.25cm 0.15cm},clip,width=0.4\textwidth]{diffusion_coeff_2D_f_r}
-	\caption{\textit{Comparison of estimated diffusion coefficients}. The estimated diffusion coefficient as a function of number density.}
+    \includegraphics[trim={0.25cm 0.25cm 0.15cm 0.15cm},clip,width=0.3\textwidth]{diffusion_coeff_2D_f_r}
+	\caption{\textit{Comparison of self-diffusion coefficients}. The self-diffusion coefficient as a function of number density for the diffusion parallel to the graphene walls.}
 	\label{fig:msd}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\textit{Ice structure}.
+
+\begin{figure}[h!]
+	\centering
+	\begin{subfigure}[b]{0.395\textwidth}
+    		\includegraphics[width=.99\textwidth]{ice_square}
+		\caption{}
+        		\label{fig:ice_sq}
+  	\end{subfigure}
+	\begin{subfigure}[b]{0.285\textwidth}
+    		\includegraphics[width=.99\textwidth]{ice_hex}
+		\caption{}
+        		\label{fig:ice_hx}
+  	\end{subfigure}
+	\caption{\textit{Snapshots of the ice forms observed.} Oxygens are in red and cyan, hydrogens are in white. (\protect\subref{fig:ice_sq}) Square and off-square ice observed in the following monolayer systems: \(\rho_{2D}=\)0.065 (flexible), \(\rho_{2D}=\)0.097 (rigid), \(\rho_{2D}=\)0.130 (both). (\protect\subref{fig:ice_hx}) Hexagonal ice, observed in \(\rho_{2D}=\)0.163 and 0.196 (rigid). The top figure is a snapshot of the in-plane ordering. On the bottom, the A-A stacking between layers is highlighted by depicting the oxygens of each layer in red and cyan. Hydrogens are not pictured.}
+	\label{fig:ice_figs}
 \end{figure}
 
 \clearpage
 \printbibliography
 \end{document}
-
-\begin{figure}[h!]
-	\centering
- 	\textbf{RIGID} \\
-  \begin{subfigure}[b]{0.49\textwidth}
-    \includegraphics[trim={0.25cm 0.25cm 0.25cm 0.15cm},clip,width=0.46\textwidth]{g_r_2D_6_7_8_r}
-    \includegraphics[trim={0.25cm 0.25cm 0.25cm 0.15cm},clip,width=0.485\textwidth]{ang_3B_6_7_8_r}
-    \caption{}
-    \label{fig:gr_ang_6_7_8_r}
-  \end{subfigure}
-  \begin{subfigure}[b]{0.49\textwidth}
-    \includegraphics[trim={0.25cm 0.25cm 0.25cm 0.15cm},clip,width=.49\textwidth]{g_r_2D_9_10_11_r}
-    \includegraphics[trim={0.25cm 0.25cm 0.25cm 0.15cm},clip,width=.49\textwidth]{ang_3B_9_10_11_r}
-   \caption{}
-    \label{fig:gr_ang_9_10_11_r}
-  \end{subfigure} 
-    \begin{subfigure}[b]{0.22\textwidth}
-    \includegraphics[trim={1.05cm 0.25cm 0.25cm 0.15cm},clip,width=.49\textwidth]{g_r_2D_12_14_16_r}
-    \includegraphics[trim={1.05cm 0.25cm 0.25cm 0.15cm},clip,width=.49\textwidth]{ang_3B_12_14_16_r}
-    \caption{}
-    \label{fig:gr_ang_12_14_16_r}
-  \end{subfigure} \\  
-	\textbf{FLEXIBLE} \\
-  \begin{subfigure}[b]{0.278\textwidth}
-    \includegraphics[trim={0.25cm 0.25cm 0.25cm 0.15cm},clip,width=0.99\textwidth]{g_r_2D_6_7_8_f}
-    \includegraphics[trim={0.25cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_6_7_8_f}
-    \caption{}
-    \label{fig:gr_ang_6_7_8_f}
-  \end{subfigure}
-  \begin{subfigure}[b]{0.22\textwidth}
-    \includegraphics[trim={1.05cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{g_r_2D_9_10_11_f}
-    \includegraphics[trim={1.05cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_9_10_11_f}
-   \caption{}
-    \label{fig:gr_ang_9_10_11_f}
-  \end{subfigure} 
-    \begin{subfigure}[b]{0.22\textwidth}
-    \includegraphics[trim={1.05cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{g_r_2D_12_14_16_f}
-    \includegraphics[trim={1.05cm 0.25cm 0.25cm 0.15cm},clip,width=.99\textwidth]{ang_3B_12_14_16_f}
-    \caption{}
-    \label{fig:gr_ang_12_14_16_f}
-  \end{subfigure} \\  
-	\caption{\textit{Lateral oxygen-oxygen pair correlation functions and three-body angle distributions.} Distribution of water oxygen distances (top panels) and distribution of intralayer 3B angle formed between and given oxygen and its 2 nearest neighbors. (\protect\subref{fig:gr_ang_6_7_8_r},\protect\subref{fig:gr_ang_6_7_8_f}) Monolayer systems, (\protect\subref{fig:gr_ang_9_10_11_r},\protect\subref{fig:gr_ang_9_10_11_f}) Bilayer systems, (\protect\subref{fig:gr_ang_12_14_16_r},\protect\subref{fig:gr_ang_12_14_16_f}) Trilayer systems. G(r) curves have been shifted for clarity.}
-	\label{fig:gr_all}
-\end{figure}
-
-%\begin{itemize}
-%	\item Effect of varying the 2D density of the water. 
-%	\begin{itemize}
-%		\item Flexible waters: there is a bending of the graphene layers to accommodate intermediate 
-%		         amounts of water.
-%		\item Rigid walls exhibit striking transitions between 1 to 2 and 2 to 3 water layer separation distances.
-%		         See figure \ref{fig:dgg}
-%		\item After enough water is added to have a 3 layer system, the increase in plate separation is much
-%			more smooth
-%		\item This transition is not present in the flexible case.
-%	\end{itemize}
-%	\item Effect of varying wall rigidity and 2D density on the structure of the water. 
-%	\begin{itemize}
-%		\item For 1 layer, increased density leads to increased order. When the density is low, the rigid system is 
-%		         very liquid-like and has a very high MSD. For both systems as density increases from 0.097 
-%		         (7 \r A sep) to 0.129 (8 \r A sep), the water forms a much more well defined ice.
-%		\item For the 2 layer system, we observe that the rigid system forms a hexagonal ice with pockets of gas, 
-%			whereas the flexible has a more liquid like structure, with smaller air pockets.
-%		\item After a density of 0.227 (11 \r A) the systems appear visually similar, with liquid-like permeating layers.
-%	\end{itemize}
-%	\item Graphene and water structure and transport. 
-%	\begin{itemize}
-%		\item It is very interesting to note that the 2D diffusion coefficients computed for the rigid vs the flexible 
-%			systems differ, even at the largest confinement distances. 
-%		\item The lowest density (0.065) has markedly different diffusion coefficients. For the flexible, the diffusion coefficient is many orders of magnitude smaller than the others because the pinched graphene creates such a rigid ice structure. In addition, the pinch reduces diffusion to one dimension.
-%		\item For 0.097 (7 \r A sep) to 0.129 (8 \r A sep), as the liquid transitions to ice, the diffusion coefficient drops and the flexible D is larger for both densities.
-%		\item For 0.163 (9 \r A sep) to 0.192 (10 \r A sep) the rigid system D decreases further, owing to the hexagonal ice structure.
-%		\item The trends for the rest, I need to think about, and want to study a bit more/make sure the numbers are right before drawing lots of conclusions
-%	\end{itemize}
-%\end{itemize}     
-%\clearpage
-
-%\begin{itemize}
-%	\item Rigid as reference
-%	\begin{itemize}
-%		\item Rigid walls exhibit striking transitions between 1 to 2 and 2 to 3 water layer separation distances.
-%		         See figure \ref{fig:dgg}
-%		\item 1 layer: discuss about water
-%		\item 2 layer: discuss about water
-%		\item 3 layer: discuss about water
-%	\end{itemize}
-%	\item Flexible confinement
-%	\begin{itemize}
-%		\item Focus on the differences between R and F, or go thru the same order as with rigid.
-%		\item For 1 layer, increased density leads to increased order. When the density is low, the rigid system is 
-%		         very liquid-like and has a very high MSD. For both systems as density increases from 0.097 
-%		         (7 \r A sep) to 0.129 (8 \r A sep), the water forms a much more well defined ice.
-%		\item For the 2 layer system, we observe that the rigid system forms a hexagonal ice with pockets of gas, 
-%			whereas the flexible has a more liquid like structure, with smaller air pockets.
-%		\item After a density of 0.227 (11 \r A) the systems appear visually similar, with liquid-like permeating layers.
-%	\end{itemize}
-%	\item Graphene and water structure and transport. 
-%	\begin{itemize}
-%		\item It is very interesting to note that the 2D diffusion coefficients computed for the rigid vs the flexible 
-%			systems differ, even at the largest confinement distances. 
-%		\item The lowest density (0.065) has markedly different diffusion coefficients. For the flexible, the diffusion coefficient is many orders of magnitude smaller than the others because the pinched graphene creates such a rigid ice structure. In addition, the pinch reduces diffusion to one dimension.
-%		\item For 0.097 (7 \r A sep) to 0.129 (8 \r A sep), as the liquid transitions to ice, the diffusion coefficient drops and the flexible D is larger for both densities.
-%		\item For 0.163 (9 \r A sep) to 0.192 (10 \r A sep) the rigid system D decreases further, owing to the hexagonal ice structure.
-%		\item The trends for the rest, I need to think about, and want to study a bit more/make sure the numbers are right before drawing lots of conclusions
-%	\end{itemize}
-%\end{itemize}  
-
 
 \clearpage
 
