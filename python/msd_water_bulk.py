@@ -32,17 +32,14 @@ def get_msd(xyz, volC):
     nsnaps = len(xyz.atom)-1 # number of snaps in XYZ, remove 0th frame
     # find water oxygen atoms
     nOX = xyz.get_ct_i(OXY)
-    iOX,_ = xyz.get_inner_wat(); oOX,_ = xyz.get_outer_wat()
+    iOX = xyz.get_type_i(OXY)
     oicd = trans_coords(xyz.atom[1:,iOX],volC.get_rng()[1:]) # don't use 1st snap
-    oocd = trans_coords(xyz.atom[1:,oOX],volC.get_rng()[1:]) # don't use 1st snap
 
     msd = np.zeros((nsnaps,nOX,3)) #save msd for each oxy
     ms_mean = np.arange(nsnaps,0,-1.)[:, np.newaxis, np.newaxis]
     for i in range(nsnaps-1):
         ms = d3(oicd[np.newaxis,i], oicd[i+1:])
         msd[1:nsnaps-i,:sum(iOX.astype(int))] += ms
-        ms = d3(oocd[np.newaxis,i], oocd[i+1:])
-        msd[1:nsnaps-i,sum(iOX.astype(int)):] += ms
     return msd/ms_mean
 
 def print_msd(msd, timstep, fname):
