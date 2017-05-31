@@ -39,7 +39,7 @@ class VolFile:
         for line in f:
            if (len(line) > 200) and bool(re.search(r'\d', line)) == True:
                tmp = line.split()
-               if ((float(tmp[0])>=3500000) and (float(tmp[0])%500==0)) or \
+               if ((float(tmp[0])>=1500000) and (float(tmp[0])%500==0)) or \
                     int(tmp[0])==0: 
                    time.append([int(tmp[0]), int(tmp[1])])
                    dim = [float(tmp[x]) for x in range(18, 24)]
@@ -116,7 +116,7 @@ class VolFile:
 def main():
     filename=sys.argv[1]
     vC = VolFile(filename)
-    vC.print_box_dim("new"+filename[3:-3]+"vol")
+    vC.print_box_dim("run"+filename[3:-4]+".vol")
 
 if __name__=="__main__":
     main()
