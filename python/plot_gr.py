@@ -19,16 +19,16 @@ def get_plt_lst(csv_nm):
     elif sep_siz == 16: cls = [3,6,7,11,14,19,31,32,40,46]
 
     # flexible
-   #elif sep_siz == 9:  cls = [2,4,15,28,30,32]
+   #elif sep_siz == 9:  cls = [2,4,15,28,30,32] #old flexible
     elif sep_siz == 91:  
          cls = [2,30]; nfct = 1.4
     elif sep_siz == 92:  
          cls = [4,28,32]; nfct = 1.5
-    elif sep_siz == 10: cls = [4, 6, 7, 17, 18,]
-    elif sep_siz == 12: cls = [9,21,22,41,]
+   #elif sep_siz == 10: cls = [4, 6, 7, 17, 18,]
+   #elif sep_siz == 12: cls = [9,21,22,41,]
     # rigid
     elif sep_siz == 9:  cls = [5,15,18,27]
-   #elif sep_siz == 10: cls = [3,4,5,14,]
+    elif sep_siz == 10: cls = [3,4,5,14,]
    #elif sep_siz == 12: cls = [3,18,19,31,32,7,8,17,20,]
 
     else: cls = [1] # dont have this sep size saved
@@ -61,9 +61,6 @@ def plot_scatter(plt_nm, csvL, sep, ln):
            else:                   dsh = (None,None)
            ax.plot(dat[0], np.mean(dat[cls],axis=0)/nfct, dens[dn][2],
                    color = dens[dn][1], dashes = dsh, label=lg)
-          #ax.plot(dat[0], np.mean(dat[cls],axis=0)+ct*4,  color = dens[dn][1])
-          #plt.text(6.0, ct*4+2.05, r'$\rho_{{2D}}={0:.3f}$'.format(dens[dn][0]),
-          #         color = dens[dn][1])
            ct += 1
    #ax.legend(ncol = 5, columnspacing = 0.4,
    #    fontsize =  5 , handletextpad = 0.2,
@@ -80,14 +77,6 @@ def plot_scatter(plt_nm, csvL, sep, ln):
     ax.yaxis.labelpad = -0.6; ax.xaxis.labelpad = -0.6
     fname = plt_nm+mn+csvL[i][j].csvfname[-7:-4]+".png"
     plt.savefig(fname, format='png', bbox_inches = 'tight', dpi=300) 
-
-   #fn = 'ang_3B_'+mn[:-1]+'.png'
-   #im = plt.imread(fn, format='png')
-   #xl = ax.get_xlim(); yl = ax.get_ylim()
-   #newax = f.add_axes([0.455, 0.37, 0.50, 0.47], anchor='SW',) # rigid
-   #newax.imshow(im, extent=[0, 1,0., 1.]) #, zorder=19)
-   #newax.axis('off')
-   #plt.savefig(plt_nm+mn+csvL[i][j].csvfname[-7:-4]+'_insert.png',bbox_inches='tight',)
     plt.close()
 
 def main():                                                                        
