@@ -1,7 +1,7 @@
 import sys
 import numpy as np
 
-from water_3B_angles_util import cal_ang
+from water_angles_util import cal_ang_3B
 from xyzfile import XYZFile
 from volfile import VolFile
 
@@ -23,9 +23,9 @@ def get_angles(xyz, volC):
         
         for j in range(4,len(w_bn)-3):
             if sum((b_w==j).astype(int))>10:
-               d1,d2,t1=cal_ang(ocrd[i,b_w == j],rng)
+               d1,d2,t1=cal_ang_3B(ocrd[i,b_w == j],rng)
                di1+=d1;di2+=d2;th1+=t1;
-       #d1,d2,t1=cal_ang(xyz.atom[i,oo,:],rng)
+       #d1,d2,t1=cal_ang_3B(xyz.atom[i,oo,:],rng)
        #di1+=d1;di2+=d2;th1+=t1;
 
        #d1s += [di1];d2s += [di2];t1s += [th1];
@@ -47,18 +47,6 @@ def print_angles(angls, fname):
         for i in range(len(vals)):
             st += "{0:.5f},".format(angls[i][j])
         f.write("{0}\n".format(st[:-1]))
-
-   #for i in range(nsnap):
-   #    for j in range(len(vals)):
-   #        stn += "{0}{1},".format(vals[j],i)
-   #f.write(stn[:-1]+'\n')
-
-   #for k in range(len(angls[0][0])):
-   #    st = ""
-   #    for j in range(nsnap):
-   #        for i in range(len(vals)):
-   #            st += "{0:.5f},".format(angls[i][j][k])
-   #    f.write("{0}\n".format(st[:-1]))
     f.close()
 
 def main():

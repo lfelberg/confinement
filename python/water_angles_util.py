@@ -7,12 +7,20 @@ from util import d_pbc, translate_pbc
 QOXY = -1.0484
 QHYD =  0.5242
 
+def find_in_cutoff(frm, to, cutoff = 3.7):
+    '''Given a vector of points dim frm = [nvals, nsamp, ndim = 3],
+       and to = [nsamp, ndim], return a vector of points that are within
+       a given cutoff (in angstroms) to point'''
+    nsamp = frm.shape[0]
+    to_ar = np.repeat(to[np.newaxis,:], nsamp, axis = 0) 
+    d2 = np.sum((frm - to_ar)*(frm - to_ar), axis = -1)
+    return d2 < cutoff*cutoff
+
 def find_closest(frm, to, n_close = 1):
     '''Given a vector of points dim frm = [nvals, nsamp, ndim = 3],
        and to = [nsamp, ndim], return a vector of closest = [size = nsamp]
        where each position has the index (0->nvals) of point closest '''
     closest = np.zeros((1, frm.shape[1])); nsamp = frm.shape[0]
-   #to_ar = np.repeat(to[np.newaxis,:,:], nsamp, axis = 0) 
     to_ar = np.repeat(to[np.newaxis,:], nsamp, axis = 0) 
     d2 = np.sum((frm - to_ar)*(frm - to_ar), axis = -1)
     if n_close == 1: return np.argmin(d2, axis =  0)
@@ -145,4 +153,21 @@ def cal_ang(w_coords, rng, d_to_wall = [], dim = 3):
     wd = list(itertools.chain(*wd));
     return t1, t2, c1, c2, ph, r, wd
 
+RAD_TO_DEG = 180./np.pi
 
+def cal_ang_3B(o_coords, rng, dim = 3):
+    '''Given a list of coords (dimensions: [nat = 1, nwat, ndim = 3]), 
+       move the coords into the nearest image of water of interest,
+       calculate the distances to 2 nearest neighbors and angle''' 
+    d1, d2, t1 = [], [], []
+
+    for i in range(o_coords.shape[0]):
+        curr = o_coords[i]; others = np.delete(o_coords,i,0)
+        ot_wr = translate_pbc(curr, others, rng) # trans other ox
+
+        cl_idx, cl_d = find_closest(ot_wr, curr, 2)
+        v1 = ot_wr[cl_idx[0]] - curr; v2 = ot_wr[cl_idx[1]] - curr
+               
+        d1.append(cl_d[0]); d2.append(cl_d[1]);
+        t1.append(angle_between(v1[np.newaxis,:], v2[np.newaxis,:])[0]*RAD_TO_DEG)
+    return d1, d2, t1

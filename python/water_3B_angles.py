@@ -1,7 +1,7 @@
 import sys
 import numpy as np
 
-from water_3B_angles_util import cal_ang
+from water_angles_util import cal_ang_3B
 from util import translate_pbc
 from xyzfile import XYZFile
 from volfile import VolFile
@@ -38,10 +38,10 @@ def get_angles(xyz, volC):
         for j in range(len(in_bn)):
             print(sum((b_in==j).astype(int)))
             if sum((b_in==j).astype(int))>10:
-               d1,d2,t1=cal_ang(in_wat[b_in == j],rng)
+               d1,d2,t1=cal_ang_3B(in_wat[b_in == j],rng)
                di1+=d1;di2+=d2;th1+=t1;
             if sum((b_ou==j).astype(int))>10:
-               d1,d2,t1=cal_ang(ou_wat[b_ou == j],rng)
+               d1,d2,t1=cal_ang_3B(ou_wat[b_ou == j],rng)
                di1+=d1;di2+=d2;th1+=t1;
 
         d1s += [di1];d2s += [di2];t1s += [th1];
