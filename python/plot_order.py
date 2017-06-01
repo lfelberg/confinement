@@ -22,12 +22,12 @@ def plot_scatter(csv, sep, ln, itr):
     q4b = csv.dat[csv.key.index("q4_bar")]
     q6b = csv.dat[csv.key.index("q6_bar")]
     print(min(q4b), max(q4b), min(q6b), max(q6b))
-   #plt.hist2d(X, Y, bins=(nbins,nbins), range=([0,1], yr),cmap=plt.get_cmap('plasma'))
+    plt.hist2d(q4b, q6b, bins=(nbins,nbins), range=([0,0.6], [0,0.6]),cmap=plt.get_cmap('plasma'))
    #ax.set_xlim([0.2,0.8]); ax.set_ylim(yr)
 
-   #ax.set_xlabel("$x/d_{gg}$",fontsize= 8)
-   #ax.set_ylabel("$d_{gg} \, (\AA)$",fontsize= 8)
-   #plt.savefig(csv.csvfname[:-3]+'.png',bbox_inches = 'tight',)
+    ax.set_xlabel("$\\bar{q}_{4}$",fontsize= 8)
+    ax.set_ylabel("$\\bar{q}_{6}$",fontsize= 8)
+    plt.savefig(csv.csvfname[:-3]+'.png',bbox_inches = 'tight',)
     plt.close()
 
     # finding graphene separation dist(s)
