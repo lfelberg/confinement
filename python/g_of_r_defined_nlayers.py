@@ -62,10 +62,10 @@ def get_gr(xyz, volC, grPair):
                         volC.get_z_rng_i(i)]) # pbc range
         rng_m += rng # take average of range for printing
 
-        in_bn = np.linspace(min(xyz.atom[xyz.get_inner_ats(),0]),
-                            max(xyz.atom[xyz.get_inner_ats(),0]), num=nm)
-        ou_bn = np.linspace(min(xyz.atom[xyz.get_outer_ats(),0]),
-                            max(xyz.atom[xyz.get_outer_ats(),0]), num=nm)
+        in_bn = np.linspace(min(xyz.atom[i,xyz.get_inner_ats(),0]),
+                            max(xyz.atom[i,xyz.get_inner_ats(),0]), num=nm)
+        ou_bn = np.linspace(min(xyz.atom[i,xyz.get_outer_ats(),0]),
+                            max(xyz.atom[i,xyz.get_outer_ats(),0]), num=nm)
 
         c00 = xyz.atom[i,ty00,:]; # coords for them
         b00 = np.digitize(c00[:,0], in_bn)
