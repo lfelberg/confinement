@@ -55,7 +55,7 @@ def cal_op(oxygens, rng):
         nn_ox = np.where(clo == True)[0]
 
         if len(nn_ox) == 0: 
-            nn += []
+            nn += [[]]
             continue
         q4m[ox] = q_lm_cal(ot_wr[clo] - curr, 4)
         q6m[ox] = q_lm_cal(ot_wr[clo] - curr, 6)
@@ -63,6 +63,8 @@ def cal_op(oxygens, rng):
 
     q4m_b = np.zeros((len(oxygens),len(np.arange(-4,5))),dtype=complex)
     q6m_b = np.zeros((len(oxygens),len(np.arange(-6,7))),dtype=complex)
+    print(nn)
+    print(len(nn), len(oxygens))
 
     for ox in range(len(oxygens)):
         q4m_b[ox] = q_lm_bar_cal(ox,q4m,nn[ox])
