@@ -51,10 +51,12 @@ def cal_op(oxygens, rng):
     for ox in range(len(oxygens)):
         curr = oxygens[ox][np.newaxis,:]; others = np.delete(oxygens,ox,0)
         ot_wr = translate_pbc(curr, others, rng) # trans other ox
-        clo = find_in_cutoff(curr, ot_wr)[0]
+        clo = find_in_cutoff(curr, ot_wr, 3.7)[0]
         nn_ox = np.where(clo == True)[0]
 
-        if len(nn_ox) == 0: continue
+        if len(nn_ox) == 0: 
+            nn += []
+            continue
         q4m[ox] = q_lm_cal(ot_wr[clo] - curr, 4)
         q6m[ox] = q_lm_cal(ot_wr[clo] - curr, 6)
         nn += [nn_ox]
