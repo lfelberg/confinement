@@ -51,7 +51,7 @@ def plot_scatter(plt_nm, csvL, loc, sep, ln, itr):
             mav = 0.0 
             for k in range(len(csvL[i][j])):
                 st = 400
-                en = 1500
+                en = 800
                 xd = csvL[i][j][k].dat[0,st:en]; yd = csvL[i][j][k].dat[loc,st:en]
                 nsam = float(len(csvL[i][j]))
 

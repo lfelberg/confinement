@@ -25,10 +25,10 @@ def plot_scatter(csv):
     plt.plot(dens,rigid,'b.--',dashes = (2,1),label = "rigid")
     # plot calculated tip4p EW D_{||} @ 298 K
     x = np.linspace(0,1,70); y = np.ones(70)*2.4725
-    plt.plot(x,y, 'r--',dashes=(1.5,0.9),linewidth=0.7,label="bulk,\n 298K")
+    plt.plot(x,y, 'r--',dashes=(1.5,0.9),linewidth=0.7,label="bulk,\n298K")
 
     ax.set_xlim([0.,0.40]); ax.set_ylim([0,4])
-    ax.legend(ncol = 3, fontsize=6, columnspacing = 0.2,
+    ax.legend(ncol = 3, fontsize=6, columnspacing = 0.2,handletextpad= 0.15,
               bbox_to_anchor = (1.05, 1.25), borderaxespad= 0.2)
     ax.set_xlabel(r"$\rho_{2D}$",fontsize= 10)
     ax.set_ylabel(r"$\mathcal{D}_{||} \times 10^9\, (m^2/s)$",fontsize= 10)

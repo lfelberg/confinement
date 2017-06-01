@@ -54,6 +54,7 @@ def cal_op(oxygens, rng):
         clo = find_in_cutoff(curr, ot_wr)[0]
         nn_ox = np.where(clo == True)[0]
 
+        if len(nn_ox) == 0: continue
         q4m[ox] = q_lm_cal(ot_wr[clo] - curr, 4)
         q6m[ox] = q_lm_cal(ot_wr[clo] - curr, 6)
         nn += [nn_ox]
