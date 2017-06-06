@@ -22,7 +22,7 @@ def plot_scatter(csv, sep, ln, itr):
     q4b = csv.dat[csv.key.index("q4_bar")]
     q6b = csv.dat[csv.key.index("q6_bar")]
     print(min(q4b), max(q4b), min(q6b), max(q6b))
-    plt.hist2d(q4b, q6b, bins=(nbins,nbins), range=([0,0.6], [0,0.6]),cmap=plt.get_cmap('plasma'))
+    plt.hist2d(q4b, q6b, bins=(nbins,nbins), range=([0,1.0], [0,1.0]),cmap=plt.get_cmap('plasma'))
    #ax.set_xlim([0.2,0.8]); ax.set_ylim(yr)
 
     ax.set_xlabel("$\\bar{q}_{4}$",fontsize= 8)
@@ -41,7 +41,7 @@ def plot_scatter(csv, sep, ln, itr):
     ax.yaxis.set_major_locator(MaxNLocator())
     matplotlib.rcParams['font.size'] = 5;
     plt.plot(x, y, color = "k")
-    ax.set_xlabel("$\\bar{q}_{4}$",fontsize=7); ax.set_xlim([0,0.6])
+    ax.set_xlabel("$\\bar{q}_{4}$",fontsize=7); ax.set_xlim([0,1.0])
     ax.set_ylabel("Probability",fontsize=7);#ax.set_ylim([0.,2.0])
     plt.savefig(csv.csvfname[:-3]+'q4b.png',bbox_inches = 'tight',)
     plt.close()
@@ -54,7 +54,7 @@ def plot_scatter(csv, sep, ln, itr):
     ax.xaxis.set_major_locator(MaxNLocator())
     ax.yaxis.set_major_locator(MaxNLocator())
     plt.plot(x, y, color = "k")
-    ax.set_xlabel("$\\bar{q}_{6}$",fontsize=7); ax.set_xlim([0,0.6])
+    ax.set_xlabel("$\\bar{q}_{6}$",fontsize=7); ax.set_xlim([0,1.0])
     ax.set_ylabel("Probability",fontsize=7);#ax.set_ylim([0.,2.0])
     plt.savefig(csv.csvfname[:-3]+'q6b.png',bbox_inches = 'tight',)
     plt.close()

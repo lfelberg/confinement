@@ -40,10 +40,11 @@ class Energy:
         for line in f:
            if (len(line) > 200) and bool(re.search(r'\d', line)) == True:
                tmp = line.split()
-              #if ((float(tmp[0])>=1500000) and (float(tmp[0])%1000==0)) or \
-              #     int(tmp[0])==0: 
-               time.append(int(tmp[0]))
-               ens.append([float(tmp[-2]), float(tmp[-1])])
+               if ((float(tmp[0])>=1500000) and (float(tmp[0])%1000==0)) :
+                   time.append(int(tmp[0]))
+                  #ens.append(float(tmp[-2])) #, float(tmp[-1])])
+                  #ens.append([float(tmp[15]),float(tmp[16])*float(tmp[17])])
+                   ens.append(float(tmp[14]))
         f.close()
 
         self.time = np.array(time)
@@ -51,17 +52,21 @@ class Energy:
 
     def print_energies(self, en_out):
         '''For all times in run file, print c2 and c4 energies'''
+       #print(self.enfname, np.mean(self.ens[:,0]), np.mean(self.ens[:,1]))
+        print(self.enfname, np.mean(self.ens))
         f = open(en_out, "w")
-        f.write("Atim,c2,c4\n")
+        f.write("Atim,c2\n" )# ,c4\n")
+       #f.write("Atim,c2,c4\n")
         for i in range(len(self.time)):
-            f.write("{0},{1},{2}\n".format(self.time[i],
-                    *(self.ens[i].tolist())))
+            f.write("{0},{1}\n".format(self.time[i],self.ens[i]))
+           #f.write("{0},{1},{2}\n".format(self.time[i],
+           #        *(self.ens[i].tolist())))
         f.close()
 
 def main():
     filename=sys.argv[1]
     enC = Energy(filename)
-    enC.print_energies(filename[:-3]+"en")
+    enC.print_energies(filename[:-3]+"rho")
 
 if __name__=="__main__":
     main()

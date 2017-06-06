@@ -75,7 +75,6 @@ def get_gr(xyz, volC, grPair):
 
         in_bn = min(c00[:,0])+nm
         ou_bn = min(c10[:,0])+nm
-
         b00 = np.digitize(c00[:,0], in_bn)
         b01 = np.digitize(c01[:,0], ou_bn)
         if grPair[0] == grPair[1]: 
