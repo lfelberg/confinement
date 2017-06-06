@@ -3,6 +3,7 @@
 \usepackage{booktabs}
 \usepackage[margin=1.0in]{geometry}
 \usepackage{color}
+\usepackage{xcolor,tikz} %% for boxes in images
 \usepackage{tabularx}
 %Times New Roman 12 pt
 \usepackage[T1]{fontenc}
@@ -18,6 +19,10 @@
 \captionsetup{font=footnotesize,labelfont=footnotesize,skip=0pt,labelfont=bf}
 \captionsetup[sub]{font=footnotesize,labelfont=footnotesize,skip=0pt,labelfont=bf}
 
+
+% commands for paper
+\newcommand\crule[3][black]{\textcolor{#1}{\rule{#2}{#3}}}
+%\newcommand\mybox[2][]{\tikz[overlay]\node[fill=black,inner sep=2pt,text color=white,rectangle,#1] {#2};\phantom{#2}} % anchor=text, 
 \newcommand{\angstrom}{\textup{\AA}}
 
 \title{}
@@ -143,6 +148,8 @@ All the systems studied here, both rigid and flexible, are simulated at room tem
 
 \textit{Layering}. The out-of-plane phase behavior, or layering, is illustrated in Figure \ref{fig:dgg_1} that shows the dependence of the confining distance, \(d_{gg}\) on \(\rho_{2D}\), for both flexible and rigid cases. We observe three regimes characterized by minimal changes of \(d_{gg}\) with \(\rho_{2D}\), alternated by first-order phase transitions marked by abrupt changes in \(d_{gg}\). \textcolor{red}{LF note: It was marked here that the transition in spacing has been observed before, but in my readings, most simulations maintain a fixed graphene separation, so I don't know if this has been seen.} In the case of flexible confinement, the phase transition occurs at the same values of \(\rho_{2D}\) as for the rigid case, but the transition is qualitatively different. We observe a split in the \(d_{gg}\) distances, which corresponds to the simultaneous coexistence of a n-layer and an (n+1)-layer phases in the same system. The snapshots shown in Figure \ref{fig:dgg_2} (left panels) illustrate this coexistence, where each phase occupies a distinct region of the system.
 
+When comparing transitions between layers in the rigid system, there is a distinct difference observed in transitions from 1 to 2 interlayers and the transition from 2 layers to 3 and beyond. For the systems studied there is a clustering of monolayer systems for both the flexible and rigid cases where independent of the 2D density, the graphene-graphene separation remains relatively constant (Fig \ref{fig:dgg_1}). When the 2D density is increased from 0.130 to 0.163, there is a distinct jump in rigid separation distance, while the flexible region displays a coexistence between 1 and 2 interlayers. In contrast, the transition between 2 and 3 interlayers is much more gradual for the rigid system, as seen in Figure \ref{fig:dgg_1}, where the separation distance \(d_{gg}\) for \(\rho_{2D}\) = 0.260 falls between the distances of the flexible coexistence. This observation is reflected in the smearing of the water location for the rigid system as depicted in the heatmaps of Figure \ref{fig:dgg_2_to_3}.
+
 \begin{figure}[ht!]
 	\centering
 	\begin{subfigure}[b]{0.39\textwidth}
@@ -153,13 +160,21 @@ All the systems studied here, both rigid and flexible, are simulated at room tem
 \end{figure}
 
 \begin{figure}[ht!]
-	\centering
+	%\centering
 	\begin{subfigure}[b]{0.99\textwidth}
     		\includegraphics[width=.99\textwidth]{dgg_snaps7}
   	\end{subfigure}
 	\caption{\textit{Snapshots of out-of-plane water layering and heatmap of water location and graphene-graphene separation.} \textbf{Snapshots.} Water-graphene systems as a function of increasing 2D-density, water oxygens are red, graphene carbons are grey and water hydrogens are not displayed for clarity. Panels (i), (ii) and (iii) correspond to flexible systems, and panels (iv), (v), and (vi) correspond to rigid systems. Images not drawn to size. \textbf{Heatmaps.} 2D histogram of the distance of water to a reference wall versus the graphene-graphene separation distance, warmer colors representing a higher number of observations.}
 	\label{fig:dgg_2}
 \end{figure}
+
+\begin{figure}[ht!]
+	\centering
+	\includegraphics[trim={0.35cm 0.25cm 0.05cm 0.05cm},clip,width=0.49\textwidth]{d12_smearing} %
+	\caption{\textit{Snapshots of out-of-plane water layering and heatmap of water location and graphene-graphene separation for bilayer to trilayer transition.} \textbf{Snapshots.} Water-graphene systems as a function of increasing 2D-density, water oxygens are red, graphene carbons are grey and water hydrogens are not displayed for clarity. Images not drawn to size. \textbf{Heatmaps.} 2D histogram of the distance of water to a reference wall versus the graphene-graphene separation distance, warmer colors representing a higher number of observations.}
+	\label{fig:dgg_2_to_3}
+\end{figure}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -170,7 +185,7 @@ All the systems studied here, both rigid and flexible, are simulated at room tem
 
 In contrast to the rigid monolayer systems, the flexible monolayer systems display more variable properties due to the interaction between the variable density and the flexibility of the walls. At the lowest density, 0.063, the coexistence between 0 and 1 water layers eliminates the low density gas observed in the equivalent rigid system. Additionally, the pinned water region is highly structured ice, perhaps due to the lateral pressure of the graphene, an effect that has been previously observed and hypothesized (Ref \cite{Algara-Siller2015}). The high structure of this region is supported by RDF and 3-body angles (Fig \ref{fig:gr_ang_6_7_8_f}). As the density increases, the graphene walls flatten and the system is a mix of low density gas and  disordered liquid, much like the lowest 2D-density rigid system. At \(\rho_{2D}=0.130\), the flexible system becomes more structured and ice-like, similar to its rigid equivalent. Again, the transition from ice to liquid/gas and back to ice is confirmed by the variation in \(\mathcal{D}_{||}\) (Fig \ref{fig:msd}). The exact structure of these ice systems is examined in the next section. 
 
-As density increases from 0.130 to 0.163, the systems transition from a monolayer to a bilayer system. In the rigid case, the bilayer forms a mixture of low density gas and ordered ice, at \(\rho_{2D}=\)0.163 and 0.196 (Fig\ref{fig:gr_ang_9_10_11_r}). The \(\mathcal{D}_{||}\) is orders of magnitude smaller than that of bulk water, confirming ice-like dynamics. The structure of this form of ice is discussed briefly in the next section. Finally, when density is increased to 0.227, this mixed structure disappears. The flexible system was not observed to form any ordered structure and was instead structurally similar to the rigid system at \(\rho_{2D}=\)0.227 (Fig \ref{fig:gr_ang_9_10_11_f}). It is interesting to note that in the flexible system with multi-water layer coexistence, two distinct RDFs were observed: one for water monolayer population and another for water in the bilayer. These distinct RDFs are included in Figure \ref{fig:gr_ang_9_10_11_f}.
+As density increases from 0.130 to 0.163, the systems transition from a monolayer to a bilayer system. In the rigid case, the bilayer forms a mixture of low density gas and ordered ice, at \(\rho_{2D}=\)0.163 and 0.196 (Fig \ref{fig:gr_ang_9_10_11_r}). The \(\mathcal{D}_{||}\) is orders of magnitude smaller than that of bulk water, confirming ice-like dynamics. The structure of this form of ice is discussed briefly in the next section. Finally, when density is increased to 0.227, this mixed structure disappears. The flexible system was not observed to form any ordered structure and was instead structurally similar to the rigid system at \(\rho_{2D}=\)0.227 (Fig \ref{fig:gr_ang_9_10_11_f}). It is interesting to note that in the flexible system with multi-water layer coexistence, two distinct RDFs were observed: one for water monolayer population and another for water in the bilayer. These distinct RDFs are included in Figure \ref{fig:gr_ang_9_10_11_f}.
 
 Finally, as the density was increased beyond 0.260, less variation in in-plane structure is observed between the rigid and flexible systems, and is therefore not reported. Differences are observed in the computed \(\mathcal{D}_{||}\), Figure \ref{fig:msd}, but both display trends approaching bulk water with increasing density. \(\mathcal{D}_{||}\) values for the rigid systems are in good agreement with previous studies (Ref \cite{Mosaddeghi2012}), and the flexible trilayer values are generally larger than their rigid counterparts. 
 
@@ -182,25 +197,31 @@ Finally, as the density was increased beyond 0.260, less variation in in-plane s
 \begin{figure}[ht!]
 	\centering
 	\includegraphics[width=0.46\textwidth]{leg_bulk_6_7_8}\\
-  \fbox{\begin{subfigure}[b]{0.48\textwidth}
+  \fbox{\begin{subfigure}[b]{0.47\textwidth}
     \includegraphics[trim={0.05cm 0.30cm 0.25cm 0.15cm},clip,width=0.46\textwidth]{g_r_2D_6_7_8_r}
     \includegraphics[trim={0.25cm 0.25cm 0.05cm 0.15cm},clip,width=0.485\textwidth]{ang_3B_6_7_8_r} 
-     \fbox{\includegraphics[width=0.295\textwidth]{6A_r3}}
-     \fbox{\includegraphics[width=0.305\textwidth]{7a_r4} }
-     \fbox{\includegraphics[width=0.305\textwidth]{8A_r4}}
+     \fbox{\includegraphics[width=0.295\textwidth]{6A_r0} 
+             	\llap{\raisebox{-0.4cm}{\color{white} \small  \fcolorbox{black}{black}{\(\mathcal{D}_{||}=2.26\)}}}}
+     \fbox{\includegraphics[width=0.295\textwidth]{7A_r0}
+     		\llap{\raisebox{-0.4cm}{\color{white} \small  \fcolorbox{red}{red}{\(\mathcal{D}_{||}=5.4e\scalebox{0.75}[1.0]{\( - \)}3\)}}}}
+     \fbox{\includegraphics[width=0.295\textwidth]{8A_r0}
+     		\llap{\raisebox{-0.4cm}{\color{white} \small  \fcolorbox{blue}{blue}{\(\mathcal{D}_{||}=1.4e\scalebox{0.75}[1.0]{\( - \)}4\)}}}}
     \caption{}
     \label{fig:gr_ang_6_7_8_r}
   \end{subfigure}}
-  \fbox{\begin{subfigure}[b]{0.48\textwidth}
+  \fbox{\begin{subfigure}[b]{0.47\textwidth}
     \includegraphics[trim={0.05cm 0.30cm 0.25cm 0.15cm},clip,width=0.46\textwidth]{g_r_2D_6_7_8_f}
     \includegraphics[trim={0.25cm 0.25cm 0.05cm 0.15cm},clip,width=0.485\textwidth]{ang_3B_6_7_8_f}
-     \fbox{\includegraphics[trim={0.0cm 0.50cm 0.0cm 4.45cm},clip,width=0.295\textwidth]{6A_f3}}
-     \fbox{\includegraphics[width=0.305\textwidth]{7A_f3}}
-     \fbox{\includegraphics[width=0.305\textwidth]{8A_f3}}
+     \fbox{\includegraphics[width=0.295\textwidth]{6A_f0}
+     		\llap{\raisebox{-0.4cm}{\color{white} \small \fcolorbox{black}{black}{\(\mathcal{D}_{||}=3.2e\scalebox{0.75}[1.0]{\( - \)}4\)}}}} %\raisebox{1.8cm} for in upper right corner
+     \fbox{\includegraphics[width=0.295\textwidth]{7A_f0}
+     		\llap{\raisebox{-0.4cm}{\color{white} \small \fcolorbox{red}{red}{\(\mathcal{D}_{||}=3.35\)}}}}
+     \fbox{\includegraphics[width=0.295\textwidth]{8A_f0}
+     		\llap{\raisebox{-0.4cm}{\color{white} \small \fcolorbox{blue}{blue}{\(\mathcal{D}_{||}=1.3e\scalebox{0.75}[1.0]{\( - \)}2\)}}}}
     \caption{}
     \label{fig:gr_ang_6_7_8_f}
   \end{subfigure}}
-	\caption{\textit{Monolayer lateral oxygen-oxygen pair correlation functions, three-body angle distributions, and snapshots of monolayer systems.} (\protect\subref{fig:gr_ang_6_7_8_r}) rigid systems, (\protect\subref{fig:gr_ang_6_7_8_f}) flexible systems. \textbf{Top.} Distribution of water oxygen distances and distribution of intralayer 3B angle formed between and given oxygen and its 2 nearest neighbors. \textbf{Bottom.} Snapshots of systems from left to right: \(\rho_{2D}=\) 0.065, 0.097, 0.130. Oxygens are in red, hydrogens are in white and for clarity, only one interlayer of water is depicted, and the graphene sheets are not displayed.}
+	\caption{\textit{Monolayer lateral oxygen-oxygen pair correlation functions, three-body angle distributions, and snapshots of monolayer systems.} (\protect\subref{fig:gr_ang_6_7_8_r}) rigid systems, (\protect\subref{fig:gr_ang_6_7_8_f}) flexible systems.  \textbf{Top.} Distribution of water oxygen distances and distribution of intralayer 3B angle formed between and given oxygen and its 2 nearest neighbors. \textbf{Bottom.} Snapshots of systems from left to right: \(\rho_{2D}=\) 0.065, 0.097, 0.130. Oxygens are in red, hydrogens are in white and for clarity, only one interlayer of water is depicted, and the graphene sheets are not displayed. Lateral diffusion coefficients are given in units of \((m^2/s) \times 10^9\), in the colored box in the bottom right corner. The lowest density system of (\protect\subref{fig:gr_ang_6_7_8_f}) is comprised of a coexistence between different number of water interlayers, highlighted in black (n=0) and blue (n=1).}
 	\label{fig:struct_6_7_8}
 \end{figure}
 
@@ -210,22 +231,28 @@ Finally, as the density was increased beyond 0.260, less variation in in-plane s
   \fbox{\begin{subfigure}[b]{0.48\textwidth}
     \includegraphics[trim={0.05cm 0.30cm 0.25cm 0.15cm},clip,width=0.46\textwidth]{g_r_2D_9_10_11_r}
     \includegraphics[trim={0.25cm 0.25cm 0.05cm 0.15cm},clip,width=0.485\textwidth]{ang_3B_9_10_11_r} 
-     \fbox{\includegraphics[width=0.305\textwidth]{9A_r4}}
-     \fbox{\includegraphics[width=0.295\textwidth]{10A_r4} }
-     \fbox{\includegraphics[width=0.305\textwidth]{11A_r2}}
+     \fbox{\includegraphics[width=0.29\textwidth]{9A_r0}
+     		\llap{\raisebox{-0.4cm}{\color{white} \small \fcolorbox{black}{black}{\(\mathcal{D}_{||}=2.2e\scalebox{0.75}[1.0]{\( - \)}2\)}}}}
+     \fbox{\includegraphics[width=0.29\textwidth]{10A_r0}
+     		\llap{\raisebox{-0.4cm}{\color{white} \small  \fcolorbox{red}{red}{\(\mathcal{D}_{||}=5.7e\scalebox{0.75}[1.0]{\( - \)}3\)}}}}
+     \fbox{\includegraphics[width=0.29\textwidth]{11A_r0}
+     		\llap{\raisebox{-0.4cm}{\color{white} \small  \fcolorbox{blue}{blue}{\(\mathcal{D}_{||}=1.07\)}}}}
     \caption{}
     \label{fig:gr_ang_9_10_11_r}
   \end{subfigure}}
   \fbox{\begin{subfigure}[b]{0.48\textwidth}
     \includegraphics[trim={0.05cm 0.30cm 0.25cm 0.15cm},clip,width=0.46\textwidth]{g_r_2D_9_10_11_f}
     \includegraphics[trim={0.25cm 0.25cm 0.05cm 0.15cm},clip,width=0.485\textwidth]{ang_3B_9_10_11_f}
-     \fbox{\includegraphics[width=0.295\textwidth]{9A_f4}}
-     \fbox{\includegraphics[width=0.305\textwidth]{10A_f2}}
-     \fbox{\includegraphics[width=0.305\textwidth]{11A_f3}}
+     \fbox{\includegraphics[width=0.29\textwidth]{9A_f0}
+     		\llap{\raisebox{-0.4cm}{\color{white} \small  \fcolorbox{black}{black}{\(\mathcal{D}_{||}=1.79\)}}}}
+     \fbox{\includegraphics[width=0.29\textwidth]{10A_f0}
+     		\llap{\raisebox{-0.4cm}{\color{white} \small  \fcolorbox{red}{red}{\(\mathcal{D}_{||}=1.65\)}}}}
+     \fbox{\includegraphics[width=0.29\textwidth]{11A_f0}
+     		\llap{\raisebox{-0.4cm}{\color{white} \small  \fcolorbox{blue}{blue}{\(\mathcal{D}_{||}=1.22\)}}}}
     \caption{}
     \label{fig:gr_ang_9_10_11_f}
   \end{subfigure}}
-	\caption{\textit{Bilayer lateral oxygen-oxygen pair correlation functions, three-body angle distributions, and snapshots of monolayer systems.} (\protect\subref{fig:gr_ang_9_10_11_r}) rigid systems, (\protect\subref{fig:gr_ang_9_10_11_f}) flexible systems. \textbf{Top.} Distribution of water oxygen distances and distribution of intralayer 3B angle formed between and given oxygen and its 2 nearest neighbors. \textbf{Bottom.} Snapshots of systems from left to right: \(\rho_{2D}=\) 0.163, 0.196, 0.227. Oxygens are in red, hydrogens are in white and for clarity, only one interlayer of water is depicted, and the graphene sheets are not displayed.}
+	\caption{\textit{Bilayer lateral oxygen-oxygen pair correlation functions, three-body angle distributions, and snapshots of monolayer systems.} (\protect\subref{fig:gr_ang_9_10_11_r}) rigid systems, (\protect\subref{fig:gr_ang_9_10_11_f}) flexible systems. \textbf{Top.} Distribution of water oxygen distances and distribution of intralayer 3B angle formed between and given oxygen and its 2 nearest neighbors. \textbf{Bottom.} Snapshots of systems from left to right: \(\rho_{2D}=\) 0.163, 0.196, 0.227. Oxygens are in red, hydrogens are in white and for clarity, only one interlayer of water is depicted, and the graphene sheets are not displayed. Lateral diffusion coefficients are given in units of \((m^2/s) \times 10^9\), in the colored box in the bottom right corner. The lowest density system of (\protect\subref{fig:gr_ang_9_10_11_f}) is comprised of a coexistence between different number of water interlayers, highlighted in black (n=1) and blue (n=2).}
 	\label{fig:struct_9_10_11}
 \end{figure}
 
@@ -261,8 +288,6 @@ Finally, as the density was increased beyond 0.260, less variation in in-plane s
 \end{document}
 
 \clearpage
-
-\subsection*{Citations}
 
 \begin{figure}[ht!]
 	\centering

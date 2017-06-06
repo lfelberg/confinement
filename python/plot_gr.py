@@ -14,7 +14,7 @@ def get_plt_lst(csv_nm):
     sep_siz = int(csv_nm.split("_")[3]); dim = csv_nm.split("_")[2]
     nfct = 1.0
     if sep_siz == 11: cls = [4, 7, 18, 36]
-    elif sep_siz == 13: cls = [5, 8, 12, 13, 22, 25, 34, 45]
+   #elif sep_siz == 13: cls = [5, 8, 12, 13, 22, 25, 34, 45]
     elif sep_siz == 14: cls = [2,19,29,38,4,7,8,11,12,23,24,] #27]
     elif sep_siz == 16: cls = [3,6,7,11,14,19,31,32,40,46]
 
@@ -57,12 +57,12 @@ def plot_scatter(plt_nm, csvL, sep, ln):
            fn = csvL[i][j].csvfname.split("_")
            mn += fn[3] + "_"; dn = int(fn[3])
            cls = []; print(len(dat))
-           for k in range(32,42): # len(dat)):
+           for k in range(1,len(dat)):
                if max(dat[k]) <25.5 and sum(dat[k]) > 0.1: cls.append(k)
            ct=0; print(cls)
            for k in cls:
               #ax.plot(dat[0], dat[k], label="x="+csvL[i][j].key[k][1:-2], color = colorL[ct])
-               ax.plot(dat[0], dat[k], label=str(k), color = colorL[ct])
+               ax.plot(dat[0], dat[k], label=str(k), color = colorL[ct+3])
                ct += 1
 
            if dn < 21: lg = "{0:.3f}".format(dens[dn][0])
@@ -70,8 +70,8 @@ def plot_scatter(plt_nm, csvL, sep, ln):
            
            if dens[dn][2] == "--": dsh = (2,1)
            else:                   dsh = (None,None)
-           ax.plot(dat[0], np.mean(dat[cls],axis=0)/nfct, dens[dn][2],
-                   color = dens[dn][1], dashes = dsh, label=lg)
+          #ax.plot(dat[0], np.mean(dat[cls],axis=0)/nfct, dens[dn][2],
+          #        color = dens[dn][1], dashes = dsh, label=lg)
            ct += 1
     ax.legend(ncol = 3, columnspacing = 0.4,
         fontsize =  5 , handletextpad = 0.2,
