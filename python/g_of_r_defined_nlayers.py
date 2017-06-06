@@ -5,7 +5,7 @@ import numpy as np
 
 from xyzfile import XYZFile
 from volfile import VolFile
-from util    import d_pbc
+from util    import d_pbc, translate_pbc
 
 dr = 0.05
 LMAX = 15.0+dr
@@ -46,8 +46,10 @@ def get_gr(xyz, volC, grPair):
 
     # depending on the system, there will be varying # interlayers
     if ("_12_" in xyz.xyzfname): nm = 3
-    elif ("_13_" in xyz.xyzfname or "_14_" in xyz.xyzfname): nm = 4
-    elif ("_16_" in xyz.xyzfname): nm = 5
+    elif ("_13_" in xyz.xyzfname or "_14_" in xyz.xyzfname): 
+         nm = np.array([0,0.35,1.24,3.24,3.90,5.9,6.7,10.0])
+    elif ("_16_" in xyz.xyzfname):#nm = 7
+         nm = np.array([0,0.55,1.24,3.24,3.70,5.4,6.1,8.1,8.7,14.0])
     xb_ct=np.zeros((nm,2)); xb_his=np.zeros((nm,2,len(HIS)-1))
 
     # for the g(r) pairs, need to get groups on the same wall side
@@ -62,25 +64,29 @@ def get_gr(xyz, volC, grPair):
                         volC.get_z_rng_i(i)]) # pbc range
         rng_m += rng # take average of range for printing
 
-        in_bn = np.linspace(min(xyz.atom[xyz.get_inner_ats(),0]),
-                            max(xyz.atom[xyz.get_inner_ats(),0]), num=nm)
-        ou_bn = np.linspace(min(xyz.atom[xyz.get_outer_ats(),0]),
-                            max(xyz.atom[xyz.get_outer_ats(),0]), num=nm)
+        # get cords for each type, and wrap x coords 
+        cd00 = xyz.atom[i,ty00]; cd01 = xyz.atom[i,ty01]
+        cd10 = xyz.atom[i,ty10]; cd11 = xyz.atom[i,ty11]
 
-        c00 = xyz.atom[i,ty00,:]; # coords for them
+        c00[1:,0] = translate_pbc(c00[0,0],c00[1:,0],rng[0])
+        c01[1:,0] = translate_pbc(c01[0,0],c01[1:,0],rng[0])
+        c10[:,0] = translate_pbc(c00[0,0],c10[:,0],rng[0])
+        c11[:,0] = translate_pbc(c01[0,0],c11[:,0],rng[0])
+
+        in_bn = min(c00[:,0])+nm
+        ou_bn = min(c10[:,0])+nm
+
         b00 = np.digitize(c00[:,0], in_bn)
-        c01 = xyz.atom[i,ty01,:]; 
         b01 = np.digitize(c01[:,0], ou_bn)
         if grPair[0] == grPair[1]: 
             c10=np.copy(c00); c11=np.copy(c01); b10=b00; b11=b01; sm=True
         else: 
             sm = False
-            c10 = xyz.atom[i,ty10,:]; c11 = xyz.atom[i,ty11,:] 
             b10 = np.digitize(c10[:,0], in_bn)
             b11 = np.digitize(c11[:,0], ou_bn)
         
         for j in range(1,len(in_bn)):
-            if sum((b_00==j).astype(int))>50 and sum((b10==j).astype(int))>50:
+            if sum((b00==j).astype(int))>50 and sum((b10==j).astype(int))>50:
                gr2, pr_ct2 = gr_cal(c00[b00==j],c10[b10==j], rng[1:], sm)
                xb_his[j,1,:] += gr2;xb_ct[j,1] += pr_ct2;
                
@@ -93,7 +99,7 @@ def get_gr(xyz, volC, grPair):
     xb_ct[xb_ct == 0.] = 1.0
     g_r_3_m = xb_his[:,0,:]/xb_ct[:,0, np.newaxis].astype(int);
     g_r_2_m = xb_his[:,1,:]/xb_ct[:,1, np.newaxis].astype(int);
-    return g_r_3_m, g_r_2_m, x_bn
+    return g_r_3_m, g_r_2_m, list(range(len(g_r_2_m)))
 
 def print_gr(x, grs, fname):
     '''Print distances to carbon wall in xyz like format'''
