@@ -40,13 +40,11 @@ def get_dist(xyz, dims):
             oxC[:,0] = translate_pbc(np.array(mnn), oxC[:,0], rng[0])
         mnc = min(oxC[:,0]); mxc = max(oxC[:,0])
         if mxc > np.mean(c2[:,0]) or mnc < np.mean(c1[:,0]): 
-            print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
             continue
 
         # if the walls are still too close or too far
         if (abs(np.mean(c2[:,0])-np.mean(c1[:,0])) < 4.5 or
             abs(np.mean(c2[:,0])-np.mean(c1[:,0])) > rng[0]*4./5.): 
-            print("sep is too small!")
             continue
 
         c1_yy = np.digitize(c1[:,1],yedg); c2_yy = np.digitize(c2[:,1],yedg)
@@ -101,7 +99,7 @@ def main():
     volC = VolFile("run"+nm+".vol") 
     xyz_cl = XYZFile(xyzname, volC)
     dists = get_dist( xyz_cl, volC)
-    print_dist_to_c("run"+nm+".distgg_new", dists)
+    print_dist_to_c("run"+nm+".distgg", dists)
 
 if __name__=="__main__":
     main()

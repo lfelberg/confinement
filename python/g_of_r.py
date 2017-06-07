@@ -5,7 +5,7 @@ import numpy as np
 
 from xyzfile import XYZFile
 from volfile import VolFile
-from util    import d_pbc
+from util    import d_pbc, translate_pbc
 
 dr = 0.05
 LMAX = 15.0+dr
@@ -44,8 +44,19 @@ def get_gr(xyz, volC, grPair):
     ty0 = xyz.get_type_i(grPair[0]); ty1 = xyz.get_type_i(grPair[1]); bnz = 2
     g_r_3, g_r_2_m, rng_m = [], [], np.zeros((3))
 
-    bnsz = 0.6; x_bn = np.arange(0, volC.get_x_max()+bnsz, bnsz); 
-    xb_ct=np.zeros((len(x_bn),2)); xb_his=np.zeros((len(x_bn),2,len(HIS)-1))
+    # depending on the system, there will be varying # interlayers
+    if "_6_" in xyz.xyzfname or "_7_" in xyz.xyzfname or "_8_" in xyz.xyzfname:
+         nm = np.array([0.0,10.0])
+    elif ("_10_" in xyz.xyzfname or "_11_" in xyz.xyzfname 
+           or "_12_" in xyz.xyzfname):
+         nm = np.array([0,0.55,1.04,3.0,3.30,3.90,5.1,5.6,6.7,10.0])
+    elif ("_13_" in xyz.xyzfname or "_14_" in xyz.xyzfname): 
+         nm = np.array([0,0.35,1.24,3.24,3.90,5.9,6.7,10.0])
+    elif ("_16_" in xyz.xyzfname):#nm = 7
+         nm = np.array([0,0.55,1.24,3.24,3.70,5.4,6.1,8.1,8.7,14.0])
+    if ("_20_" in xyz.xyzfname): 
+         nm = np.array([0,0.65,1.04,3.14,3.60,5.3,5.9,7.05,7.45,9.3,9.8,12.05,12.60,18.0])
+    xb_ct=np.zeros((len(nm),2)); xb_his=np.zeros((len(nm),2,len(HIS)-1))
 
     # for the g(r) pairs, need to get groups on the same wall side
     ty00 = np.all(np.array([ty0, xyz.get_inner_ats()]), axis=0) # btw 2 walls
@@ -59,45 +70,41 @@ def get_gr(xyz, volC, grPair):
                         volC.get_z_rng_i(i)]) # pbc range
         rng_m += rng # take average of range for printing
 
-        c00 = xyz.atom[i,ty00,:]; # coords for them
-        b00 = np.digitize(c00[:,0], x_bn)
-        c01 = xyz.atom[i,ty01,:]; 
-        b01 = np.digitize(c01[:,0], x_bn)
+        # get cords for each type, and wrap x coords 
+        c00 = xyz.atom[i,ty00]; c01 = xyz.atom[i,ty01]
+        c10 = xyz.atom[i,ty10]; c11 = xyz.atom[i,ty11]
+
+        c00[1:,0] = translate_pbc(c00[0,0],c00[1:,0],rng[0]) #inner 0
+        c10[:,0] = translate_pbc(c00[0,0],c10[:,0],rng[0])   #inner 1
+        c01[1:,0] = translate_pbc(c01[0,0],c01[1:,0],rng[0]) #outer 0
+        c11[:,0] = translate_pbc(c01[0,0],c11[:,0],rng[0])   #outer 1
+
+        in_bn = min(c00[:,0])+nm
+        ou_bn = min(c01[:,0])+nm
+        b00 = np.digitize(c00[:,0], in_bn)
+        b01 = np.digitize(c01[:,0], ou_bn)
         if grPair[0] == grPair[1]: 
             c10=np.copy(c00); c11=np.copy(c01); b10=b00; b11=b01; sm=True
         else: 
             sm = False
-            c10 = xyz.atom[i,ty10,:]; c11 = xyz.atom[i,ty11,:] 
-            b10 = np.digitize(c10[:,0], x_bn)
-            b11 = np.digitize(c11[:,0], x_bn)
+            b10 = np.digitize(c10[:,0], in_bn)
+            b11 = np.digitize(c11[:,0], ou_bn)
         
-        if "_14_" in xyz.xyzfname or "_16_" in xyz.xyzfname:
-            gr3, pr_ct3 = gr_cal(c00,c10, rng, sm)
-            xb_his[0,0,:] += gr3;xb_ct[0,0] += pr_ct3;
-            gr3, pr_ct3 = gr_cal(c01,c11, rng, sm)
-            xb_his[0,0,:] += gr3;xb_ct[0,0] += pr_ct3;
+        for j in range(1,len(in_bn)):
+            if sum((b00==j).astype(int))>50 and sum((b10==j).astype(int))>50:
+               gr2, pr_ct2 = gr_cal(c00[b00==j],c10[b10==j], rng[1:], sm)
+               xb_his[j,1,:] += gr2;xb_ct[j,1] += pr_ct2;
+               
+            if sum((b01==j).astype(int))>50 and sum((b11==j).astype(int))>50:
+               gr2, pr_ct2 = gr_cal(c01[b01==j],c11[b11==j], rng[1:], sm)
+               xb_his[j,1,:] += gr2;xb_ct[j,1] += pr_ct2;
 
-        if "_6_" in xyz.xyzfname or "_7_" in xyz.xyzfname or "_8_" in xyz.xyzfname:
-            gr2, pr_ct2 = gr_cal(c00,c10, rng[1:], sm)
-            xb_his[0,1,:] += gr2;xb_ct[0,1] += pr_ct2;
-        
-            gr2, pr_ct2 = gr_cal(c01,c11, rng[1:], sm)
-            xb_his[0,1,:] += gr2;xb_ct[0,1] += pr_ct2;
-        else:
-            for j in range(len(x_bn)):
-                if sum((b00==j).astype(int))>50 and sum((b10==j).astype(int))>50:
-                   gr2, pr_ct2 = gr_cal(c00[b00==j],c10[b10==j], rng[1:], sm)
-                   xb_his[j,1,:] += gr2;xb_ct[j,1] += pr_ct2;
-                   
-                if sum((b01==j).astype(int))>50 and sum((b11==j).astype(int))>50:
-                   gr2, pr_ct2 = gr_cal(c01[b01==j],c11[b11==j], rng[1:], sm)
-                   xb_his[j,1,:] += gr2;xb_ct[j,1] += pr_ct2;
 
     # Time averages of histograms
     xb_ct[xb_ct == 0.] = 1.0
     g_r_3_m = xb_his[:,0,:]/xb_ct[:,0, np.newaxis].astype(int);
     g_r_2_m = xb_his[:,1,:]/xb_ct[:,1, np.newaxis].astype(int);
-    return g_r_3_m, g_r_2_m, x_bn
+    return g_r_3_m, g_r_2_m, list(range(len(g_r_2_m)))
 
 def print_gr(x, grs, fname):
     '''Print distances to carbon wall in xyz like format'''
@@ -127,9 +134,8 @@ def main():
     print("Arry shape", xyz_cl.atom.shape)
 
     for i in range(n_gr):
-        prNm = '_'+str(grPr[i][0])+'_'+str(grPr[i][1])+'.csv'
+        prNm = '_'+str(grPr[i][0])+'_'+str(grPr[i][1])+'defined.csv'
         grs3D, grs2D, xrng = get_gr(xyz_cl, volC, grPr[i])
-       #print_gr(xrng, grs3D.T, 'g_r_3D_'+nm+prNm)
         print_gr(xrng, grs2D.T, 'g_r_2D_'+nm+prNm)
 
 if __name__=="__main__":
