@@ -170,7 +170,7 @@ When comparing transitions between layers in the rigid system, there is a distin
 
 \begin{figure}[ht!]
 	\centering
-	\includegraphics[trim={0.35cm 0.25cm 0.05cm 0.05cm},clip,width=0.49\textwidth]{d12_smearing} %
+	\includegraphics[trim={0.15cm 0.05cm 0.05cm 0.05cm},clip,width=0.49\textwidth]{d12_smearing} %
 	\caption{\textit{Snapshots of out-of-plane water layering and heatmap of water location and graphene-graphene separation for bilayer to trilayer transition.} \textbf{Snapshots.} Water-graphene systems as a function of increasing 2D-density, water oxygens are red, graphene carbons are grey and water hydrogens are not displayed for clarity. Images not drawn to size. \textbf{Heatmaps.} 2D histogram of the distance of water to a reference wall versus the graphene-graphene separation distance, warmer colors representing a higher number of observations.}
 	\label{fig:dgg_2_to_3}
 \end{figure}
@@ -258,8 +258,17 @@ Finally, as the density was increased beyond 0.260, less variation in in-plane s
 
 \begin{figure}[ht!]
 	\centering
-    \includegraphics[trim={0.25cm 0.25cm 0.15cm 0.15cm},clip,width=0.3\textwidth]{diffusion_coeff_2D_f_r}
-	\caption{\textit{Comparison of self-diffusion coefficients}. The self-diffusion coefficient as a function of number density for the diffusion parallel to the graphene walls.}
+	\begin{subfigure}[b]{0.28\textwidth}
+    		\includegraphics[trim={0.25cm 0.25cm 0.15cm 0.15cm},clip,width=0.99\textwidth]{diffusion_coeff_2D_f_r}
+		\caption{}
+    		\label{fig:diff}
+   	\end{subfigure}	
+	\begin{subfigure}[b]{0.28\textwidth}
+    		\includegraphics[trim={0.25cm 0.25cm 0.15cm 0.15cm},clip,width=0.99\textwidth]{compressibility}
+		\caption{}
+    		\label{fig:comp}
+   	\end{subfigure}
+	\caption{\textit{Comparison of dynamic properties}. (\protect\subref{fig:diff}) The self-diffusion coefficient as a function of number density for the diffusion parallel to the graphene walls. (\protect\subref{fig:comp}) Fluctuations in the out-of-plane distance as an approximation of system compressibility.}
 	\label{fig:msd}
 \end{figure}
 

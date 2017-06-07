@@ -14,12 +14,8 @@ def get_plt_lst(csv_nm):
     sep_siz = int(csv_nm.split("_")[3]); dim = csv_nm.split("_")[2]
     nfct = 1.0
     if sep_siz == 11: cls = [4, 7, 18, 36]
-   #elif sep_siz == 13: cls = [5, 8, 12, 13, 22, 25, 34, 45]
-    elif sep_siz == 14: cls = [2,19,29,38,4,7,8,11,12,23,24,] #27]
-    elif sep_siz == 16: cls = [3,6,7,11,14,19,31,32,40,46]
 
     # flexible
-   #elif sep_siz == 9:  cls = [2,4,15,28,30,32] #old flexible
     elif sep_siz == 91:  
          cls = [2,30]; nfct = 1.4
     elif sep_siz == 92:  
@@ -27,19 +23,19 @@ def get_plt_lst(csv_nm):
    #elif sep_siz == 10: cls = [4, 6, 7, 17, 18,]
    #elif sep_siz == 12: cls = [4,9,10,21,22,23,41] # for multi-layer gr
    #elif sep_siz == 12: cls = [21,41,]
-   #elif sep_siz == 141: cls =[2,7,8] # inner layer of 3L
-   #elif sep_siz == 142: cls =[19,29,38,4,11,23] # layer close to graph
-   #elif sep_siz == 161: cls =[3,11,14] #inner layer of 3/4
-   #elif sep_siz == 162: cls =[6,19,31,46] #layer near graph
 
     # rigid
     elif sep_siz == 9:  cls = [5,15,18,27]
     elif sep_siz == 10: cls = [3,4,5,14,]
    #elif sep_siz == 12: cls = [3,18,19,31,32,7,8,17,20,]
-    elif sep_siz == 141: cls =[2,7,8] # inner layer of 3L
-    elif sep_siz == 142: cls =[19,29,38,4,11,23] # layer close to graph
-    elif sep_siz == 161: cls =[4,10,15,35] #inner layer of 3/4
-    elif sep_siz == 162: cls =[6,7,18,19] #layer near graph
+
+    elif sep_siz == 131 or sep_siz == 141: cls =[5] # inner layer of 3L
+    elif sep_siz == 132 or sep_siz == 142: cls =[3,7] # layer close to graph
+    elif sep_siz == 161: cls =[5,7] #inner layer of 3/4
+    elif sep_siz == 162: cls =[3,9] #layer near graph
+    elif sep_siz == 20:  cls =[3,4,5,7] #inner layer of 3/4
+    elif sep_siz == 201: cls =[5,7] #inner layer of 3/4
+    elif sep_siz == 202: cls =[3,9] #layer near graph
 
     else: cls = [1] # dont have this sep size saved
     return cls, nfct
@@ -56,9 +52,7 @@ def plot_scatter(plt_nm, csvL, sep, ln):
            cls,nfct=get_plt_lst(csvL[i][j].csvfname); dat = csvL[i][j].dat
            fn = csvL[i][j].csvfname.split("_")
            mn += fn[3] + "_"; dn = int(fn[3])
-           cls = []; print(len(dat))
-           for k in range(1,len(dat)):
-               if max(dat[k]) <25.5 and sum(dat[k]) > 0.1: cls.append(k)
+          #cls = list(range(3,len(dat))); 
            ct=0; print(cls)
            for k in cls:
               #ax.plot(dat[0], dat[k], label="x="+csvL[i][j].key[k][1:-2], color = colorL[ct])
@@ -70,8 +64,8 @@ def plot_scatter(plt_nm, csvL, sep, ln):
            
            if dens[dn][2] == "--": dsh = (2,1)
            else:                   dsh = (None,None)
-          #ax.plot(dat[0], np.mean(dat[cls],axis=0)/nfct, dens[dn][2],
-          #        color = dens[dn][1], dashes = dsh, label=lg)
+           ax.plot(dat[0], np.mean(dat[cls],axis=0)/nfct, dens[dn][2],
+                   color = dens[dn][1], dashes = dsh, label=lg)
            ct += 1
     ax.legend(ncol = 3, columnspacing = 0.4,
         fontsize =  5 , handletextpad = 0.2,
