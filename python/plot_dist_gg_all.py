@@ -28,7 +28,7 @@ def plot_scatter(csv):
     plt.plot(ff, fl, 'mD', label = "multi")
     plt.plot(df, flx, 'k.', label = "flexible")
     plt.plot(dens, rigid, 'b.',label = "rigid")
-    ax.set_xlim([0.,0.35]);ax.set_ylim([3,15])
+    ax.set_xlim([0.,0.40]);ax.set_ylim([3,15])
 
     ax.legend(loc = 2, ncol = 1, columnspacing = 0.4,fontsize=6)
     ax.set_xlabel(r"$\rho_{2D}$",fontsize= 10)

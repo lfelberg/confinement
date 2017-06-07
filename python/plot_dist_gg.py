@@ -20,10 +20,10 @@ def plot_scatter(csv, sep, ln, itr):
     ax.yaxis.set_major_locator(MaxNLocator())
     
     leg = str(sep)+r'$\AA$ Sep, '+'L='+str(ln)+r'$\AA$'
-    Y = csv.dat[csv.key.index("dgg")]; yr = [5,17]
-   #yy = Y < sep + float(sep)*0.3; Y = Y[yy]
-   #X = csv.dat[csv.key.index("dg1"),yy]/Y.astype(float)
-    X = csv.dat[csv.key.index("dg1")]/Y.astype(float)
+    Y = csv.dat[csv.key.index("dgg")]; yr = [5,17] #REST #[10,20] 
+    yy = Y < sep + float(sep)*0.3; Y = Y[yy]
+    X = csv.dat[csv.key.index("dg1"),yy]/Y.astype(float)
+   #X = csv.dat[csv.key.index("dg1")]/Y.astype(float)
     print(min(Y), max(Y), min(X), max(X))
     plt.hist2d(X, Y, bins=(nbins,nbins), range=([0,1], yr),cmap=plt.get_cmap('plasma'))
     ax.set_xlim([0.2,0.8]); ax.set_ylim(yr)
@@ -37,21 +37,23 @@ def plot_scatter(csv, sep, ln, itr):
     nbins = 50
     y,x = np.histogram(Y, bins=nbins); dx = x[1]-x[0]
     x = x[:-1] + dx/2.;y = y/sum(y.astype(float))/dx
+    print("Dgg maxes: ", x[argrelextrema(y, np.greater)])
     f = plt.figure(1, figsize = (1.0, 1.0))
     ax, ct, leg = f.add_subplot(111), 0, []
     ax.xaxis.set_major_locator(MaxNLocator())
     ax.yaxis.set_major_locator(MaxNLocator())
     matplotlib.rcParams['font.size'] = 5;
     plt.plot(x, y, color = "k")
-    ax.set_xlabel("$d_{gg} \, (\AA$)",fontsize=7);ax.set_xlim([6.,17.])
+    ax.set_xlabel("$d_{gg} \, (\AA$)",fontsize=7);ax.set_xlim([6.,20.])
     ax.set_ylabel("Probability $(1/\AA)$",fontsize=7);ax.set_ylim([0.,2.0])
     plt.savefig(csv.csvfname[:-3]+'g_sep_fit.png',bbox_inches = 'tight',)
     plt.close()
 
+    X = csv.dat[csv.key.index("dg1"),yy]
     y,x = np.histogram(X, bins=nbins); dx = x[1]-x[0]
     x = x[:-1] + dx/2.;y = y/sum(y.astype(float))/dx
     print("X position maxes: ", x[argrelextrema(y, np.greater)])
-    print(x[0],x[-1])
+
     f = plt.figure(1, figsize = (1.0, 1.0))
     ax, ct, leg = f.add_subplot(111), 0, []
     ax.xaxis.set_major_locator(MaxNLocator())
