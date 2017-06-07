@@ -33,9 +33,6 @@ def get_dist(xyz, dims):
         if mxc - mnc > 2 or abs(mxc-rng[0]) > rng[0]/2:
             mxx = max(mxc, rng[0]*(3./4.))
             c2[:,0] = translate_pbc(np.array(mxx), c2[:,0], rng[0])
-        mnc = min(c2[:,0]); mxc = max(c2[:,0])
-        if np.mean(c1[:,0])-np.mean(c2[:,0]) > 0: 
-            print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
 
         mnc = min(oxC[:,0]); mxc = max(oxC[:,0])
         if mxc > np.mean(c2[:,0]) or mnc < np.mean(c1[:,0]): 
@@ -44,6 +41,13 @@ def get_dist(xyz, dims):
         mnc = min(oxC[:,0]); mxc = max(oxC[:,0])
         if mxc > np.mean(c2[:,0]) or mnc < np.mean(c1[:,0]): 
             print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+            continue
+
+        # if the walls are still too close or too far
+        if (abs(np.mean(c2[:,0])-np.mean(c1[:,0])) < 4.5 or
+            abs(np.mean(c2[:,0])-np.mean(c1[:,0])) > rng[0]*4./5.): 
+            print("sep is too small!")
+            continue
 
         c1_yy = np.digitize(c1[:,1],yedg); c2_yy = np.digitize(c2[:,1],yedg)
         c1_zz = np.digitize(c1[:,2],zedg); c2_zz = np.digitize(c2[:,2],zedg)
@@ -59,7 +63,9 @@ def get_dist(xyz, dims):
                     c2_p = c2[np.all(np.array([c2_yy==yy,c2_zz==zz]),axis=0),0]
                     c1_x = np.mean(c1_p); c2_x = np.mean(c2_p)
                     d1 = list(abs(o_w-c1_x));  d2 = list(abs(o_w-c2_x))
-                    if c2_x - c1_x < 2.0: print("This is pts and means",  c1_p, c2_p, c1_x, c2_x)
+                    if abs(c2_x - c1_x) < 5.0 or abs(c2_x - c1_x) > rng[0]*4./5.: 
+                        print("This is pts and means",  c1_p, c2_p, c1_x, c2_x)
+                        continue
                     w_d1.append(d1); w_d2.append(d2)
                     dgg = len(d1) * [abs(c2_x - c1_x)]
                     cc_d.append(dgg)

@@ -45,12 +45,15 @@ def get_gr(xyz, volC, grPair):
     g_r_3, g_r_2_m, rng_m = [], [], np.zeros((3))
 
     # depending on the system, there will be varying # interlayers
-    if ("_12_" in xyz.xyzfname): nm = 3
+    if ("_10_" in xyz.xyzfname or "_11_" in xyz.xyzfname or "_12_" in xyz.xyzfname):
+         nm = np.array([0,0.55,1.04,3.0,3.30,3.90,5.1,5.6,6.7,10.0])
     elif ("_13_" in xyz.xyzfname or "_14_" in xyz.xyzfname): 
          nm = np.array([0,0.35,1.24,3.24,3.90,5.9,6.7,10.0])
     elif ("_16_" in xyz.xyzfname):#nm = 7
          nm = np.array([0,0.55,1.24,3.24,3.70,5.4,6.1,8.1,8.7,14.0])
-    xb_ct=np.zeros((nm,2)); xb_his=np.zeros((nm,2,len(HIS)-1))
+    if ("_20_" in xyz.xyzfname): 
+         nm = np.array([0,0.65,1.04,3.14,3.60,5.3,5.9,7.05,7.45,9.3,9.8,12.05,12.60,18.0])
+    xb_ct=np.zeros((len(nm),2)); xb_his=np.zeros((len(nm),2,len(HIS)-1))
 
     # for the g(r) pairs, need to get groups on the same wall side
     ty00 = np.all(np.array([ty0, xyz.get_inner_ats()]), axis=0) # btw 2 walls
@@ -65,16 +68,16 @@ def get_gr(xyz, volC, grPair):
         rng_m += rng # take average of range for printing
 
         # get cords for each type, and wrap x coords 
-        cd00 = xyz.atom[i,ty00]; cd01 = xyz.atom[i,ty01]
-        cd10 = xyz.atom[i,ty10]; cd11 = xyz.atom[i,ty11]
+        c00 = xyz.atom[i,ty00]; c01 = xyz.atom[i,ty01]
+        c10 = xyz.atom[i,ty10]; c11 = xyz.atom[i,ty11]
 
-        c00[1:,0] = translate_pbc(c00[0,0],c00[1:,0],rng[0])
-        c01[1:,0] = translate_pbc(c01[0,0],c01[1:,0],rng[0])
-        c10[:,0] = translate_pbc(c00[0,0],c10[:,0],rng[0])
-        c11[:,0] = translate_pbc(c01[0,0],c11[:,0],rng[0])
+        c00[1:,0] = translate_pbc(c00[0,0],c00[1:,0],rng[0]) #inner 0
+        c10[:,0] = translate_pbc(c00[0,0],c10[:,0],rng[0])   #inner 1
+        c01[1:,0] = translate_pbc(c01[0,0],c01[1:,0],rng[0]) #outer 0
+        c11[:,0] = translate_pbc(c01[0,0],c11[:,0],rng[0])   #outer 1
 
         in_bn = min(c00[:,0])+nm
-        ou_bn = min(c10[:,0])+nm
+        ou_bn = min(c01[:,0])+nm
         b00 = np.digitize(c00[:,0], in_bn)
         b01 = np.digitize(c01[:,0], ou_bn)
         if grPair[0] == grPair[1]: 
