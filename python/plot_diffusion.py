@@ -27,8 +27,11 @@ def plot_scatter(csv):
 
     # compressibility
     if "compressibility" in csv.csvfname:
-        xm = 900; bbox = (1.01, 1.15); texty=xm*0.89
-        ax.set_ylabel(r"$(\langle l_x^2 \rangle - \langle l_x \rangle^2)^{-1}\, (m^{-2})$",fontsize= 8)
+        xm = 65; bbox = (1.01, 1.25); texty=xm*0.89
+        x = np.linspace(0,1,70); y = np.ones(70)*48.1
+        plt.plot(x,y, 'r--',dashes=(1.5,0.9),linewidth=0.7,label="bulk,\n298K")
+       #ax.set_ylabel(r"$\left(\langle l_x^2 \rangle - \langle l_x \rangle^2 \right )\, (Pa^{-1} \times 10^{-11})$",fontsize= 8)
+        ax.set_ylabel(r"$\kappa_T \times 10^{-11}\,\,\, (Pa^{-1})$",fontsize= 8)
 
     # diffusion coefficients
     else:
@@ -39,8 +42,8 @@ def plot_scatter(csv):
         ax.set_yscale("log", nonposy='clip')
 
     # PLotting the delineation between layers 1-2 (rho=0.1465), 2-3 (0.265),3-4
-    y=np.linspace(0,xm,70);
-    x1=np.ones(70)*0.1465; x2=np.ones(70)*0.26;x3=np.ones(70)*0.3525
+    y=np.linspace(0,xm,70);bbox = (1.01, 1.25)
+    x1=np.ones(70)*0.1465; x2=np.ones(70)*0.245;x3=np.ones(70)*0.3525
     plt.plot(x1,y,'--',color=[0.439, 0.502, 0.565],dashes=(2.5,0.9),linewidth=0.7)
     plt.plot(x2,y,'--',color=[0.439, 0.502, 0.565],dashes=(2.5,0.9),linewidth=0.7)
     plt.plot(x3,y,'--',color=[0.439, 0.502, 0.565],dashes=(2.5,0.9),linewidth=0.7)
@@ -54,7 +57,6 @@ def plot_scatter(csv):
               bbox_to_anchor = bbox, 
               borderaxespad= 0.2)
     ax.set_xlabel(r"$\rho_{2D}$",fontsize= 10)
-   #ax.set_ylabel(r"$\rho_{3D} \, (g/cm^3)$",fontsize= 10)
     plt.savefig(csv.csvfname[:-4]+'.png',bbox_inches = 'tight')#,transparent=True)
     plt.close()
 

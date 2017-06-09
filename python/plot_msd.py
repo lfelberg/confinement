@@ -6,39 +6,11 @@ from matplotlib.ticker import *
 MaxNLocator.default_params['nbins']=5
 
 from csvfile import CSVFile
+from dics import colorL, dens
 A2_TO_M2 = 1e-20
 PS_TO_S  = 1e12
 A2_PS_TO_M2_S = A2_TO_M2*PS_TO_S 
 
-colorL = [
-          [0,0,0], 
-          [1, 0, 0], 
-          [0,0,1], 
-          [0., 0.391, 0.], 
-          [0.859, 0.078, 0.234], 
-          [.93, .53, .18],
-          [0.801, 0.586, 0.047],
-          [0.289, 0.461, 1.],
-          [0.289, 0., 0.508], 
-          [0.777, 0.441, 0.441],
-          [0.777, 0.379, 0.078], 
-          [0., 0.9297, 0.9297]
-         ]
-
-dens = {
-         6   :   0.065,
-         7   :   0.097,
-         8   :   0.130,
-         9   :   0.163,
-         10  :   0.196,
-         11  :   0.227,
-         12  :   0.260,
-         13  :   0.293,
-         14  :   0.325,
-         16  :   0.390,
-         20  :   0.521,
-         37  :   0.99,   # for bulk
-}
 
 def plot_scatter(plt_nm, csvL, loc, sep, ln, itr):
     '''Using data from a histogram, plot several'''
@@ -78,7 +50,7 @@ def plot_scatter(plt_nm, csvL, loc, sep, ln, itr):
                #ax.plot(xd, xd*m + b, "r")
                #leg += [r'$\rho_{{2D}}=${0:.2f}'.format(dens[sep[i]])]
                 ct += 1
-            print("{0:.3f},{1:.7f}".format(dens[sep[i]],mav/nsam))
+            print("{0},{1:.7f}".format(dens[sep[i]][0],mav/nsam))
    #ax.set_xlim([0,800])
    #ax.set_ylim([0,800])
     bbox = [1.1, 0.95]

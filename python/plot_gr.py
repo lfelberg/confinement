@@ -35,15 +35,15 @@ def plot_scatter(plt_nm, csvL, sep, ln):
            ax.plot(dat[0], np.mean(dat[cls],axis=0)/nfct, dens[dn][2],
                    color = dens[dn][1], dashes = dsh, label=lg)
            ct += 1
-    ax.legend(ncol = 3, columnspacing = 0.4,
-        fontsize =  5 , handletextpad = 0.2,
-        handlelength = 1.3, borderaxespad = -0.9,
-        bbox_to_anchor = (0.8,1.2),
-        )
+   #ax.legend(ncol = 5, columnspacing = 0.4,
+   #    fontsize =  5 , handletextpad = 0.2,
+   #    handlelength = 1.3, borderaxespad = -0.9,
+   #    bbox_to_anchor = (0.8,1.2),
+   #    )
     ax.set_xlim([0,12.0]); ax.set_ylim([0,4.0])
     if "_1_2.csv" in csvL[i][j].csvfname:
-        ax.set_ylabel(r"$g_{{O-H}}(R)$ (a.u.)",fontsize=12)
-    else: ax.set_ylabel(r"$g_{{\mathrm{{O-O}}}}$(R) (a.u.)",fontsize=12)
+        ax.set_ylabel(r"$g_{{OH}}(R)$ (a.u.)",fontsize=12)
+    else: ax.set_ylabel(r"$g_{{OO}}$(R) (a.u.)",fontsize=12)
     ax.set_xlabel("R ($\AA$)",fontsize=12)
     ax.yaxis.labelpad = -0.6; ax.xaxis.labelpad = -0.6
     fname = plt_nm+mn+csvL[i][j].csvfname[-7:-4]+".png"

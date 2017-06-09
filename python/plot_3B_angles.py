@@ -24,8 +24,8 @@ def plot_scatter(csv, sep, ln, itr):
     plt.plot(x, y, color = "k")
     ax.set_xlim(rng); ax.set_ylim([0,0.02])
 
-    ax.set_xlabel(r"3 body angle ($^{\circ}$)",fontsize= 8)
-    ax.set_ylabel(r"Probability (1/$^{\circ}$)",fontsize= 8)
+    ax.set_xlabel(r"3 body angle ($^{\circ}$)",fontsize= 12)
+    ax.set_ylabel(r"Probability (1/$^{\circ}$)",fontsize= 12)
     plt.savefig(csv.csvfname[:-4]+'.png',bbox_inches = 'tight',)
 
     plt.plot((90.,90.), (0,10), 'y-')

@@ -31,8 +31,8 @@ def plot_scatter(plt_nm, csvL, sep, ln):
    #    bbox_to_anchor = (0.32,0.91),
    #    )
     ax.set_xlim([0,180]); ax.set_ylim([0,0.02])
-    ax.set_xlabel(r"$\theta \, (^{\circ})$",fontsize= 8)
-    ax.set_ylabel(r"$P(\theta) \,\,\, (1/^{\circ})$",fontsize= 8)
+    ax.set_xlabel(r"$\theta \, (^{\circ})$",fontsize= 12)
+    ax.set_ylabel(r"$P(\theta) \,\,\, (1/^{\circ})$",fontsize= 12)
     ax.yaxis.labelpad = -0.6; ax.xaxis.labelpad = -0.6
     fname = "ang_3B_"+mn[:-1]+".png"
     plt.savefig(fname, format='png', bbox_inches = 'tight', dpi=300) 
