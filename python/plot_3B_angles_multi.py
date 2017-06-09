@@ -13,8 +13,9 @@ def plot_scatter(plt_nm, csvL, sep, ln):
     f = plt.figure(1, figsize = (1.5, 1.5))
     ax, ct, leg, mn = f.add_subplot(111), 0, [], ""
    #matplotlib.rcParams.update({'font.size': 8})
-    ax.xaxis.set_major_locator(MaxNLocator())
     ax.yaxis.set_major_locator(MaxNLocator())
+    MaxNLocator.default_params['nbins']=5
+    ax.xaxis.set_major_locator(MaxNLocator())
     for i in range(len(csvL)):
         for j in range(len(csvL[i])):
            fn = csvL[i][j].csvfname.split("_")
@@ -30,8 +31,8 @@ def plot_scatter(plt_nm, csvL, sep, ln):
    #    bbox_to_anchor = (0.32,0.91),
    #    )
     ax.set_xlim([0,180]); ax.set_ylim([0,0.02])
-    ax.set_xlabel(r"3 body angle ($^{\circ}$)",fontsize= 8)
-    ax.set_ylabel(r"Probability (1/$^{\circ}$)",fontsize= 8)
+    ax.set_xlabel(r"$\theta \, (^{\circ})$",fontsize= 8)
+    ax.set_ylabel(r"$P(\theta) \,\,\, (1/^{\circ})$",fontsize= 8)
     ax.yaxis.labelpad = -0.6; ax.xaxis.labelpad = -0.6
     fname = "ang_3B_"+mn[:-1]+".png"
     plt.savefig(fname, format='png', bbox_inches = 'tight', dpi=300) 

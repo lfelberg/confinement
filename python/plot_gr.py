@@ -6,39 +6,8 @@ from matplotlib.ticker import *
 MaxNLocator.default_params['nbins']=4
 
 from csvfile import CSVFile
+from util import get_gr_lst
 from dics import colorL, dens
-
-def get_plt_lst(csv_nm):
-    ''' Given a filename for g(r) csv, find sep size and use that to get
-        columns to plot'''
-    sep_siz = int(csv_nm.split("_")[3]); dim = csv_nm.split("_")[2]
-    nfct = 1.0
-    if sep_siz == 11: cls = [4, 7, 18, 36]
-
-    # flexible
-    elif sep_siz == 91:  
-         cls = [2,30]; nfct = 1.4
-    elif sep_siz == 92:  
-         cls = [4,28,32]; nfct = 1.5
-   #elif sep_siz == 10: cls = [4, 6, 7, 17, 18,]
-   #elif sep_siz == 12: cls = [4,9,10,21,22,23,41] # for multi-layer gr
-   #elif sep_siz == 12: cls = [21,41,]
-
-    # rigid
-    elif sep_siz == 9:  cls = [5,15,18,27]
-    elif sep_siz == 10: cls = [3,4,5,14,]
-   #elif sep_siz == 12: cls = [3,18,19,31,32,7,8,17,20,]
-
-    elif sep_siz == 131 or sep_siz == 141: cls =[5] # inner layer of 3L
-    elif sep_siz == 132 or sep_siz == 142: cls =[3,7] # layer close to graph
-    elif sep_siz == 161: cls =[5,7] #inner layer of 3/4
-    elif sep_siz == 162: cls =[3,9] #layer near graph
-    elif sep_siz == 20:  cls =[3,4,5,7] #inner layer of 3/4
-    elif sep_siz == 201: cls =[5,7] #inner layer of 3/4
-    elif sep_siz == 202: cls =[3,9] #layer near graph
-
-    else: cls = [1] # dont have this sep size saved
-    return cls, nfct
 
 def plot_scatter(plt_nm, csvL, sep, ln):
     '''Using data from a histogram, plot several'''
@@ -49,15 +18,14 @@ def plot_scatter(plt_nm, csvL, sep, ln):
     ax.yaxis.set_major_locator(MaxNLocator())
     for i in range(len(csvL)):
         for j in range(len(csvL[i])):
-           cls,nfct=get_plt_lst(csvL[i][j].csvfname); dat = csvL[i][j].dat
+           cls,nfct=get_gr_lst(csvL[i][j].csvfname); dat = csvL[i][j].dat
            fn = csvL[i][j].csvfname.split("_")
            mn += fn[3] + "_"; dn = int(fn[3])
-          #cls = list(range(3,len(dat))); 
            ct=0; print(cls)
-           for k in cls:
-              #ax.plot(dat[0], dat[k], label="x="+csvL[i][j].key[k][1:-2], color = colorL[ct])
-               ax.plot(dat[0], dat[k], label=str(k), color = colorL[ct+3])
-               ct += 1
+          #for k in cls:
+          #   #ax.plot(dat[0], dat[k], label="x="+csvL[i][j].key[k][1:-2], color = colorL[ct])
+          #    ax.plot(dat[0], dat[k], label=str(k), color = colorL[ct+3])
+          #    ct += 1
 
            if dn < 21: lg = "{0:.3f}".format(dens[dn][0])
            else:               lg = dens[dn][0]
@@ -73,7 +41,6 @@ def plot_scatter(plt_nm, csvL, sep, ln):
         bbox_to_anchor = (0.8,1.2),
         )
     ax.set_xlim([0,12.0]); ax.set_ylim([0,4.0])
-   #ax.set_xlim([0,12.0]); ax.set_ylim([0,13.0])
     if "_1_2.csv" in csvL[i][j].csvfname:
         ax.set_ylabel(r"$g_{{O-H}}(R)$ (a.u.)",fontsize=12)
     else: ax.set_ylabel(r"$g_{{\mathrm{{O-O}}}}$(R) (a.u.)",fontsize=12)

@@ -1,195 +1,182 @@
-\documentclass[12pt]{article}
-\usepackage{graphicx}
-\usepackage{booktabs}
-\usepackage[margin=1.0in]{geometry}
-\usepackage{color}
-\usepackage{xcolor,tikz} %% for boxes in images
-\usepackage{tabularx}
-%Times New Roman 12 pt
-\usepackage[T1]{fontenc}
-\usepackage{mathptmx}
-\usepackage{amssymb}
-\usepackage{amsmath}
-\usepackage{subcaption}
-\usepackage{authblk}
-\usepackage[backend=bibtex,style=phys]{biblatex}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% This is a (brief) model paper using the achemso class
+%% The document class accepts keyval options, which should include
+%% the target journal and optionally the manuscript type.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[journal=acsnano,manuscript=article]{achemso}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Place any additional packages needed here.  Only include packages
+%% which are essential, to avoid problems later. Do NOT use any
+%% packages which require e-TeX (for example etoolbox): the e-TeX
+%% extensions are not currently available on the ACS conversion
+%% servers.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage[version=3]{mhchem} % Formula subscripts using \ce{}
+\usepackage[T1]{fontenc}       % Use modern font encodings
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{fixltx2e}
+\usepackage{color}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% If issues arise when submitting your manuscript, you may want to
+%% un-comment the next line.  This provides information on the
+%% version of every file you have used.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%\listfiles
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Place any additional macros here.  Please use \newcommand* where
+%% possible, and avoid layout-changing macros (which are not used
+%% when typesetting).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand*\mycommand[1]{\texttt{\emph{#1}}}
+\newcommand\crule[3][black]{\textcolor{#1}{\rule{#2}{#3}}}
+\newcommand{\angstrom}{\textup{\AA}}
 \graphicspath{{snapshots/},{flexible/},{rigid/}}
 
-\captionsetup{font=footnotesize,labelfont=footnotesize,skip=0pt,labelfont=bf}
-\captionsetup[sub]{font=footnotesize,labelfont=footnotesize,skip=0pt,labelfont=bf}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Meta-data block
+%% ---------------
+%% Each author should be given as a separate \author command.
+%%
+%% Corresponding authors should have an e-mail given after the author
+%% name as an \email command. Phone and fax numbers can be given
+%% using \phone and \fax, respectively; this information is optional.
+%%
+%% The affiliation of authors is given after the authors; each
+%% \affiliation command applies to all preceding authors not already
+%% assigned an affiliation.
+%%
+%% The affiliation takes an option argument for the short name.  This
+%% will typically be something like "University of Somewhere".
+%%
+%% The \altaffiliation macro should be used for new address, etc.
+%% On the other hand, \alsoaffiliation is used on a per author basis
+%% when authors are associated with multiple institutions.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\author{Lisa E. Felberg}
+\altaffiliation{Department of Chemical and Biomolecular Engineering, University of California Berkeley, Berkeley, California 94720, USA}
+\author{Luis A. Ruiz Pestana}
+\altaffiliation{Chemical Sciences Division, Lawrence Berkeley National Labs, Berkeley, California 94720, USA}
+\author{Teresa Head-Gordon}
+\altaffiliation{Department of Chemical and Biomolecular Engineering, University of California Berkeley, Berkeley, California 94720, USA}
+\altaffiliation{Chemical Sciences Division, Lawrence Berkeley National Labs, Berkeley, California 94720, USA}
+\alsoaffiliation[DOC]{Department of Chemistry, University of California Berkeley, Berkeley, California 94720, USA}
+\alsoaffiliation[DOB]{Department of Bioengineering, University of California Berkeley, Berkeley, California 94720, USA}
+\email{thg@berkeley.edu}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% The document title should be given as usual. Some journals require
+%% a running title from the author: this should be supplied as an
+%% optional argument to \title.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\title[confinement]
+  {Confinement}
 
-% commands for paper
-\newcommand\crule[3][black]{\textcolor{#1}{\rule{#2}{#3}}}
-%\newcommand\mybox[2][]{\tikz[overlay]\node[fill=black,inner sep=2pt,text color=white,rectangle,#1] {#2};\phantom{#2}} % anchor=text, 
-\newcommand{\angstrom}{\textup{\AA}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Some journals require a list of abbreviations or keywords to be
+%% supplied. These should be set up here, and will be printed after
+%% the title and author information, if needed.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\abbreviations{IR,NMR,UV}
+\keywords{confinement, 2D water}
 
-\title{}
-\author[1]{Lisa E. Felberg}
-\author[2]{Luis A. Ruiz Pestana} 
-\author[1-4]{Teresa Head-Gordon} 
-
-\addbibresource{references}
-
-\affil[1]{Department of Chemical and Biomolecular Engineering, University of California Berkeley, 
-Berkeley, California 94720, USA}
-\affil[2]{Chemical Sciences Division, Lawrence Berkeley National Labs
-Berkeley, California 94720, USA}
-\affil[3]{Department of Chemistry, University of California Berkeley, 
-Berkeley, California 94720, USA}
-\affil[4]{Department of Bioengineering, University of California Berkeley, 
-Berkeley, California 94720, USA}
-
-
-\date{}
-\setcounter{Maxaffil}{0}
-\renewcommand\Affilfont{\itshape\small}
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% The manuscript does not need to include \maketitle, which is
+%% executed automatically.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}
-	\maketitle
-\clearpage
 
-\section*{Abstract}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% The "tocentry" environment can be used to create an entry for the
+%% graphical table of contents. It is given here as some journals
+%% require that it is printed as part of the abstract page. It will
+%% be automatically moved as appropriate.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{tocentry}
 
-\clearpage
+Some journals require a graphical entry for the Table of Contents.
+This should be laid out ``print ready'' so that the sizing of the
+text is correct.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section*{Introduction}
+Inside the \texttt{tocentry} environment, the font used is Helvetica
+8\,pt, as required by \emph{Journal of the American Chemical
+Society}.
 
-The properties and phase behavior of water under nanoconfinement are remarkably different than those in bulk, with important implications for nanotechnological applications and biological processes \cite{Lucent2007, Holt2006, Levinger2002, Nair2012}. Driven by the pursuit to understand the physics underlying the anomalous behavior of water under hydrophobic nanoconfinement, topics such as low-dimensional ice formation \cite{Algara-Siller2015, Koga2001} (which remains controversial \cite{Zhou2015}), unconventional solid-liquid and liquid-liquid phase transitions  \cite{Mochizuki2015,Han2010,Giovambattista2009,Zhu2015}, or hydrophobic evaporation (i.e. liquid-gas phase transitions) \cite{Sharma2012,Altabet2017,Head-Gordon2008,Hummer2001}, have been extensively studied over the last decade. It is important to note that the literature on confined water is vast, and the references cited in this letter are representative, but by no means exhaustive. 
+The surrounding frame is 9\,cm by 3.5\,cm, which is the maximum
+permitted for  \emph{Journal of the American Chemical Society}
+graphical table of content entries. The box will not resize if the
+content is too big: instead it will overflow the edge of the box.
 
-When water is confined under slit nanocapillaries, such as in between graphene sheets, it exhibits strong density fluctuations in the direction of confinement, signature of a layered structure. The surface effect persists to distances of about 5 \r A \cite{Cicero2008,Chialvo2016}, suggesting that configurations of up to three layers of water should be stable under planar confinement. Indeed, multilayered ice phases up to trilayers have been observed \cite{Algara-Siller2015,Satarifard2017}. A requirement to form crystalline arrangements, besides low temperatures or high confinement pressures (in the order of GPa at room temperature \cite{Algara-Siller2015,Satarifard2017}), is that the confinement distance and the amount of water are commensurate, i.e. the density of water is such that individual layers can develop in-plane long-range order \cite{Satarifard2017,Chen2017,Corsetti2016}. When the density is too high or two low, all other control parameters constant, the confinement becomes incommensurate, the water cannot develop long-range in-plane order, and more disordered phases prevail. In the case of a monolayer, before the transition from ice to a liquid phase \cite{Han2010}, a puckered configuration forms \cite{Kaneko2014,Zhu2016}. The solid-liquid phase transition triggered by incommensurability is also observed for other multilayered phases of ice \cite{Zhu2015}. Interestingly, at higher temperatures or lower pressures where liquid phases are more stable, liquid-liquid transitions are also triggered by differences in commensurability. For example, a transition between a bilayer liquid phase and a trilayer heterogeneous fluid, as the density was increased, has been reported \cite{Giovambattista2009}. The heterogeneous liquid consists of a layered structure with relatively highly ordered layers close to the confining surfaces, and a highly disordered intermediate layer. A recent study where oscillations in the shear viscosity of confined water of several orders of magnitude where observed over changes in the confinement distance as small as one \r Angstrom \cite{Neek-Amal2016}, is another example of the significant effect of commensurability in confined systems.
+This box and the associated title will always be printed on a
+separate page at the end of the document.
 
-What these studies have in common is the use of rigid confining surfaces, even when graphene in employed. Graphene is a two-dimensional carbon allotrope, intrinsically flexible \cite{Wei2013,Fasolino2007}, that due its unique properties \cite{Geim2007} has become a paradigmatic example of hydrophobic confining surface. Only a few studies have considered flexible confining surfaces, and the reported differences with respect to rigid confinement depend on the simulation conditions and system setup: from insignificant effects observed on the structure single-layer square ice formed by a small pocket of water confined between much larger graphene sheets \cite{Algara-Siller2015}, to relatively mild effects on structural and dynamical properties of water confined by multilayered free standing graphene systems \cite{Deshmukh2014}, to changes of many orders of magnitude in the hydrophobic evaporation rate when flexible graphene-like walls clamped at the ends are used \cite{Altabet2017}. Given the complex phase behavior of confined water, and the sensitivity to certain control parameters and system setup, there is a crucial gap in our fundamental understanding of confined water: Does the phase behavior of water mapped under rigid confinement extend to the more realistic conditions of flexible confinement?
+\end{tocentry}
 
-Here, we study the phase behavior of confined water under physically accurate flexible graphene sheets using molecular dynamics simulations at constant ambient temperature and pressure. We find that when the system is commensurate, the flexibility of the confining surfaces has only marginal effects on the phase behavior, justifying the use of rigid models to study commensurate configurations, such as ice phases. On the other hand, the flexibility of graphene has a tremendous impact on incommensurate configurations, where the graphene sheets bend to accommodate a novel biphasic layered state, where an n-layer and an (n+1)-layer phase coexist next to each other. This multiphase coexisting state is reminiscent of that observed under inhomogeneous confinement \cite{Qiu2015}, with the important difference that here the inhomogeneity is not enforced, but self-imposed by the system. When the same incommensurate systems are simulated under rigid confinement, disordered liquid phases, similar to the heterogeneous fluid described above, are observed. The biphasic multilayer state under flexible confinement persists across a relatively wide range of confining distances. We observe biphasic states at incommensurate confinement distances where 0 and 1, 1 and 2, and 2 and 3, layered phases coexist. The regions with water in the 0/1 state form ice domains with both rhombic and distorted-square lattices. Remarkably, increasing the temperature of the system can trigger the transition from the biphasic liquid state to the heterogeneous fluid phase. This study provides new comprehensive understanding of the phase behavior of confined water, and sheds light into the role of flexible confinement and its interplay with commensurability effects. Furthermore, our results, based on a realistic model of graphene, will be useful to interpret experimental results in the future, where carbon allotropes are ubiquitously employed.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% The abstract environment will automatically gobble the contents
+%% if an abstract is not used by the target journal.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{abstract}
+  
+\end{abstract}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section*{Methods}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Start the main part of the manuscript here.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction}
+The properties and phase behavior of water under nanoconfinement are remarkably different than those in bulk, which has important implications for nanotechnological applications and a myriad of biological processes \cite{Lucent2007, Holt2006, Levinger2002, Nair2012}. Driven by the pursuit of understanding the anomalous phase behavior of confined water, topics such as low-dimensional ice formation \cite{Algara-Siller2015, Zhou2015, Koga2001}, unconventional phase transitions \cite{Mochizuki2015,Han2010,Giovambattista2009,Zhu2015}, and hydrophobic evaporation or dewetting \cite{Sharma2012,Altabet2017,Head-Gordon2008,Hummer2001}, have been extensively studied over the last decade. Most of the studies, however, have focused on rigid confinement. Only a handful of papers have investigated water confined under flexible surfaces \cite{Algara-Siller2015,Deshmukh2014,Altabet2017}, and none have addressed systematically the phase behavior of water under those conditions. Studying flexible confinement is critical to understand the role that confinement plays on biological processes where soft interfaces are ubiquitous, or to exploit confinement effects in engineered systems where 2D materials, inherently flexible, are pervasively employed \cite{Deng2016}. In terms of 2D materials, the epitome is perhaps graphene \cite{Geim2007}, a highly flexible two-dimensional carbon allotrope \cite{Wei2013,Fasolino2007}, that has become a paradigmatic example of hydrophobic confining surface. The question we aim to answer here is whether the phase behavior of water mapped under rigid confinement can be extended to the more relevant scenario of flexible confinement. We focus on ambient conditions of temperature and pressure that are relevant in most practical applications.
+	
+	When water is confined under slit nanocapillaries it adopts a multi-layered structure characterized by strong density fluctuations along the direction of confinement. The effect of the confining surfaces persists at short range, ca. 5 \r A \cite{Cicero2008,Chialvo2016}, therefore multi-layered states of only up to three layers can be stable under planar confinement. In fact, trilayers of ice \cite{Algara-Siller2015,Satarifard2017,Zhu2015} and liquid water \cite{Giovambattista2009,Qiu2015} have been reported, but nothing beyond that. The tendency to form layered structures makes the commensurability between the confinement distance and the density of water an important aspect. In an incommensurate configuration, the density of water is too high or two low, all other control parameters constant, for the water molecules to form full layers of whatever phase is lower in energy under those thermodynamic conditions. A recent study found that oscillations in the shear viscosity of confined water of several orders of magnitude occur over small variations in the confinement distance (under 1 \r A) due to transitions between incommensurate and commensurate states \cite{Neek-Amal2016}. Phase transitions can also be triggered upon changes in commensurability. Giovambattista et al. found a transition between a bilayer liquid (BL) and a trilayer heterogeneous fluid (THF) upon increasing the density of water while keeping the confinement distance constant between 8 \r A and 9 \r A. The THF phase was characterized by highly ordered layers close to the confining surfaces and a disordered middle layer. When the confinement distance was kept at 6 \r A, a transition between THF and bilayer ice (BI) occurred upon decompression instead. Commensurability also plays a critical role on the formation of crystalline configurations with long-range in-plane order such as ice \cite{Satarifard2017,Chen2017,Corsetti2016}. For commensurate configurations at room temperature, multi-layered ice can form under confinement at pressures in the order of several GPa \cite{Zhu2015}. A special case is the formation of square ice from droplets of water confined between graphene sheets, which was observed at ambient pressure \cite{Algara-Siller2015}. However, in that case, the interfacial adhesion forces between the confining graphene surfaces were able to generate a pressure of around 1 GPa within the confined space. Interestingly, it has been proposed that upon increasing the density of water, a confined system can transition from liquid, to a low-density ice phase, back to high-density liquid, to finally a high-density ice phase \cite{Han2010}.
+	
+	Here, using molecular dynamics simulations, we study the phase behavior of water confined under flexible graphene sheets at ambient temperature and pressure (0.1 MPa and 300 K). We systematically vary the amount of water in the nanocapillary, \(\rho_{2D}\), and relax the system in the confinement direction so that it reaches an equilibrium confinement distance, \(d_{gg}\). We also simulate the same systems using rigid graphene sheets for comparison. We find that both rigid and flexible cases show intervals of \(\rho_{2D}\) where the \(d_{gg}\) changes smoothly, which correspond to monolayer, bilayer, and trilayer states of the system. However, we find that the transitions between multi-layered states are qualitatively different for the rigid and flexible cases. The rigid systems exhibit discontinuous transitions, characterized by sudden jumps in \(d_{gg}\). Under flexible confinement we find instead that the graphene sheets bend slightly to accommodate an n-layer and an n+1-layer state coexisting next to each other. This finding suggests that incommensurate states are energetically unfavorable, so that when the constrain of infinite rigidity of the confining surfaces is relaxed, the system splits into two commensurate states with a different number of layers. A similar coexisting state has been observed under imposed inhomogeneous confinement \cite{Qiu2015}, with the important difference that the inhomogeneity is not enforced here. Regarding the in-plane phase behavior, at incommensurate configurations in the monolayer and bilayer states, we observe solid-gas coexistence. The water molecules in the solid phase can this way develop crystalline order that would be impossible otherwise if the ice had to tile the entire confining space. We identify square and rhombic ice in the monolayer state, and AA-stacking hexagonal ice in the bilayer state, with both containing a large number of defects arising from the incommensurability between the rectangular boundaries of the simulation box and the circular geometry of the solid-gas interface. Our study provides new comprehensive understanding of the phase behavior of confined water, and sheds light into the role of flexible confinement and its interplay with commensurability effects. Furthermore, our results, based on a realistic model of graphene, will be useful to interpret experimental results in the future, where graphene is ubiquitously employed.
 
-\textit{Models:} For this study, simulations of systems with parallel graphene plates with
-separations of 6 and 12 \r A respectively in the x-cartesian dimension.
-Systems of two different sizes were used to explore periodic size effects, with graphene
-plate separation held constant. The systems had y-z dimensions of 46.2 by 48.5 \r A.
+\section{Results and discussion}
 
-\textit{Force fields:} Harmonic bond and angle potentials were applied to the graphene sheets with 
-the following parameters: k\textsubscript{bond} = 938.0 \(kCal/mol/\angstrom^2\)
-and k\textsubscript{angle} = 126.0 \(kCal/mol/rad^2\), equilibrium bond and 
-angle lengths of 1.40 \r A and 120.0 degrees respectively \cite{Hummer2001}. The
-dihedral potential is harmonic with the functional form: \(E_{\text{di}} = K_{\text{di}} [ 1 + d cos(\phi)]\),
-where K\textsubscript{di} = 3.15 kCal/mol, \(\phi = 180.0\) degrees and \(d = \pm 1\) \cite{Patra2009}. An improper torsional 
-potential with a harmonic functional form as follows: \( E_{\text{im}} = K_{\text{im}} [ \chi - \chi_0 ]^2\) was
-used with parameters K\textsubscript{im} =  15.0 kCal/mol and \(\chi_0 = 0.0\) degrees. A summary
-of these potentials and their parameter values are given in Table \ref{table:ff_parms}
-The water model chosen is TIP4P-Ew \cite{Horn2004} was used 
-to represent explicit solvent. Partial charges and Van der Waals parameters for each atom type 
-are given in Table \ref{table:ff_parms_atoms}.
+	In this section, we first analyze how the number of layers in the system varies as we increase the 2D density of water, \(\rho_{2D}\), effectively characterizing the out-of-plane response of the system to confinement. We will refer to the monolayer, bilayer, trilayer states as ML, BL, and TL. Second, we analyze the phase behavior of water for each case, which will give us detailed information about the phase of water: solid, liquid, or gas. We will highlight throughout the differences between flexible and rigid confinement. 
+	
+	The only control parameter in our system is \(\rho_{2D}\) (i.e. the confinement distance is not prescribed). We investigate values of \(\rho_{2D}\) from \(\sim0.06\) to \(\sim0.5\), which allows us to sample systems ranging from an incomplete ML to TL systems and beyond. By using \(\rho_{2D}\) as a control parameter we also avoid making ambiguous assignments of the 3D density under confinement, which requires choosing an ill-defined excluded distance from the confining surfaces. Figure \ref{fig:dgg_1} shows the dependence of the equilibrium confining distance, \(d_{gg}\), on \(\rho_{2D}\), for both flexible and rigid cases. We observe three well-defined regimes characterized by smooth changes of \(d_{gg}\), which are separated by discontinuous transitions signaled by abrupt changes in \(d_{gg}\). The first regime, 6 \r A < \(d_{gg}\) < 8 \r A, corresponds to ML states, the second regime, 8 \r A \(d_{gg}\) < 10 \r A, to BL states, and beyond 10 \r A to TL states. This behavior is in agreement with previous studies. In the ML and BL states, the equilibrium confinement distance varies only marginally as \(\rho_{2D}\) is increased. For the TL case, however, a linear dependence is observed, \(d_{gg} \propto \rho_{2D}\). This is signature of bulk behavior where \(\rho_{3D}\) = constant, and because \(\rho_{3D}\) = \(\rho_{2D}\)/\(d_{gg}\), it implies that \(d_{gg} \propto \rho_{2D}\). 
+	
+	\begin{figure}[ht!]
+		\centering
+%		\begin{subfigure}[b]{0.39\textwidth}
+		\includegraphics[trim={0.35cm 0.25cm 0.05cm 0.05cm},clip,width=.39\textwidth]{d_gg}
+%		\end{subfigure}
+		\caption{\textit{Plot of average graphene-graphene separation as a function of 2D-number density.} Multi refers to the instances in the flexible case where coexistence between multiple numbers of water layers was observed.}
+		\label{fig:dgg_1}
+	\end{figure}
+	
+	The transitions between states with different number of layers occur for both rigid and flexible graphene at the same values of \(\rho_{2D}\), however they are qualitatively different. The rigid case is characterized by discontinuous ML-BL, and BL-TL transitions, although the latter seems more gradual than the former. Further work focusing on this transition  is required to establish unequivocally whether the BL-TL transition is continuous or discontinuous. In the case of flexible confinement, at the transitions we observe a split in the \(d_{gg}\) distances (shown as pink diamonds in Figure \ref{fig:dgg_1}). Upon closer inspection, we observe the coexistence of an n-layer and an (n+1)-layer state in the same system, spatially separated by an interface (Fig. \ref{fig:dgg_2}). We observe the split even for low density ML (Fig. \ref{fig:dgg_2}a), where the strong graphene adhesion helps forming pockets of ice, similarly to the phenomena observed in Ref.~\citenum{Algara-Siller2015}. The heat maps in Figure \ref{fig:dgg_2} show the position of water as a function of \(d_{gg}\) averaged over time. The nL/(n+1)L coexisting states are particularly clear in these plots.  
+	
+	\begin{figure}[ht!]
+		\centering
+		\includegraphics[width=.89\textwidth]{dgg_snaps7}
+		\caption{\textit{Snapshots of out-of-plane water layering and heatmap of water location and graphene-graphene separation.} \textbf{Snapshots.} Water-graphene systems as a function of increasing 2D-density, water oxygens are red, graphene carbons are grey and water hydrogens are not displayed for clarity. Panels (i), (ii) and (iii) correspond to flexible systems, and panels (iv), (v), and (vi) correspond to rigid systems. Images not drawn to size. \textbf{Heatmaps.} 2D histogram of the distance of water to a reference wall versus the graphene-graphene separation distance, warmer colors representing a higher number of observations.}
+		\label{fig:dgg_2}
+	\end{figure}
+	
+	The incommensurability of the systems at the transition points is evidenced by a broadening of the density peaks, as in the BL-TL transition illustrated in Figure \ref{fig:dgg_2_to_3}. The heat maps reveal two broad peaks in the case of rigid confinement and a split between BL and TL in the case of flexible graphene.   
+	
+	\begin{figure}[ht!]
+		\centering
+		\includegraphics[width=0.49\textwidth]{d12_smearing} %
+		\caption{\textit{Snapshots of out-of-plane water layering and heatmap of water location and graphene-graphene separation for bilayer to trilayer transition.} \textbf{Snapshots.} Water-graphene systems as a function of increasing 2D-density, water oxygens are red, graphene carbons are grey and water hydrogens are not displayed for clarity. Images not drawn to size. \textbf{Heatmaps.} 2D histogram of the distance of water to a reference wall versus the graphene-graphene separation distance, warmer colors representing a higher number of observations.}
+		\label{fig:dgg_2_to_3}
+	\end{figure}
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{table}[ht!]
-\centering
-\begin{tabular}{ lllll } \hline
-Bond     &         & \(K_b\)  (\(kCal/mol/\angstrom^2\))      & b\textsubscript{0}  (\r A)            &          \\ \hline
-         & C-C     & 938.0         & 1.40            &          \\
-         &         &               &                 &          \\ \hline
-Angle    &         & \(K_{\theta}\)  (\(kCal/mol/rad^2\)) & \(\theta_0\) (degrees)   &          \\ \hline
-         & C-C-C   & 126.0         & 120.0           &          \\
-                           &         &               &                 &          \\ \hline
-Improper &         & K\textsubscript{im} (kCal/mol)       & \(\chi_0\) (degrees)     &          \\ \hline
-         & C-C-C-C & 15.0          & 0.0             &          \\
-                           &         &               &                 &          \\ \hline
-Dihedral &         & K\textsubscript{di} (kCal/mol)       & n (multiplicity) & \(\phi\) (degrees)\\ \hline
-         & C-C-C-C & 3.150         & 2               & 180.0  \\ 
-\end{tabular}
-\caption{\textit{Force field bonded parameters used for graphene in confined water simulations.}}
-\label{table:ff_parms}
-\end{table}
+Besides the transitions between multi-layered states as \(\rho_{2D}\) is increased, full characterization of the state of water under confinement requires assessing the in-plane structure and dynamics, so that we can discern between ice, liquid, gas, or more complex phases such as glass or heterogeneous liquids. For this purpose, we calculate the oxygen-oxygen pair correlation function \(g_{OO}(R)\), the 3-body angle distributions between the oxygen atoms of coplanar water molecules, \(p(\theta\)), and the lateral mean-squared-displacement, \(MSD_{||}\), for all the cases. To calculate \(g_{OO}(R)\) the oxygen atoms were histogrammed into 0.6\r A bins according to their x-coordinate. The RDF was calculated for each bin, and the average of all bins is the \(g_{OO}(R)\). For the 3-body angle distributions, the angle \(\theta\) is the angle between the oxygen and the first and second nearest neighbors within the same bin. We estimate the lateral diffusion coefficient, \(\mathcal{D}_{||}\), from the lateral MSD using Einstein's relation.
 
-\begin{table}[ht!]
-\centering
-\begin{tabular}{|c|r|r|r|}
-\hline
-\textbf{Atom type} & \multicolumn{1}{c|}{\textbf{\begin{tabular}[c]{@{}c@{}}Partial charge\\ (e)\end{tabular}}} & \multicolumn{1}{c|}{\textbf{\begin{tabular}[c]{@{}c@{}}\(\sigma\)\\ (\r A)\end{tabular}}} & \multicolumn{1}{c|}{\textbf{\begin{tabular}[c]{@{}c@{}}\(\epsilon\)\\ (kCal/mole)\end{tabular}}} \\ \hline
-Graphene carbon    & 0.0000                                                                                     & 3.55000                                                                              & 0.07000                                                                                     \\ \hline
-Water oxygen       & -1.0484                                                                                    & 3.16435                                                                              & 0.16275                                                                                     \\ \hline
-Water hydrogen     & 0.5242                                                                                     & 0.00000                                                                              & 0.00000                                                                                     \\ \hline
-\end{tabular}
-\caption{\textit{Force field parameters used for each atom type in confined water simulations.}}
-\label{table:ff_parms_atoms}
-\end{table}
+We start by analyzing the phase behavior in the ML state, which spans from \(\rho_{2D}=0.065\) to \(\rho_{2D}=0.130\) and 6 \r A < \(d_{gg}\) < 8 \r A (Figure \label{fig:struct_6_7_8}). For the lowest density investigated \(\rho_{2D}=0.065\), there is not enough water to form a full monolayer. In the rigid case this leads to liquid-vapor coexistence. We assign the liquid label because of the relatively high diffusivity of 2.26, which is close to bulk water. It is important to note, however, that the monolayer liquid does not resemble structurally bulk water characterized by tetrahedral order. The \(p(\theta\)) in this case reveals a peak at ~104 degrees, similarly to bulk water, but also a smaller peak arount 120 degrees. The RDF of this ML-liquid phase is also substantially more structured than bulk water. For \(\rho_{2D}=0.065\), the flexible system forms pockets of square and rhombic ice, characterized by peaks in \(p(\theta\)) at ~90 and 160 degrees. The regions where there is no water is because the graphene sheets are in close contact, there is no water vapor in the system. The diffusivity is 4 order of magnitude lower in the flexible case. When the density is increased to 0.097 and 0.130, for the rigid case Figure \ref{fig:gr_ang_6_7_8_r}a, the \(g_{OO}(R)\) become substantially more structured, and the \(p(\theta\)) are characterized by a bimodal distribution with peaks at 90 and 160 degrees, representative of square and rhombic ice respectively. Close up snapshots of these ice structures are shown in Figure \ref{fig:ice_sq}. The appearance of ice is also confirmed by the self-diffusion coefficients. At \(\rho_{2D}=0.097\) the ice phase coexists with a vapor phase, while the vapor phase practically vanishes at \(\rho_{2D}=0.130\). The flexible case is very similar to the rigid confinement for \(\rho_{2D}=0.130\), where ML-ice forms. However, at \(\rho_{2D}=0.130\) the system resembles the liquid-vapor coexistence observed for the rigid case at \(\rho_{2D}=0.065\). In summary, for the ML states, at \(\rho_{2D}=0.130\), before the transition to the BL, both rigid and flexible systems behave very similarly, displaying phases of ML-ice. For \(\rho_{2D}=0.065\) the rigid system shows a ML-liquid-vapor phase, and the flexible system displays pockets of ML-ice. For \(\rho_{2D}=0.097\) is the other way around, with the flexible systems displaying ML-liquid-vapor phase, and the rigid systems ML-ice-vapor coexistence. 
+	
+The results of the analysis for the BL states are shown in Figure \ref{fig:gr_ang_9_10_11_r}. The BL regime spans from \(\rho_{2D}=0.163\) to \(\rho_{2D}=0.227\) and 8 \r A < \(d_{gg}\) < 10 \r A. For the rigid case, the coexistence of ice and vapor is observed for \(\rho_{2D}=0.163\) and \(\rho_{2D}=0.196\). In contrast to the ML-ice, the BL-ice phase displays AA stacking hexagonal structure with an abundance of defects necessary to accommodate the nearly circular vapor-solid interface in the rectangular simulation box (Fig. \ref{fig:ice_figs}b). As \(\rho_{2D}\) is increased to 0.227, the amount of water confined is too large to develop in-plane crystalline order, and the water adopts a liquid phase, with small patches of ice nucleating and dissipating constantly. This effect is reflected in the lower-than-liquid self-diffusion coefficient, and in the shoulder at \(\theta\simeq140\) in the \(p(\theta\)) distribution. These ice nucleation events suggest that we are close to the solid-liquid phase transition. In the flexible case, for \(\rho_{2D}=0.163\) we have ML-liquid and BL-liquid coexisting. At higher densities, the system transitions to the BL state. The water phase in the BL states is very similar to that observed for rigid confinement when \(\rho_{2D}=0.227\), namely BL-liquid. The diffusivity when \(\rho_{2D}=0.227\) is slightly higher in the flexible case.
 
-\textit{Simulation protocols:} Simulations were performed with the LAMMPS software package \cite{Plimpton1995}. 
-Equilibration of initial configurations were performed as follows. Systems were run in 
-the NVE ensemble with a Langevin Thermostat at 298 Kelvin
-for 10 ps. The water was then fixed with the SHAKE protocol \cite{Andersen1983} with a tolerance
-of 10\textsuperscript{-4} and the system was run for 10 ps in the NVT ensemble.
-Finally, data was saved for analysis in a production run in the NpT ensemble,
-during which all cartesian coordinates were stored every 500 timesteps. 
-Systems were run in the NpT ensemble for 10 ns. The 
-pressure in the direction orthogonal to the graphene walls was maintained at 1 atm.
-Thermal and pressure control were implemented using a Nos\' e-Hoover 
-extended Lagrangian procedure \cite{Martyna1994} with characteristic damping times of 100 
-and 1000 fs (0.1 and 1.0 ps), respectively. The dynamical integration 
-scheme was velocity-Verlet \cite{Swope1982}.
-For all simulations, the dynamics timestep was set at 2.0 femtoseconds. 
-
-\textit{Analysis:} For the analysis, the first 3 nanoseconds of each trajectory was discarded and quantitative system properties were calculated and averaged over 3500 snapshots. Lateral pair correlation functions (g(R)s) between water oxygens were computed. The confining scale was in many instances comparable to the distance scale of water pair interaction lengthscales, therefore instead of computing a traditional 3D g(R), a lateral, or 2D, g(R) was computed as follows: water oxygens were histogrammed into 0.6\r A bins according to their x axis position (the graphene sheets fall in the y-z plane). Oxygens identified to be in the same bin were used to calculate a pair-correlation function, which was averaged for all bins. 3-body angle distributions were computed to analyze the in-plane water structure as follows. Like the lateral g(R)s, the oxygen atoms were binned according to their x-axis positions and then the two nearest neighbors were found for each oxygen. The angle computed is formed between the closest neighboring oxygen, the oxygen itself and the second closest neighbor. Graphene-graphene distances and water-graphene distances were considered to understand the effect of the flexible walls as well as to calculate the out-of-plane distribution of waters between the walls. For simplicity, the position of the waters was calculated with respect to a reference wall (one of the two in the simulation box), by considering the distance to the water oxygen. Finally, mean square displacement (MSD) calculations of water oxygens were made performing a sliding window, to allow for more statistics to be collected. For each timestep,\textit{t}, each atom was moved into the periodic image closest to itself in the previous timestep, \textit{t-1}, to ensure that the effects of the periodic boundary conditions were corrected for. The center of mass was the computed for the unwrapped coordinates and this center was subtracted from each atom to account for the effect of collective movement. In this way, displacement in each dimension was computed, but for an estimation of the diffusion coefficient, \(\mathcal{D}_{||}\), MSD in the dimension parallel to the graphene sheets was considered (MSD\textsubscript{||}). The slope of MSD\textsubscript{||} versus time, \textit{m}, was calculated, and \(\mathcal{D}_{||}\) was computed according to the Einstein relation: \(\mathcal{D}_{||}\) = 4\textit{m}.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection*{Results}
-
-All the systems studied here, both rigid and flexible, are simulated at room temperature and pressure. The only prescribed parameter for each system is the 2D density of water, \(\rho_{2D}\), calculated as the number of water molecules per interlayer divided by the area of the graphene sheet. This way we avoid making ambiguous measurements of the 3D density under confinement, which requires choosing an ill-defined excluded distance from the confining surfaces. The values of \(\rho_{2D}\), which span from 0.097 to 0.390, are chosen such that we can sample systems that range from an incomplete single layer to systems where 3 full layers can form, and everything in between.
-
-\textit{Layering}. The out-of-plane phase behavior, or layering, is illustrated in Figure \ref{fig:dgg_1} that shows the dependence of the confining distance, \(d_{gg}\) on \(\rho_{2D}\), for both flexible and rigid cases. We observe three regimes characterized by minimal changes of \(d_{gg}\) with \(\rho_{2D}\), alternated by first-order phase transitions marked by abrupt changes in \(d_{gg}\). \textcolor{red}{LF note: It was marked here that the transition in spacing has been observed before, but in my readings, most simulations maintain a fixed graphene separation, so I don't know if this has been seen.} In the case of flexible confinement, the phase transition occurs at the same values of \(\rho_{2D}\) as for the rigid case, but the transition is qualitatively different. We observe a split in the \(d_{gg}\) distances, which corresponds to the simultaneous coexistence of a n-layer and an (n+1)-layer phases in the same system. The snapshots shown in Figure \ref{fig:dgg_2} (left panels) illustrate this coexistence, where each phase occupies a distinct region of the system.
-
-When comparing transitions between layers in the rigid system, there is a distinct difference observed in transitions from 1 to 2 interlayers and the transition from 2 layers to 3 and beyond. For the systems studied there is a clustering of monolayer systems for both the flexible and rigid cases where independent of the 2D density, the graphene-graphene separation remains relatively constant (Fig \ref{fig:dgg_1}). When the 2D density is increased from 0.130 to 0.163, there is a distinct jump in rigid separation distance, while the flexible region displays a coexistence between 1 and 2 interlayers. In contrast, the transition between 2 and 3 interlayers is much more gradual for the rigid system, as seen in Figure \ref{fig:dgg_1}, where the separation distance \(d_{gg}\) for \(\rho_{2D}\) = 0.260 falls between the distances of the flexible coexistence. This observation is reflected in the smearing of the water location for the rigid system as depicted in the heatmaps of Figure \ref{fig:dgg_2_to_3}.
-
-\begin{figure}[ht!]
-	\centering
-	\begin{subfigure}[b]{0.39\textwidth}
-    		\includegraphics[trim={0.35cm 0.25cm 0.05cm 0.05cm},clip,width=.99\textwidth]{d_gg}
-  	\end{subfigure}
-	\caption{\textit{Plot of average graphene-graphene separation as a function of 2D-number density.} Multi refers to the instances in the flexible case where coexistence between multiple numbers of water layers was observed.}
-	\label{fig:dgg_1}
-\end{figure}
-
-\begin{figure}[ht!]
-	%\centering
-	\begin{subfigure}[b]{0.99\textwidth}
-    		\includegraphics[width=.99\textwidth]{dgg_snaps7}
-  	\end{subfigure}
-	\caption{\textit{Snapshots of out-of-plane water layering and heatmap of water location and graphene-graphene separation.} \textbf{Snapshots.} Water-graphene systems as a function of increasing 2D-density, water oxygens are red, graphene carbons are grey and water hydrogens are not displayed for clarity. Panels (i), (ii) and (iii) correspond to flexible systems, and panels (iv), (v), and (vi) correspond to rigid systems. Images not drawn to size. \textbf{Heatmaps.} 2D histogram of the distance of water to a reference wall versus the graphene-graphene separation distance, warmer colors representing a higher number of observations.}
-	\label{fig:dgg_2}
-\end{figure}
-
-\begin{figure}[ht!]
-	\centering
-	\includegraphics[trim={0.15cm 0.05cm 0.05cm 0.05cm},clip,width=0.49\textwidth]{d12_smearing} %
-	\caption{\textit{Snapshots of out-of-plane water layering and heatmap of water location and graphene-graphene separation for bilayer to trilayer transition.} \textbf{Snapshots.} Water-graphene systems as a function of increasing 2D-density, water oxygens are red, graphene carbons are grey and water hydrogens are not displayed for clarity. Images not drawn to size. \textbf{Heatmaps.} 2D histogram of the distance of water to a reference wall versus the graphene-graphene separation distance, warmer colors representing a higher number of observations.}
-	\label{fig:dgg_2_to_3}
-\end{figure}
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\textit{In-plane structure}. Besides the layering behavior illustrated in Figure \ref{fig:dgg_1} and Figure \ref{fig:dgg_2}, full characterization of the phases under confinement requires assessing the in-plane structure and dynamics of water, so we can discern among ice, liquid, gas, or more complicated behavior such as glass or heterogeneous liquid phases. In what follows, we review the change in behavior within each of the three regimes, namely from incomplete monolayer to full monolayer (\(\rho_{2D}=0.065\) to \(\rho_{2D}=0.097\)), from incomplete bilayer to full bilayer (\(\rho_{2D}=0.163\) to \(\rho_{2D}=0.196\)), and from incomplete trilayer to full trilayer (\(\rho_{2D}=0.260\) to \(\rho_{2D}=0.325\)), emphasizing the differences between rigid and flexible confinement.
-
- In the rigid case, as the density increased from 0.065 to 0.130, the RDF becomes substantially more structured (Fig \ref{fig:gr_ang_6_7_8_r}), which is also supported by the distributions of 3-body water oxygen intermolecular angles (Fig \ref{fig:gr_ang_6_7_8_r}), where there is a depopulation of intermediate (120-150 degrees) angles, and the distribution becomes clearly bimodal with peaks at 90 and 160 degrees, which are representative of square and rhombic ice. These ice structures are shown in Figure \ref{fig:ice_sq}. At the lowest 2D density, 0.063, there is not enough water to form a full monolayer, and the system becomes a mix of low-density gas and disordered liquid. As the density increases further, the low-density gas region disappears and the disordered liquid transitions to ice. This is also confirmed by trends in the lateral self-diffusion coefficient \(\mathcal{D}_{||}\), Figure \ref{fig:msd}. At the lowest density, \(\mathcal{D}_{||}\) is approximately that of bulk water, but this value drops by several orders of magnitude as density is increased to 0.130. 
-
-In contrast to the rigid monolayer systems, the flexible monolayer systems display more variable properties due to the interaction between the variable density and the flexibility of the walls. At the lowest density, 0.063, the coexistence between 0 and 1 water layers eliminates the low density gas observed in the equivalent rigid system. Additionally, the pinned water region is highly structured ice, perhaps due to the lateral pressure of the graphene, an effect that has been previously observed and hypothesized (Ref \cite{Algara-Siller2015}). The high structure of this region is supported by RDF and 3-body angles (Fig \ref{fig:gr_ang_6_7_8_f}). As the density increases, the graphene walls flatten and the system is a mix of low density gas and  disordered liquid, much like the lowest 2D-density rigid system. At \(\rho_{2D}=0.130\), the flexible system becomes more structured and ice-like, similar to its rigid equivalent. Again, the transition from ice to liquid/gas and back to ice is confirmed by the variation in \(\mathcal{D}_{||}\) (Fig \ref{fig:msd}). The exact structure of these ice systems is examined in the next section. 
-
-As density increases from 0.130 to 0.163, the systems transition from a monolayer to a bilayer system. In the rigid case, the bilayer forms a mixture of low density gas and ordered ice, at \(\rho_{2D}=\)0.163 and 0.196 (Fig \ref{fig:gr_ang_9_10_11_r}). The \(\mathcal{D}_{||}\) is orders of magnitude smaller than that of bulk water, confirming ice-like dynamics. The structure of this form of ice is discussed briefly in the next section. Finally, when density is increased to 0.227, this mixed structure disappears. The flexible system was not observed to form any ordered structure and was instead structurally similar to the rigid system at \(\rho_{2D}=\)0.227 (Fig \ref{fig:gr_ang_9_10_11_f}). It is interesting to note that in the flexible system with multi-water layer coexistence, two distinct RDFs were observed: one for water monolayer population and another for water in the bilayer. These distinct RDFs are included in Figure \ref{fig:gr_ang_9_10_11_f}.
-
-Finally, as the density was increased beyond 0.260, less variation in in-plane structure is observed between the rigid and flexible systems, and is therefore not reported. Differences are observed in the computed \(\mathcal{D}_{||}\), Figure \ref{fig:msd}, but both display trends approaching bulk water with increasing density. \(\mathcal{D}_{||}\) values for the rigid systems are in good agreement with previous studies (Ref \cite{Mosaddeghi2012}), and the flexible trilayer values are generally larger than their rigid counterparts. 
-
-% Mosaddeghi2012: 20A, D|| = 2.11, 15A, D|| = 0.95
+As we increase the density beyond 0.260, the systems transition into the TL states, where the differences between rigid and flexible systems are minor. Under our simulations conditions, the water in the TL state is in liquid phase, for both rigid and flexible systems, even the layers close to the confining surfaces. The only difference between flexible and rigid confinement for the TL state is the higher self-diffusion coefficients in the former case. But all converge towards bulk liquid at large densities. The analysis fo the TL states is in good agreement with previous studies (Ref.~\citenum{Mosaddeghi2012}).
 
 \setlength{\fboxsep}{0.75pt}%
 \setlength{\fboxrule}{1.2pt}%
@@ -200,11 +187,11 @@ Finally, as the density was increased beyond 0.260, less variation in in-plane s
   \fbox{\begin{subfigure}[b]{0.47\textwidth}
     \includegraphics[trim={0.05cm 0.30cm 0.25cm 0.15cm},clip,width=0.46\textwidth]{g_r_2D_6_7_8_r}
     \includegraphics[trim={0.25cm 0.25cm 0.05cm 0.15cm},clip,width=0.485\textwidth]{ang_3B_6_7_8_r} 
-     \fbox{\includegraphics[width=0.295\textwidth]{6A_r0} 
+     \fbox{\includegraphics[width=0.29\textwidth]{6A_r0} 
              	\llap{\raisebox{-0.4cm}{\color{white} \small  \fcolorbox{black}{black}{\(\mathcal{D}_{||}=2.26\)}}}}
-     \fbox{\includegraphics[width=0.295\textwidth]{7A_r0}
+     \fbox{\includegraphics[width=0.29\textwidth]{7A_r0}
      		\llap{\raisebox{-0.4cm}{\color{white} \small  \fcolorbox{red}{red}{\(\mathcal{D}_{||}=5.4e\scalebox{0.75}[1.0]{\( - \)}3\)}}}}
-     \fbox{\includegraphics[width=0.295\textwidth]{8A_r0}
+     \fbox{\includegraphics[width=0.29\textwidth]{8A_r0}
      		\llap{\raisebox{-0.4cm}{\color{white} \small  \fcolorbox{blue}{blue}{\(\mathcal{D}_{||}=1.4e\scalebox{0.75}[1.0]{\( - \)}4\)}}}}
     \caption{}
     \label{fig:gr_ang_6_7_8_r}
@@ -212,11 +199,11 @@ Finally, as the density was increased beyond 0.260, less variation in in-plane s
   \fbox{\begin{subfigure}[b]{0.47\textwidth}
     \includegraphics[trim={0.05cm 0.30cm 0.25cm 0.15cm},clip,width=0.46\textwidth]{g_r_2D_6_7_8_f}
     \includegraphics[trim={0.25cm 0.25cm 0.05cm 0.15cm},clip,width=0.485\textwidth]{ang_3B_6_7_8_f}
-     \fbox{\includegraphics[width=0.295\textwidth]{6A_f0}
+     \fbox{\includegraphics[width=0.29\textwidth]{6A_f0}
      		\llap{\raisebox{-0.4cm}{\color{white} \small \fcolorbox{black}{black}{\(\mathcal{D}_{||}=3.2e\scalebox{0.75}[1.0]{\( - \)}4\)}}}} %\raisebox{1.8cm} for in upper right corner
-     \fbox{\includegraphics[width=0.295\textwidth]{7A_f0}
+     \fbox{\includegraphics[width=0.29\textwidth]{7A_f0}
      		\llap{\raisebox{-0.4cm}{\color{white} \small \fcolorbox{red}{red}{\(\mathcal{D}_{||}=3.35\)}}}}
-     \fbox{\includegraphics[width=0.295\textwidth]{8A_f0}
+     \fbox{\includegraphics[width=0.29\textwidth]{8A_f0}
      		\llap{\raisebox{-0.4cm}{\color{white} \small \fcolorbox{blue}{blue}{\(\mathcal{D}_{||}=1.3e\scalebox{0.75}[1.0]{\( - \)}2\)}}}}
     \caption{}
     \label{fig:gr_ang_6_7_8_f}
@@ -274,7 +261,6 @@ Finally, as the density was increased beyond 0.260, less variation in in-plane s
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\textit{Ice structure}.
 
 \begin{figure}[ht!]
 	\centering
@@ -293,160 +279,79 @@ Finally, as the density was increased beyond 0.260, less variation in in-plane s
 \end{figure}
 
 \clearpage
-\printbibliography
+
+\section*{Computational Methods}
+	
+	The model system consists of two parallel graphene sheets with water molecules filling the two interlayer spacings at a prescribed density \(\rho_{2D}\). The confinement occurs in the x-direction, and the in-plane dimensions of the system are \(L_y\) = 46.2 \r A, and  \(L_z\) = 48.5 \r A. Periodic boundary conditions are applied in all dimensions. We use the TIP4P-Ew model of water \cite{Horn2004}, and the parameters for graphene have been adapted from previous works \cite{Hummer2001,Patra2009}. All the bonded parameters are summarized in Table \ref{table:ff_parms}, and the non-bonded parameters in Table \ref{table:ff_parms_atoms}. 
+	
+	\begin{table}[ht!]
+		\caption{\textit{Force field bonded parameters used for graphene in confined water simulations.}}
+		\label{table:ff_parms}
+		\centering
+		\begin{tabular}{  l |  l l l } \hline
+			\textbf{bonded term}  &\multicolumn{3}{c}{\textbf{parameters}} \\ \hline
+			Bond  & \(K_b\)  (\(kCal/mol/\angstrom^2\))      & b\textsubscript{0}  (\r A)  &  \\ %\hline
+			   & 938.0         & 1.40            &    \\   \hline
+			Angle & \(K_{\theta}\)  (\(kCal/mol/rad^2\)) & \(\theta_0\) (degrees)   &          \\ 
+			  & 126.0         & 120.0           &         \\ \hline
+			Improper   & K\textsubscript{im} (kCal/mol)       & \(\chi_0\) (degrees)     &          \\ 
+			 & 15.0          & 0.0             &          \\ \hline
+			Dihedral      & K\textsubscript{di} (kCal/mol)       & n (multiplicity) & \(\phi\) (degrees)\\ 
+			 & 3.150         & 2               & 180.0  \\  \hline
+		\end{tabular}
+	\end{table}
+	
+	\begin{table}[ht!]
+		\caption{Force field parameters used for each atom type in confined water simulations.}
+		\label{table:ff_parms_atoms}
+		\begin{tabular}{ c|r|r|r}
+			\hline
+			\textbf{atom type} & \multicolumn{1}{c|}{\textbf{\begin{tabular}[c]{@{}c@{}}partial charge\\ (e)\end{tabular}}} & \multicolumn{1}{c|}{\textbf{\begin{tabular}[c]{@{}c@{}}\(\sigma\)\\ (\r A)\end{tabular}}} & \multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}\(\epsilon\)\\ (kCal/mole)\end{tabular}}} \\ \hline
+			Graphene carbon & 0.0000  & 3.55 & 0.07   \\ 
+			Water oxygen       & -1.0484 & 3.16435  & 0.16275  \\ 
+			Water hydrogen   & 0.5242  & 0.00000 & 0.00000  \\ \hline
+		\end{tabular}
+	\end{table}
+
+	All the simulations were performed with the LAMMPS software package \cite{Plimpton1995}. We use a time step of 2.0 fs for all the simulations, and all the simulations are performed at T = 298 K. We use the SHAKE algorithm \cite{Andersen1983} with a tolerance of 10\textsuperscript{-4} to keep the water molecules rigid, according to the TIP4P-Ew water model \cite{Horn2004}. Initially, we relax the system at constant volume in two steps. First, to get rid of close contacts or other high-energy configurations in the system, we run Brownian dynamics \cite{Schneider1978} for a short 10 ps where we limit the atoms displacement in a single time step to 0.1 \r A. After that, we simulate the system in the NVT ensemble for another 10 ps using a temperature damping parameter of 0.1 ps. After relaxing the system at constant volume, we perform runs of 10 ns in the NpT ensemble, where only the x-direction (i.e. the direction of confinement) is allowed to fluctuate, \(p_{xx}\) = 0.1 MPa. The temperature and pressure control were implemented using a Nos\' e-Hoover extended Lagrangian procedure \cite{Martyna1994} with characteristic damping times 0.1 and 1.0 ps, respectively. We consider the first 3 ns equilibration, and we collect data for analysis every 500 steps (2 ps) over the last 7 ns of the NpT trajectories. In the rigid cases, the graphene sheets are kept rigid but their center of mass position can fluctuate. In the flexible cases the full force-field is employed without further constraints.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% The "Acknowledgement" section can be given in all manuscript
+%% classes.  This should be given within the "acknowledgement"
+%% environment, which will make the correct section or running title.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{acknowledgement}
+
+Please use ``The authors thank \ldots'' rather than ``The
+authors would like to thank \ldots''.
+
+\end{acknowledgement}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% The same is true for Supporting Information, which should use the
+%% suppinfo environment.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{suppinfo}
+
+A listing of the contents of each file supplied as Supporting Information
+should be included. For instructions on what should be included in the
+Supporting Information as well as how to prepare this material for
+publications, refer to the journal's Instructions for Authors.
+
+The following files are available free of charge.
+\begin{itemize}
+  \item Filename: brief description
+  \item Filename: brief description
+\end{itemize}
+
+\end{suppinfo}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% The appropriate \bibliography command should be placed here.
+%% Notice that the class file automatically sets \bibliographystyle
+%% and also names the section correctly.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\bibliography{references}
+
 \end{document}
-
-\clearpage
-
-\begin{figure}[ht!]
-	\centering
-	\includegraphics[width=0.60\textwidth]{leg_bulk_12_14_16}\\
-  \fbox{\begin{subfigure}[b]{0.48\textwidth}
-    \includegraphics[trim={0.05cm 0.30cm 0.25cm 0.15cm},clip,width=0.46\textwidth]{g_r_2D_12_14_16_r}
-    \includegraphics[trim={0.25cm 0.25cm 0.05cm 0.15cm},clip,width=0.485\textwidth]{ang_3B_12_14_16_r} 
-     \fbox{\includegraphics[width=0.30\textwidth]{12A_r2}}
-     \fbox{\includegraphics[width=0.30\textwidth]{14A_r3} }
-     \fbox{\includegraphics[width=0.30\textwidth]{16A_r4}}
-    \caption{}
-    \label{fig:gr_ang_12_14_16_r}
-  \end{subfigure}}
-  \fbox{\begin{subfigure}[b]{0.48\textwidth}
-    \includegraphics[trim={0.05cm 0.30cm 0.25cm 0.15cm},clip,width=0.46\textwidth]{g_r_2D_12_14_16_f}
-    \includegraphics[trim={0.25cm 0.25cm 0.05cm 0.15cm},clip,width=0.485\textwidth]{ang_3B_12_14_16_f}
-     \fbox{\includegraphics[width=0.31\textwidth]{12A_f2}}
-     \fbox{\includegraphics[width=0.305\textwidth]{14A_f3}}
-     \fbox{\includegraphics[width=0.305\textwidth]{16A_f3}}
-    \caption{}
-    \label{fig:gr_ang_12_14_16_f}
-  \end{subfigure}}
-	\caption{\textit{Trilayer lateral oxygen-oxygen pair correlation functions, three-body angle distributions, and snapshots of monolayer systems.} (\protect\subref{fig:gr_ang_12_14_16_r}) rigid systems, (\protect\subref{fig:gr_ang_12_14_16_f}) flexible systems. \textbf{Top.} Distribution of water oxygen distances and distribution of intralayer 3B angle formed between and given oxygen and its 2 nearest neighbors. \textbf{Bottom.} Snapshots of systems from left to right: \(\rho_{2D}=\) 0.163, 0.196, 0.227. Oxygens are in red, hydrogens are in white and for clarity, only one interlayer of water is depicted, and the graphene sheets are not displayed.}
-	\label{fig:struct_12_14_16}
-\end{figure}
-
-
-\cite{Maniwa2005} 2005, XRD and MD studies of CNTs with varying diameters (10.9 - 15.2 \r A). Found four different structures. 
-Also the melting temperature of the ice changed as a function of CNT diameter.
-
-
-\cite{Algara-Siller2015} 2015, TEM and MD of ice in between graphene monolayers - saw ice of 1, 2 and 3 monolayers (with TEM).
-With MD (SPC/E water), graph sheets of 68X58 \r A, and separations of 6.5, 9.0 11.5 \r A. ** VDW pressure, for a cluster of water between
-two sheets??
-
-\cite{Zangi2003,Zangi2003_2} 2003, studies of freezing and melting water of monolayer and bilayer ice.
-
-
-%% BENZENE STUFF
-
-%The benzene parameters were taken from the OPLS-AA force field \cite{Jorgensen1996}.
-%The atom type \#145 was used for benzene carbons and \#146 was used for benzene
-%hydrogens. This is from the papers: J. Am. Chem. SOC. 1990, 112, 4168-4114 \cite{Jorgensen1990}.
-%and J. Am. Chem. Soc. 1996, 118, 11225-11236  \cite{Jorgensen1996}.  
-%
-%Nonbonded parameters
-%\#   AN AT   CHARGE     SIGMA    EPSILON 
-%145 06 CA   -0.115     3.550     0.070     Benzene C - 12 site JACS,112,4768-90
-%146 01 HA    0.115     2.420     0.030     Benzene H - 12 site  "
-%
-%For bonds and angles, the following parameters were taken from AMBER all-atom
-%\cite{Weiner1986} (also from zarbi.chem.yale.edu/doc/par\_opls\_aam.inp)
-%Which has different CA-HA, and angle params.
-%
-%Bonds
-%CA-CA 469.       1.40         TRP,TYR,PHE
-%CA-HA 367.       1.080        PHE, etc. 
-%
-%Angles
-%CA-CA-CA    63.        120.     PHE(OL)
-%CA-CA-HA     35.       120.
-%
-%
-%Torsions
-%\#      v1        v2        v3       v4         notes
-%165   0.0       7.250     0.0       0.0        CA-CA-CA-CA                           
-%
-%Improper
-%improper\_coeff 1 1.1 -1 1  \# CA-CA-CA-HA for benzene 
-
-
-\subsubsection*{Energy calculations}
-
-The excess Gibbs free energy (G\textsubscript{excess}) of the confined water was calculated as the sum of the excess enthalpy (H\textsubscript{excess}) and the excess entropy (S\textsubscript{excess}) as follows:
-\begin{equation}
-    G\textsubscript{excess}  =  H_{\text{excess}} - T  S_{\text{excess}}
-\end{equation}
-
-Where is H\textsubscript{excess} defined as \textbf{\color{red}this is from \cite{Huggins2012}}. 
-\begin{equation}
-    H_{\text{excess}} = E_{\text{interaction}} - RT
-\end{equation}
-
-Where E\textsubscript{excess} is computed from long-range and pair interactions. Bonded energetics (bond stretching, angle bending) are not included because the water mode is rigid. Calculations of the excess entropy are detailed in the next section and have been taken from the method detailed by Huggins \cite{Huggins2012}.
-
-\subsubsection*{Entropy calculations}
-
-The molecular pair correlation function in water is a function of five angles and the intermolecular separation, as depicted in Figure \textbf{\color{red}OMG figure}. Using the pair correlation function, the excess entropy can be calculated as:
-\begin{equation}
-    S_{\text{excess}} = - \frac{1}{2} k_B \rho \int_V [ g(r, \omega) ln \, g(r, \omega) - g(r, \omega) + 1 ] d \mathbf{r} \, d\omega
-\end{equation}
-Where k\textsubscript{B} is Boltzmann's constant, \(\rho\) is the number density of bulk water and \(g(r, \omega)\) is the correlation function. This entropy is further divided into translational (S\textsubscript{trans}) and orientational (S\textsubscript{or}) components:
-\begin{equation}
-    S_{\text{excess}} = S_{\text{trans}} + S_{\text{or}}
-\end{equation}
-For this notation it is useful to separated the correlation function into a angle independent component and a conditional probability of the angles:
-\begin{equation}
-    g(r, \omega) = g(r) g(\omega | r)
-\end{equation}
-Now S\textsubscript{trans} and S\textsubscript{or} are written as follows:
-\begin{equation}
-    S_{\text{trans}} = - \frac{1}{2} k_B \rho \int_V [ g(r) ln \,  g(r) - g(r) + 1 ] d \mathbf{r} 
-\end{equation}
-\begin{equation}
-   \begin{split}
-    S_{\text{trans}} = & - \frac{1}{2} k_B \rho \int_0^\pi sin \theta d \theta \int_0^{2\pi} d \phi \int_0^\infty   [ g(r) ln\,  g(r) - g(r) + 1 ] r^2 dr \\
-     = &  - {2} \pi k_B \rho \int_0^\infty   [ g(r) ln \,  g(r) - g(r) + 1 ] r^2 dr 
-  \end{split}
-\end{equation}
-And the orientation component integrates over all five angles as a conditional probability of pair distance (r). The five angles contain symmetry such that the integration ranges are modified as given in Table \ref{table:ent_angles}.
-\begin{table}[ht!]
-\centering
-\begin{tabular}{|c|r|r|}
-\hline
-\textbf{Angle} & \multicolumn{1}{c|}{\textbf{Original Range}} & \multicolumn{1}{c|}{\textbf{Actual Range}} \\ \hline
-\( \theta_1\) & \([0, \pi]\)                             & \([0, \pi]\)                           \\ \hline
-\( \theta_2\) & \([0, \pi]\)                             & \([0, \pi]\)                           \\ \hline
-\( \chi_1\)   & \([0, 2\pi]\)                            & \([0, \pi]\)                           \\ \hline
-\( \chi_2\)   & \([0, 2\pi]\)                            & \([0, \pi]\)                           \\ \hline
-\( \phi\)      & \([0, 2\pi]\)                            & \([0, \pi]\)                           \\ \hline
-\end{tabular}
-\caption{\textit{Range of angles for five Euler angles of pair distribution functions.} The first column is the range used for full scheme, the second column is actual range used due to the symmetry of water.}
-\label{table:ent_angles}
-\end{table}
-\begin{equation}
- \begin{split}
-    S_{\text{or}} = & - \frac{1}{2} k_B \rho \int_V g(r) S_{\text{shell}} (r) d \textbf{r} \\
-                        = & - \frac{1}{2} k_B \rho \int_0^\pi sin \theta d \theta \int_0^{2\pi} d \phi \int_0^\infty g(r) S_{\text{shell}} (r) r^2 dr
-\end{split}
-\end{equation}
-Where S\textsubscript{shell} is given as:
-\begin{equation}
-    S_{\text{shell}} = \frac{1}{\Omega} \int g(\omega | r) ln \, g(\omega | r) d\omega
-\end{equation}
-Where the integrand (\( \int d\omega\)) is:
-\begin{equation}
- \begin{split}
-    \int d\omega & = \int sin \, \theta_1 d \theta_1 sin \, \theta_2 d \theta_2 d\phi_1 d\phi_2 d\chi_1 d\chi_2 \\
-        & =  2\pi \int_0^\pi sin \, \theta_1 d \theta_1 \int_0^\pi sin \, \theta_2 d \theta_2 \int_0^\pi d\phi\int_0^\pi d\chi_1 \int_0^\pi d\chi_2 
- \end{split}
-\end{equation}
-And \(\Omega\) is the integral over all angles:
-\begin{equation}
-    \Omega = 2\pi \int_0^\pi sin \, \theta_1 d \theta_1 \int_0^\pi sin \, \theta_2 d \theta_2 \int_0^\pi d\phi\int_0^\pi d\chi_1 \int_0^\pi d\chi_2 = 2 \pi * 2 * 2 * \pi * \pi * \pi = 8 \pi^4
-\end{equation}
-Although the \(2\pi\) before the integrand is ignored because it will cancel with the normalization. For each of the angles, the distribution function is normalized such that:
-\begin{equation}
-    \frac{1}{\Omega} \int g(\omega | r ) \, d \omega = 1  
-\end{equation}
-
-
-
-

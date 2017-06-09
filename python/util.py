@@ -32,3 +32,29 @@ def cart_to_sph(xyz):
     #ptsnew[:,1] = np.arctan2(xyz[:,2], np.sqrt(xy)) # for elevation angle defined from XY-plane up 
     ptsnew[:,2] = np.arctan2(xyz[:,1], xyz[:,0]) # phi
     return ptsnew
+
+def get_gr_lst(csv_nm):
+    ''' Given a filename for g(r) csv, find sep size and use that to get
+        columns to plot'''
+    sep_siz = int(csv_nm.split("_")[3]); dim = csv_nm.split("_")[2]; nfct=1.0
+
+    # flexible
+    if sep_siz == 91:  
+         cls = [2,30]; nfct = 1.4
+    elif sep_siz == 92:  
+         cls = [4,28,32]; nfct = 1.5
+
+    # rigid
+    elif sep_siz == 9:  cls = [5,15,18,27]
+
+    elif sep_siz == 10 or sep_siz == 11: cls = [3,6,]
+    elif sep_siz == 12: cls = [7]
+    elif sep_siz == 131 or sep_siz == 141: cls =[5] # inner layer of 3L
+    elif sep_siz == 132 or sep_siz == 142: cls =[3,7] # layer close to graph
+    elif sep_siz == 161: cls =[5,7] #inner layer of 3/4
+    elif sep_siz == 162: cls =[3,9] #layer near graph
+    elif sep_siz == 201: cls =[3,9] #inner layer of 3/4
+    elif sep_siz == 202: cls =[5,7] #layer near graph
+
+    else: cls = [1] # dont have this sep size saved
+    return cls, nfct
