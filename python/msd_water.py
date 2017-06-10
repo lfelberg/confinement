@@ -41,8 +41,9 @@ def get_msd(xyz, volC):
     for i in range(nsnaps-1):
         ms = d3(oicd[np.newaxis,i], oicd[i+1:])
         msd[1:nsnaps-i,:sum(iOX.astype(int))] += ms
-        ms = d3(oocd[np.newaxis,i], oocd[i+1:])
-        msd[1:nsnaps-i,sum(iOX.astype(int)):] += ms
+        if sum(oOX.astype(int)) > 0: # will be zero for bulk water
+            ms = d3(oocd[np.newaxis,i], oocd[i+1:])
+            msd[1:nsnaps-i,sum(iOX.astype(int)):] += ms
     return msd/ms_mean
 
 def print_msd(msd, timstep, fname):
