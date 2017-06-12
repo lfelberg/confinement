@@ -1,8 +1,7 @@
 # Python analysis scripts for confinement project
 
 This file contains an overview of files used for the confinement project.
-
-2.  compute_mean.py
+1.  compute_mean.py
 3.  csvfile.py
 3.  dics.py
 3.  distance_graphene.py
@@ -14,7 +13,6 @@ This file contains an overview of files used for the confinement project.
 4.  gauss_fits.py
 3.  get_density.py
 2.  get_distances.py
-3.  hbond_stats.py
 3.  msd_water.py
 3.  ntot_make.py
 3.  order_params_2D.py
@@ -74,8 +72,8 @@ A program to take an XYZ file and for each snapshot, compute the graphene-graphe
 separation as well as the distance of the water molecules between the sheets to a
 given wall.
 
-**usage**: `python distance_graphene.py \*.xyz sep len iter`
-Will open the file `\*.xyz` and also expects a vol file named `run{sep}_{len}_{iter}.vol`.
+**usage**: `python distance_graphene.py *.xyz sep len iter`
+Will open the file `*.xyz` and also expects a vol file named `run{sep}_{len}_{iter}.vol`.
 
 **Outputs**: Prints out a file: `run{sep}_{len}_{iter}.distgg`, which is a csv file
 with columns: 
@@ -89,10 +87,10 @@ to count regions with no water, where the graphene walls are in contact.
 
 ## energy_lmp.py
 
-**usage**: `python \*.out` or `python \*.ext`
+**usage**: `python *.out` or `python *.ext`
 
 **Outputs**: Will read either a lammps output file (with the custom output dump
-displayed in the beginning of this python file) or a simple `\*.vol` style file and
+displayed in the beginning of this python file) or a simple `*.vol` style file and
 print out the energies to a csvfile and compute right now the compressibility!
 
 ## entropy_calc.py
@@ -137,9 +135,6 @@ and each graphene separation.
 3.  fourier.py
 5.  g_of_r.py
 4.  gauss_fits.py
-3.  get_density.py
-2.  get_distances.py
-3.  hbond_stats.py
 3.  msd_water.py
 3.  ntot_make.py
 3.  order_params_2D.py
@@ -164,98 +159,58 @@ and each graphene separation.
 
 ## fourier.py
 
-**usage**: `python \*.xyz sep len iter`
+**usage**: `python *.xyz sep len iter`
 
 **Outputs**: 
 
 ## 
 
-**usage**: `python \*.xyz sep len iter`
+**usage**: `python *.xyz sep len iter`
 
 **Outputs**: 
 
 ## 
 
-**usage**: `python \*.xyz sep len iter`
+**usage**: `python *.xyz sep len iter`
 
 **Outputs**: 
 
 ## 
 
-**usage**: `python \*.xyz sep len iter`
+**usage**: `python *.xyz sep len iter`
 
 **Outputs**: 
 
 ## 
 
-**usage**: `python \*.xyz sep len iter`
+**usage**: `python *.xyz sep len iter`
 
 **Outputs**: 
 
 ## 
 
-**usage**: `python \*.xyz sep len iter`
+**usage**: `python *.xyz sep len iter`
 
 **Outputs**: 
 
 ## 
 
-**usage**: `python \*.xyz sep len iter`
+**usage**: `python *.xyz sep len iter`
 
 **Outputs**: 
 
 ## 
 
-**usage**: `python \*.xyz sep len iter`
+**usage**: `python *.xyz sep len iter`
 
 **Outputs**: 
 
 ## 
 
-**usage**: `python \*.xyz sep len iter`
+**usage**: `python *.xyz sep len iter`
 
 **Outputs**: 
 
-
-## get_density.py
-
-Will calculate the density of a system or plot it, depending on the input files.
-
-If invoked with file \*.xyz extension, will print out CSV files with a histogram
-for the length of the simulation box in X and one column for each atom type.
-
-**usage**: `python get_density.py \*.xyz sep len iter`
-Also expects a \*.vol file
-
-**Outputs**: will print out a CSV file with the length of the simulation box in X 
-and one column for each atom type.
-
-Else, will assume that the input file is a csv with histograms and will print plots.
-
-**usage**: `python get_density.py *.dens_hist sep len iter`
-Also expects a \*.vol file
-
-**Outputs**: will print out one figure for each type: `dens_#.png`.
-
-## get_distances.py
-
-Will calculate the distance of non-graphene atoms to the graphene wall. Will
-also calculate the distance between the graphene sheets for each frame and 
-reports the closest graphene atom number.
-
-**usage**: `python get_distances.py *.xyz sep len iter`
-Also expects a \*.vol file.
-
-**Outputs**: 
-
-1. runS_L_it.dist - a file with XYZ structure, reports the distance of all atoms
-to the closest graphene atom. Will store the # of graphene atom and the distance.
-For graphene atoms, reports for the one wall the distance to the other. For the other 
-wall, has 0.0 as values.
-2. runS_L_it_graph[0-1].dat - a file with XYZ structure, reports the deviation
-of each graphene in wall 0 or 1 from the average X of the wall
-3. runS_L_it.grap_sep0.dat - a file with XYZ strucute, reports the separation
-of each atom in wall 0 to the closest point in wall 1 without PBCS.
 
 ## g_of_r.py
 
@@ -264,9 +219,10 @@ A program to calculate the g(r) for a given pair of atom types.
 **usage**: `python g_of_r.py *xyz sep len iter #Pairs Pr0_0 Pr0_1 Pr1_0 Pr1_1 ... `
 
 **Outputs**:
+1. g_r_2D_sep_len_iter_PrN0_PrN1.csv - a csv file with histogram as a function
+of x distance from graphene wall of 2D g(r) of pair.
 1. g_r_3D_sep_len_iter_PrN0_PrN1.csv - a csv file with histogram as a function
 of x distance from graphene wall of 3D g(r) of pair.
-2. FUTURE: 2D g(r)
 
 ## plot_2d_heat.py
 
@@ -320,6 +276,26 @@ by an END line.
 Also expects a \*.vol file.
 
 **Outputs**: will create an output \*.pdb file with same start as \*.xyz
+
+## get_density.py
+
+Will calculate the density of a system or plot it, depending on the input files.
+
+If invoked with file \*.xyz extension, will print out CSV files with a histogram
+for the length of the simulation box in X and one column for each atom type.
+
+**usage**: `python get_density.py *.xyz sep len iter`
+Also expects a \*.vol file
+
+**Outputs**: will print out a CSV file with the length of the simulation box in X 
+and one column for each atom type.
+
+Else, will assume that the input file is a csv with histograms and will print plots.
+
+**usage**: `python get_density.py *.dens_hist sep len iter`
+Also expects a \*.vol file
+
+**Outputs**: will print out one figure for each type: `dens_#.png`.
 
 ## xyzfile.py
 

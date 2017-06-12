@@ -58,7 +58,6 @@ def plot_density_hist(csvC):
     d_sums = np.zeros((3,csvC.dat.shape[1]))
     d_sums[0] = csvC.dat[1]+csvC.dat[2]
     d_sums[1] = csvC.dat[3]
-   #d_sums[2] = csvC.dat[3]+csvC.dat[4]
 
     for t in range(csvC.dat.shape[0]-1):
         f = plt.figure(1, figsize = (3.0, 3.0))                                    
