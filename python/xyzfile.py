@@ -130,6 +130,8 @@ class XYZFile:
 
     def get_inner_wat(self):
         '''Get array of atoms (ox+h) that are inside 2 walls'''
+        if "_37_" in self.xyzfname: return self.get_type_i(WOXY),self.get_type_i(WHYD)
+
         inside = self.get_inner_ats()
         oxy = self.get_type_i(WOXY)
         hyd = self.get_type_i(WHYD)
@@ -137,7 +139,8 @@ class XYZFile:
 
     def get_outer_wat(self):
         '''Get array of atoms (ox+h) that are outside 2 walls'''
-        out = self.get_outer_ats(); print(sum(out.astype(int)))
+        if "_37_" in self.xyzfname: return [False]*len(self.types),[False]*len(self.types)
+        out = self.get_outer_ats()
         oxy = self.get_type_i(WOXY)
         hyd = self.get_type_i(WHYD)
         return np.all(np.array([oxy, out]),axis=0), np.all(np.array([hyd, out]),axis=0)

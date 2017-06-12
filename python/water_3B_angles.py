@@ -22,6 +22,7 @@ def get_angles(xyz, volC):
         in_wat[1:,0] = translate_pbc(in_wat[0,0], in_wat[1:,0], rng[0])
         ou_wat[1:,0] = translate_pbc(ou_wat[0,0], ou_wat[1:,0], rng[0])
 
+        nm = 2
         if ("_6_" in xyz.xyzfname or "_7_" in xyz.xyzfname 
             or "_8_" in xyz.xyzfname): nm = 2
         elif ("_9_" in xyz.xyzfname or "_10_" in xyz.xyzfname 
@@ -33,11 +34,9 @@ def get_angles(xyz, volC):
         in_bn = np.linspace(min(in_wat[:,0]),max(in_wat[:,0]), num=nm)
         b_in = np.digitize(in_wat[:,0], in_bn)
         ou_bn = np.linspace(min(ou_wat[:,0]),max(ou_wat[:,0]), num=nm)
-        print(in_bn, ou_bn)
         b_ou = np.digitize(ou_wat[:,0], ou_bn)
         
         for j in range(len(in_bn)):
-            print(sum((b_in==j).astype(int)))
             if sum((b_in==j).astype(int))>10:
                d1,d2,t1=cal_ang_3B(in_wat[b_in == j],rng)
                di1+=d1;di2+=d2;th1+=t1;
