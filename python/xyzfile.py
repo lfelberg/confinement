@@ -145,3 +145,27 @@ class XYZFile:
         hyd = self.get_type_i(WHYD)
         return np.all(np.array([oxy, out]),axis=0), np.all(np.array([hyd, out]),axis=0)
 
+    def get_spacing_for_interlayer(self):
+        '''Depending on the spacing of the graphene walls, return array of
+           positions for computing layered properties on, e.g. g_{2D}(R) or
+           3B angles '''
+        nm = np.linspace(0,1000.,0.6)
+
+        # depending on the system, there will be varying # interlayers
+        if "_6_" in self.xyzfname or "_7_" in self.xyzfname or "_8_" in self.xyzfname:
+             nm = np.array([0.0,10.0])
+        elif ("_10_" in self.xyzfname or "_11_" in self.xyzfname 
+               or "_12_" in self.xyzfname):
+             nm = np.array([0,0.55,1.04,3.0,3.30,3.90,5.1,5.6,6.7,10.0])
+        elif ("_13_" in self.xyzfname or "_14_" in self.xyzfname): 
+             nm = np.array([0,0.35,1.24,3.24,3.90,5.9,6.7,10.0])
+        elif ("_16_" in self.xyzfname):#nm = 7
+             nm = np.array([0,0.55,1.24,3.24,3.70,5.4,6.1,8.1,8.7,14.0])
+        elif ("_20_" in self.xyzfname): 
+             nm = np.array([0,0.65,1.04,3.14,3.6,5.3,5.9,7.05,7.45,9.3,9.8,12.05,12.6,18.])
+        elif ("_37_" in self.xyzfname): 
+             nm = np.linspace(0,38,38)
+
+        return nm
+
+

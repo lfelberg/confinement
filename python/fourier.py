@@ -42,12 +42,9 @@ def fourier(grcl):
 def main():
     ''' Given a list of pairs for g(r) calcs, do this as a function as 
         distance from wall, but only 2D and only for your wall side '''
-    grname=sys.argv[1];#sep=sys.argv[2]; ln=sys.argv[3]; itr=sys.argv[4]
-
+    grname=sys.argv[1]; sep=sys.argv[2]; ln=sys.argv[3]; itr=sys.argv[4]
    #nm = str(sep)+"_"+str(ln)+"_"+str(itr)
-    grcl = CSVFile(grname)
-    fourier(grcl)
-
+    grcl = CSVFile(grname); fourier(grcl)
 
 if __name__=="__main__":
     main()

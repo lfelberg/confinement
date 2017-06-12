@@ -13,17 +13,14 @@ def trans_coords(coords, rng):
     ''' Method to translate coordinates so that each step is within 1 box
         of the previous. This is to account for the total MSD. '''
     cnew = np.zeros(coords.shape); cnew[0] = coords[0]
-    st = "{0}\nAtoms".format(coords.shape[1])
+    st = "{0}\nAtoms".format(coords.shape[1]) # for printing XYZ file
 
     for i in range(len(coords)-1):
         cnew[i+1] = translate_pbc(cnew[i], coords[i+1], rng[i])
         cnew[i] = cnew[i] - np.mean(cnew[i], axis=0)
-        print(st)
-        for j in range(len(coords[0])): print("{0} {1} {2} {3}".format(8,*cnew[i,j,:]))
+       #print(st)
+       #for j in range(len(coords[0])): print("{0} {1} {2} {3}".format(8,*cnew[i,j,:]))
     cnew[-1] = cnew[-1] - np.mean(cnew[-1], axis=0)
-
-    print(st)
-    for j in range(len(coords[0])): print("{0} {1} {2} {3}".format(8,*cnew[-1,j,:]))
 
     return cnew
 
@@ -69,9 +66,7 @@ def main():
     ''' Given a list of pairs for g(r) calcs, do this as a function as 
         distance from wall, but only 2D and only for your wall side '''
     xyzname=sys.argv[1]; sep=sys.argv[2]; ln=sys.argv[3]; itr=sys.argv[4]
-
-    nm = str(sep)+"_"+str(ln)+"_"+itr
-    volC = VolFile("ms"+nm+".vol") 
+    nm = str(sep)+"_"+str(ln)+"_"+itr; volC = VolFile("ms"+nm+".vol") 
     xyz_cl = XYZFile(xyzname, volC)
 
     msd = get_msd(xyz_cl, volC)

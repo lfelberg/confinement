@@ -13,8 +13,7 @@ WOXY = 1
 def theta_cal(oxy, nncrds):
     '''Given a list of vectors (from 1 atom to ct nearest neighbors)
        calculate the angle between each vector and Zaxis'''
-    x_pos = np.mean(nncrds[:,0])
-    o_o_vecs = nncrds - oxy
+    x_pos = np.mean(nncrds[:,0]); o_o_vecs = nncrds - oxy
     oo_v_proj = project_plane(o_o_vecs, np.array((1,0,0))[np.newaxis,:])
     # creating vector that is z axis
     ax_proj = np.array([0.0,0.0,1.0+oxy[0,2]])[np.newaxis,:]
@@ -23,8 +22,7 @@ def theta_cal(oxy, nncrds):
 def phi_n_cal(oxy, nns, n):
     '''Given a list of vectors in cartesian coords, calculate the SH for 
        a range of l, -l <= m <= l'''
-    thes = theta_cal(oxy, nns)
-    phi_n = np.sum(np.exp(float(n)*1j*thes))
+    thes = theta_cal(oxy, nns); phi_n = np.sum(np.exp(float(n)*1j*thes))
     nb = float(len(nns))
     return phi_n * (1./nb)   
 
@@ -41,35 +39,19 @@ def cal_op(oxygens, rng, cutoff, n):
         nn_ox = np.where(clo == True)[0]
 
         if len(nn_ox) == 0: 
-            nn += [[]]
-            continue
-        phin[ox] = phi_n_cal(curr, ot_wr[clo], n)
-        nn += [nn_ox]
+            nn += [[]]; continue
+        phin[ox] = phi_n_cal(curr, ot_wr[clo], n); nn += [nn_ox]
     print("mean: {0}".format(np.mean(phin.real)))
     return phin
 
 def get_2D_order(xyz, volC, co = 3.7, n = 6):
     '''Method to get various angles between three waters, in confined space'''
     # find water oxys
-    oo = xyz.get_type_i(WOXY)
+    oo = xyz.get_type_i(WOXY);phi_all, phi_b_all = [],[]
     oi,_ = xyz.get_inner_wat(); oou,_ = xyz.get_outer_wat() # outside walls
-    phi_all, phi_b_all = [],[]
 
-    nm = np.array([0.0,10.0])
     # depending on the system, there will be varying # interlayers
-    if "_6_" in xyz.xyzfname or "_7_" in xyz.xyzfname or "_8_" in xyz.xyzfname:
-         nm = np.array([0.0,10.0])
-    elif ("_10_" in xyz.xyzfname or "_11_" in xyz.xyzfname 
-           or "_12_" in xyz.xyzfname):
-         nm = np.array([0,0.55,1.04,3.0,3.30,3.90,5.1,5.6,6.7,10.0])
-    elif ("_13_" in xyz.xyzfname or "_14_" in xyz.xyzfname): 
-         nm = np.array([0,0.35,1.24,3.24,3.90,5.9,6.7,10.0])
-    elif ("_16_" in xyz.xyzfname):#nm = 7
-         nm = np.array([0,0.55,1.24,3.24,3.70,5.4,6.1,8.1,8.7,14.0])
-    elif ("_20_" in xyz.xyzfname): 
-         nm = np.array([0,0.65,1.04,3.14,3.6,5.3,5.9,7.05,7.45,9.3,9.8,12.05,12.6,18.])
-    elif ("_37_" in xyz.xyzfname): 
-         nm = np.linspace(0,38,38)
+    nm = xyz.get_spacing_for_interlayer()
 
     for i in range(1,len(xyz.atom)): # for each time snapshot, except first
         rng = volC.get_rng_i(i) # pbc range
@@ -81,19 +63,16 @@ def get_2D_order(xyz, volC, co = 3.7, n = 6):
         ou_bn = min(ou_wat[:,0])+nm; b_ou = np.digitize(ou_wat[:,0], ou_bn)
         
         for j in range(1,len(in_bn)):
-            phi = cal_op(in_wat[b_in == j],rng,co,n)
-            phi_all += list(phi); #phi_b_all += list(phi_b)
-            phi = cal_op(ou_wat[b_ou == j],rng,co,n)
-            phi_all += list(phi);
+            phi = cal_op(in_wat[b_in == j],rng,co,n); phi_all += list(phi)
+            phi = cal_op(ou_wat[b_ou == j],rng,co,n); phi_all += list(phi)
 
     return list([phi_all]) #, phi_b_all]) 
 
 def print_ops(op, fname):
     '''Print file of data in csv-like format, ops:
        op = [phi, phi_b]'''
-    f = open(fname, 'w'); vals = ['phi'] #,'phi_b']
-    stn = vals[0] #+","+vals[1]
-    f.write(stn+'\n')
+    f = open(fname, 'w'); vals = ['phi']
+    stn = vals[0]; f.write(stn+'\n')
 
     for k in range(len(op[0])):
         st = ""

@@ -45,17 +45,7 @@ def get_gr(xyz, volC, grPair):
     g_r_3, g_r_2_m, rng_m = [], [], np.zeros((3))
 
     # depending on the system, there will be varying # interlayers
-    if "_6_" in xyz.xyzfname or "_7_" in xyz.xyzfname or "_8_" in xyz.xyzfname:
-         nm = np.array([0.0,10.0])
-    elif ("_10_" in xyz.xyzfname or "_11_" in xyz.xyzfname 
-           or "_12_" in xyz.xyzfname):
-         nm = np.array([0,0.55,1.04,3.0,3.30,3.90,5.1,5.6,6.7,10.0])
-    elif ("_13_" in xyz.xyzfname or "_14_" in xyz.xyzfname): 
-         nm = np.array([0,0.35,1.24,3.24,3.90,5.9,6.7,10.0])
-    elif ("_16_" in xyz.xyzfname):#nm = 7
-         nm = np.array([0,0.55,1.24,3.24,3.70,5.4,6.1,8.1,8.7,14.0])
-    if ("_20_" in xyz.xyzfname): 
-         nm = np.array([0,0.65,1.04,3.14,3.60,5.3,5.9,7.05,7.45,9.3,9.8,12.05,12.60,18.0])
+    nm = xyz.get_spacing_for_interlayer()
     xb_ct=np.zeros((len(nm),2)); xb_his=np.zeros((len(nm),2,len(HIS)-1))
 
     # for the g(r) pairs, need to get groups on the same wall side
@@ -79,16 +69,13 @@ def get_gr(xyz, volC, grPair):
         c01[1:,0] = translate_pbc(c01[0,0],c01[1:,0],rng[0]) #outer 0
         c11[:,0] = translate_pbc(c01[0,0],c11[:,0],rng[0])   #outer 1
 
-        in_bn = min(c00[:,0])+nm
-        ou_bn = min(c01[:,0])+nm
-        b00 = np.digitize(c00[:,0], in_bn)
-        b01 = np.digitize(c01[:,0], ou_bn)
+        in_bn = min(c00[:,0])+nm; ou_bn = min(c01[:,0])+nm
+        b00 = np.digitize(c00[:,0], in_bn); b01 = np.digitize(c01[:,0], ou_bn)
         if grPair[0] == grPair[1]: 
             c10=np.copy(c00); c11=np.copy(c01); b10=b00; b11=b01; sm=True
         else: 
             sm = False
-            b10 = np.digitize(c10[:,0], in_bn)
-            b11 = np.digitize(c11[:,0], ou_bn)
+            b10 = np.digitize(c10[:,0], in_bn); b11 = np.digitize(c11[:,0], ou_bn)
         
         for j in range(1,len(in_bn)):
             if sum((b00==j).astype(int))>50 and sum((b10==j).astype(int))>50:
@@ -108,9 +95,7 @@ def get_gr(xyz, volC, grPair):
 
 def print_gr(x, grs, fname):
     '''Print distances to carbon wall in xyz like format'''
-    print(grs.shape)
-    f = open(fname, 'w'); 
-    f.write("Bin,"); st = ""
+    f = open(fname, 'w'); f.write("Bin,"); st = ""
     dimbins = HIS[:-1]+dr/2.
     for i in range(len(x)): st += "x{0:.3f},".format(x[i])
     f.write("{0}\n".format(st[:-1]))
@@ -129,8 +114,7 @@ def main():
         grPr.append([int(sys.argv[i]),int(sys.argv[i+1])])
 
     nm = str(sep)+"_"+str(ln)+"_"+str(itr)
-    volC = VolFile("run"+nm+".vol") 
-    xyz_cl = XYZFile(xyzname, volC)
+    volC = VolFile("run"+nm+".vol"); xyz_cl = XYZFile(xyzname, volC)
     print("Arry shape", xyz_cl.atom.shape)
 
     for i in range(n_gr):

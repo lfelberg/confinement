@@ -57,6 +57,7 @@ A class for reading in CSV files.
 In the object, saves the filename as `csvfname` and the data as an array, `dat`
 and the keys to the data as `key`.
 
+
 ## dics.py
 
 Contains two dictionaries:
@@ -65,6 +66,7 @@ Contains two dictionaries:
 2.  `dens` is a dictionary of the different 2D densities in the system, stored by
 their initial separation. The data is an array with entries (0) = name of the density,
 (1) = the color to plot it with, (2) = the line type (filled, dashed) to plot with.
+
 
 ## distance_graphene.py
 
@@ -84,6 +86,10 @@ with columns:
 
 Note: There is a commented section to be used with the smallest flexible system
 to count regions with no water, where the graphene walls are in contact.
+Also, for the rigid system, there is a lot of displacement in the x direction, 
+and this program is not able to catch all instances of when the walls are wrapped
+by the box, so it just continues to next if it catches some unusual results.
+
 
 ## energy_lmp.py
 
@@ -92,6 +98,7 @@ to count regions with no water, where the graphene walls are in contact.
 **Outputs**: Will read either a lammps output file (with the custom output dump
 displayed in the beginning of this python file) or a simple `*.vol` style file and
 print out the energies to a csvfile and compute right now the compressibility!
+
 
 ## entropy_calc.py
 
@@ -121,6 +128,7 @@ orientational, and therefore the `both` command may not work. Also, it is import
 if using the g(\*) option that the dR used is the same in the main here as it is 
 in the inputs to these methods.
 
+
 ## entropy_calc_util.py
 
 This is the main body of the entropy calculations. There is a class for the translational
@@ -132,13 +140,85 @@ plot 1 and 2nd order curves.
 and each graphene separation. 
 3.  Integration method: will integrate according to paper. 
 
-3.  fourier.py
-5.  g_of_r.py
-4.  gauss_fits.py
-3.  msd_water.py
-3.  ntot_make.py
-3.  order_params_2D.py
-3.  order_params_3D.py
+
+## fourier.py
+
+Compute the fourier transform of the g(R) to create an S(q) function. Currently
+plots but will probably also save as csv file
+
+**usage**: `python *.gr sep len iter`
+
+**Outputs**: Plot of fourier transform.
+
+
+## g_of_r.py
+
+A program to calculate the g(R) for a given pair of atom types. 
+
+**usage**: `python g_of_r.py *xyz sep len iter #Pairs Pr0_0 Pr0_1 Pr1_0 Pr1_1 ... `
+
+**Outputs**:
+1. g_r_2D_sep_len_iter_PrN0_PrN1.csv - a csv file with histogram as a function
+of x distance from graphene wall of 2D g(R) of pair.
+1. g_r_3D_sep_len_iter_PrN0_PrN1.csv - a csv file with histogram as a function
+of x distance from graphene wall of 3D g(R) of pair.
+
+Note: currently plot of 3D g(R) is disabled but it should be pretty easy to 
+implement.
+
+
+## gauss_fits.py
+
+File that contains a variety of gaussian functions: 
+1.  Normal distribution
+2.  Skewed normal
+3.  Multiple gaussian curves
+
+That can be fit to the data.
+
+
+## msd_water.py
+
+Computing the MSD of water molecules, using the displacement of water oxygens.
+The program unwraps the atoms, so all atoms should progress out from original
+center of mass. Also, the center of mass of each group of waters (between and outside
+of walls) is subtracted to remove any collective motion effects. 
+
+**usage**: `python *.xyz sep len iter`
+
+**Outputs**: `msd_sep_len_iter.csv`, a file that contains MSD calcs and their 
+standard deviations for X, Y, Z, YX and XYZ dimensions. 
+
+
+## order_params_2D.py
+
+Plotting 2D order parameters for bond order: phi_n = < sum_{Nb} exp(i*n*theta) >.
+This is taken from the methodology of **Dislocation-mediated melting in two dimensions**
+by David R. Nelson and B.I. Halperin (1979). There is a good discussion of the method
+in **Formation of Two-Dimensional Crystals with Square Lattice
+Structure from the Liquid State** by Vo Van Hoang and Nguyen Thanh Hieu (2016). 
+ 
+**usage**: `python *.xyz sep len iter cutoff n`
+Where `cutoff` is the distance between oxygen pairs to consider them neighbors.
+N is the number in the exponential.
+
+**Outputs**: Csv file of phi for each water molecule.
+
+
+## order_params_3D.py
+
+**This program may not be correct as is**.
+
+Method to calculate the 3D order parameters q_4 bar and q_6 bar. This is for
+quantifying the structure of ice in 3D. From the paper: **Bond-orientational order in liquids and glasses**
+by Paul J. Steinhardt, David R. Nelson, and Marco Ronchetti (1983). A good
+summary of it is also in **Accurate determination of crystal structures based on averaged local bond order
+parameters** by Wolfgang Lechner and Christoph Dellago (2008). 
+
+**usage**: `python *.xyz sep len iter`
+
+**Outputs**: Csv file of q4 and q6 bar.
+
 4.  plot_2d_heat.py
 5.  plot_3B_angles.py
 0.  plot_3B_angles_multi.py
@@ -156,12 +236,33 @@ and each graphene separation.
 0.  water_angles2D.py
 3.  water_angles_util.py
 5.  water_deviation.py
-
-## fourier.py
+## 
 
 **usage**: `python *.xyz sep len iter`
 
 **Outputs**: 
+
+## 
+
+**usage**: `python *.xyz sep len iter`
+
+**Outputs**: 
+
+## 
+
+**usage**: `python *.xyz sep len iter`
+
+**Outputs**: 
+
+## 
+
+**usage**: `python *.xyz sep len iter`
+
+**Outputs**: 
+
+## 
+
+**usage**: `python *.xyz sep len iter`
 
 ## 
 
@@ -192,37 +293,6 @@ and each graphene separation.
 **usage**: `python *.xyz sep len iter`
 
 **Outputs**: 
-
-## 
-
-**usage**: `python *.xyz sep len iter`
-
-**Outputs**: 
-
-## 
-
-**usage**: `python *.xyz sep len iter`
-
-**Outputs**: 
-
-## 
-
-**usage**: `python *.xyz sep len iter`
-
-**Outputs**: 
-
-
-## g_of_r.py
-
-A program to calculate the g(r) for a given pair of atom types. 
-
-**usage**: `python g_of_r.py *xyz sep len iter #Pairs Pr0_0 Pr0_1 Pr1_0 Pr1_1 ... `
-
-**Outputs**:
-1. g_r_2D_sep_len_iter_PrN0_PrN1.csv - a csv file with histogram as a function
-of x distance from graphene wall of 2D g(r) of pair.
-1. g_r_3D_sep_len_iter_PrN0_PrN1.csv - a csv file with histogram as a function
-of x distance from graphene wall of 3D g(r) of pair.
 
 ## plot_2d_heat.py
 
@@ -243,15 +313,6 @@ This will plot a series of curves for g(r).
 **usage**: `python plot_gr.py csvStart nsep nlen niter sep1 sep2... len1 len2... iter1 iter2... ext datLoc`
 
 Should output a plot of the multiple datasets.
-
-## plot_vs_x.py
-
-Plot multiple csv files of data for a versus X coord plot.
-
-**usage**: `python plot_vs_x.py csvStart nsep nlen niter sep1 sep2... len1 len2... iter1 iter2... ext datLoc`
-
-Should output a plot of the multiple datasets.
-
 
 ## volfile.py
 

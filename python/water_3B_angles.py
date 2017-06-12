@@ -22,19 +22,9 @@ def get_angles(xyz, volC):
         in_wat[1:,0] = translate_pbc(in_wat[0,0], in_wat[1:,0], rng[0])
         ou_wat[1:,0] = translate_pbc(ou_wat[0,0], ou_wat[1:,0], rng[0])
 
-        nm = 2
-        if ("_6_" in xyz.xyzfname or "_7_" in xyz.xyzfname 
-            or "_8_" in xyz.xyzfname): nm = 2
-        elif ("_9_" in xyz.xyzfname or "_10_" in xyz.xyzfname 
-            or "_11_" in xyz.xyzfname or "_12_" in xyz.xyzfname): nm = 3
-        elif ("_13_" in xyz.xyzfname or "_14_" in xyz.xyzfname 
-            or "_16_" in xyz.xyzfname): nm = 4
-        elif ("_20_" in xyz.xyzfname): nm = 2
-
-        in_bn = np.linspace(min(in_wat[:,0]),max(in_wat[:,0]), num=nm)
-        b_in = np.digitize(in_wat[:,0], in_bn)
-        ou_bn = np.linspace(min(ou_wat[:,0]),max(ou_wat[:,0]), num=nm)
-        b_ou = np.digitize(ou_wat[:,0], ou_bn)
+        nm = xyz.get_spacing_for_interlayer()
+        b_in = np.digitize(in_wat[:,0], min(in_wat[:,0])+nm)
+        b_ou = np.digitize(ou_wat[:,0], min(ou_wat[:,0])+nm)
         
         for j in range(len(in_bn)):
             if sum((b_in==j).astype(int))>10:

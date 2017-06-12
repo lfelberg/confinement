@@ -79,29 +79,18 @@ def get_order(xyz, volC):
     # find water oxys, hyds
     oo = xyz.get_type_i(WOXY); bnz = 5
     oi,_ = xyz.get_inner_wat(); oou,_ = xyz.get_outer_wat() # outside walls
-    d1s, d2s, t1s, = [],[],[]
-
     q4_b_all, q6_b_all = [], []
 
+    nm = xyz.get_spacing_for_interlayer()
+
     for i in range(1,len(xyz.atom)): # for each time snapshot, except first
-        di1, di2, th1 = [],[],[]
         rng = volC.get_rng_i(i) # pbc range
         in_wat = xyz.atom[i,oi,:]; ou_wat = xyz.atom[i,oou,:];
         in_wat[1:,0] = translate_pbc(in_wat[0,0], in_wat[1:,0], rng[0])
         ou_wat[1:,0] = translate_pbc(ou_wat[0,0], ou_wat[1:,0], rng[0])
 
-        if ("_6_" in xyz.xyzfname or "_7_" in xyz.xyzfname 
-            or "_8_" in xyz.xyzfname): nm = 2
-        elif ("_9_" in xyz.xyzfname or "_10_" in xyz.xyzfname 
-            or "_11_" in xyz.xyzfname or "_12_" in xyz.xyzfname): nm = 3
-        elif ("_13_" in xyz.xyzfname or "_14_" in xyz.xyzfname 
-            or "_16_" in xyz.xyzfname): nm = 4
-        elif ("_20_" in xyz.xyzfname): nm = 5
-
-        in_bn = np.linspace(min(in_wat[:,0]),max(in_wat[:,0]), num=nm)
-        b_in = np.digitize(in_wat[:,0], in_bn)
-        ou_bn = np.linspace(min(ou_wat[:,0]),max(ou_wat[:,0]), num=nm)
-        b_ou = np.digitize(ou_wat[:,0], ou_bn)
+        b_in = np.digitize(in_wat[:,0], min(in_wat[:,0])+nm)
+        b_ou = np.digitize(ou_wat[:,0], min(ou_wat[:,0])+nm)
         
         for j in range(1,len(in_bn)):
             q4_b, q6_b = cal_op(in_wat[b_in == j],rng)
