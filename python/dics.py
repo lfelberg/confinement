@@ -20,8 +20,8 @@ dens = {
          7   :   [0.092, colorL[1], "-"],
          8   :   [0.123, colorL[-4], "-"],
          9   :   [0.154, colorL[0], "-"],
-        #8   :   ["square", colorL[-4], "-"],
-        #9   :   ["hexagonal", colorL[1], "-"],
+        #8   :   ["square", colorL[-4], "-"],     # for ice plots
+        #9   :   ["hexagonal", colorL[1], "-"],   # for ice plots
          10  :   [0.185, colorL[1], "-"],
          11  :   [0.215, colorL[-4], "-"],
          12  :   [0.245, colorL[0], "-"],

@@ -65,8 +65,7 @@ def get_dist(xyz, dims):
                         print("This is pts and means",  c1_p, c2_p, c1_x, c2_x)
                         continue
                     w_d1.append(d1); w_d2.append(d2)
-                    dgg = len(d1) * [abs(c2_x - c1_x)]
-                    cc_d.append(dgg)
+                    dgg = len(d1) * [abs(c2_x - c1_x)]; cc_d.append(dgg)
  
                 # this part was used ONLY for the 6A flexible case where the gg
                 # are in contact
@@ -81,8 +80,7 @@ def get_dist(xyz, dims):
 
 def print_dist_to_c(fname, dists):
     '''Print distances to carbon wall in xyz like format'''
-    f = open(fname, 'w')
-    st = ""; dis_n = ["dg1", "dg2", "dgg"]
+    f = open(fname, 'w'); st = ""; dis_n = ["dg1", "dg2", "dgg"]
     for j in range(len(dis_n)): st+="{0},".format(dis_n[j])
     f.write(st[:-1]+"\n")
    
@@ -93,13 +91,11 @@ def print_dist_to_c(fname, dists):
     f.close()
 
 def main():
-    ''' usage: '''
+    ''' usage: python distance_graphene.py xyzname sep len iter'''
     xyzname=sys.argv[1]; sep=sys.argv[2]; ln=sys.argv[3]; itr=sys.argv[4]
     nm = str(sep)+"_"+str(ln)+"_"+str(itr)
-    volC = VolFile("run"+nm+".vol") 
-    xyz_cl = XYZFile(xyzname, volC)
-    dists = get_dist( xyz_cl, volC)
-    print_dist_to_c("run"+nm+".distgg", dists)
+    volC = VolFile("run"+nm+".vol"); xyz_cl = XYZFile(xyzname, volC)
+    dists = get_dist( xyz_cl, volC); print_dist_to_c("run"+nm+".distgg", dists)
 
 if __name__=="__main__":
     main()

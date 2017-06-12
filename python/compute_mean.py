@@ -5,7 +5,7 @@ def open_file(fname, datloc):
     '''Given filename and data column location, return np array of data'''
     f = open(fname, 'r').readlines()
     data = np.zeros(len(f))
-    for lin in range(len(f)):
+    for lin in range(1,len(f)):
        #tmp = f[lin].split(",")
         tmp = f[lin].split(",")
         data[lin] = float(tmp[datloc])
