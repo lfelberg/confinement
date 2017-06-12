@@ -134,7 +134,7 @@ def main():
     print("Arry shape", xyz_cl.atom.shape)
 
     for i in range(n_gr):
-        prNm = '_'+str(grPr[i][0])+'_'+str(grPr[i][1])+'defined.csv'
+        prNm = '_'+str(grPr[i][0])+'_'+str(grPr[i][1])+'.csv'
         grs3D, grs2D, xrng = get_gr(xyz_cl, volC, grPr[i])
         print_gr(xrng, grs2D.T, 'g_r_2D_'+nm+prNm)
 

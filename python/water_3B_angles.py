@@ -28,6 +28,7 @@ def get_angles(xyz, volC):
             or "_11_" in xyz.xyzfname or "_12_" in xyz.xyzfname): nm = 3
         elif ("_13_" in xyz.xyzfname or "_14_" in xyz.xyzfname 
             or "_16_" in xyz.xyzfname): nm = 4
+        elif ("_20_" in xyz.xyzfname): nm = 2
 
         in_bn = np.linspace(min(in_wat[:,0]),max(in_wat[:,0]), num=nm)
         b_in = np.digitize(in_wat[:,0], in_bn)

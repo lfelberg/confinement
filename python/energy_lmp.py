@@ -40,7 +40,7 @@ class Energy:
         for line in f:
            if (len(line) > 200) and bool(re.search(r'\d', line)) == True:
                tmp = line.split()
-               if ((float(tmp[0])>=1500000) and (float(tmp[0])%1000==0)) :
+               if ((float(tmp[0])>=3500000) and (float(tmp[0])%1000==0)) :
                    time.append(int(tmp[0]))
                   #ens.append(float(tmp[-2])) #, float(tmp[-1])])
                   #ens.append([float(tmp[15]),float(tmp[16])*float(tmp[17])])
@@ -52,8 +52,13 @@ class Energy:
 
     def print_energies(self, en_out):
         '''For all times in run file, print c2 and c4 energies'''
-       #print(self.enfname, np.mean(self.ens[:,0]), np.mean(self.ens[:,1]))
-        print(self.enfname, np.mean(self.ens), np.mean(np.power(self.ens,2)) ,np.mean(np.power(self.ens,2)) - np.power(np.mean(self.ens),2), 1./(np.mean(np.power(self.ens,2)) - np.power(np.mean(self.ens),2)))
+       #print(self.enfname, np.mean(self.ens), np.mean(np.power(self.ens,2)) ,np.mean(np.power(self.ens,2)) - np.power(np.mean(self.ens),2), np.mean(np.power(self.ens,2)) - np.power(np.mean(self.ens),2))
+        ANG_TO_METER = 1e-10
+        dx2 = (np.mean(np.power(self.ens,2)) - np.power(np.mean(self.ens),2))*ANG_TO_METER*ANG_TO_METER
+        xm = np.mean(self.ens)*ANG_TO_METER
+        a2 = 2.2407e-17 # Area in m^2
+        kT = 4.11e-21 # kT at 298 K in J
+        print(",{0:.7f}".format((a2*dx2*1e11)/(kT*xm)))
         f = open(en_out, "w")
         f.write("Atim,lx\n" )# ,c4\n")
        #f.write("Atim,c2,c4\n")
