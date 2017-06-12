@@ -12,7 +12,6 @@ def plot_scatter(plt_nm, csvL, sep, ln):
     '''Using data from a histogram, plot several'''
     f = plt.figure(1, figsize = (1.5, 1.5))
     ax, ct, leg, mn = f.add_subplot(111), 0, [], ""
-   #matplotlib.rcParams.update({'font.size': 8})
     ax.yaxis.set_major_locator(MaxNLocator())
     MaxNLocator.default_params['nbins']=5
     ax.xaxis.set_major_locator(MaxNLocator())

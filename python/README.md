@@ -93,7 +93,9 @@ by the box, so it just continues to next if it catches some unusual results.
 
 ## energy_lmp.py
 
-**usage**: `python *.out` or `python *.ext`
+File to get info from lammps output file, specifically the `thermo` section.
+
+**usage**: `python energy_lmp.py *.out` or `python energy_lmp.py *.ext`
 
 **Outputs**: Will read either a lammps output file (with the custom output dump
 displayed in the beginning of this python file) or a simple `*.vol` style file and
@@ -146,7 +148,7 @@ and each graphene separation.
 Compute the fourier transform of the g(R) to create an S(q) function. Currently
 plots but will probably also save as csv file
 
-**usage**: `python *.gr sep len iter`
+**usage**: `python fourier.py *.gr sep len iter`
 
 **Outputs**: Plot of fourier transform.
 
@@ -184,7 +186,7 @@ The program unwraps the atoms, so all atoms should progress out from original
 center of mass. Also, the center of mass of each group of waters (between and outside
 of walls) is subtracted to remove any collective motion effects. 
 
-**usage**: `python *.xyz sep len iter`
+**usage**: `python msd_water.py *.xyz sep len iter`
 
 **Outputs**: `msd_sep_len_iter.csv`, a file that contains MSD calcs and their 
 standard deviations for X, Y, Z, YX and XYZ dimensions. 
@@ -198,7 +200,7 @@ by David R. Nelson and B.I. Halperin (1979). There is a good discussion of the m
 in **Formation of Two-Dimensional Crystals with Square Lattice
 Structure from the Liquid State** by Vo Van Hoang and Nguyen Thanh Hieu (2016). 
  
-**usage**: `python *.xyz sep len iter cutoff n`
+**usage**: `python order_params_2D.py *.xyz sep len iter cutoff n`
 Where `cutoff` is the distance between oxygen pairs to consider them neighbors.
 N is the number in the exponential.
 
@@ -215,13 +217,10 @@ by Paul J. Steinhardt, David R. Nelson, and Marco Ronchetti (1983). A good
 summary of it is also in **Accurate determination of crystal structures based on averaged local bond order
 parameters** by Wolfgang Lechner and Christoph Dellago (2008). 
 
-**usage**: `python *.xyz sep len iter`
+**usage**: `python order_params_3D.py *.xyz sep len iter`
 
 **Outputs**: Csv file of q4 and q6 bar.
 
-4.  plot_2d_heat.py
-5.  plot_3B_angles.py
-0.  plot_3B_angles_multi.py
 3.  plot_diffusion.py
 5.  plot_dist_gg.py
 4.  plot_dist_gg_all.py
@@ -236,6 +235,42 @@ parameters** by Wolfgang Lechner and Christoph Dellago (2008).
 0.  water_angles2D.py
 3.  water_angles_util.py
 5.  water_deviation.py
+
+
+## plot_3B_angles.py 
+
+Plotting the distribution of 3-body angle.
+
+**usage**: `python plot_3B_angles.py *.csv sep len iter`
+
+**Outputs**: Plot of 3B angle distribution, can also plot fits to this curve 
+and distribution of distances between water nearest neighbors. Will also save
+the distribution of angles as a csv file.
+
+## plot_3B_angles_multi.py
+
+**usage**: `python plot_3B_angles_multi.py csvStart nsep nlen iter sep1 sep2... len1 len2... ext`
+For a given list of confinement systems, plot their 3-body angle distributions 
+all on one plot.
+
+**Outputs**: A plot of the angle distributions from 0 -> 180 for all systems input.
+
+## plot_vs_2D_density.py
+
+**usage**: `python plot_vs_2D_density.py *.xyz sep len iter`
+
+**Outputs**: 
+
+## 
+
+**usage**: `python *.xyz sep len iter`
+
+**Outputs**: 
+
+## 
+
+**usage**: `python *.xyz sep len iter`
+
 ## 
 
 **usage**: `python *.xyz sep len iter`
@@ -264,47 +299,8 @@ parameters** by Wolfgang Lechner and Christoph Dellago (2008).
 
 **usage**: `python *.xyz sep len iter`
 
-## 
-
-**usage**: `python *.xyz sep len iter`
-
 **Outputs**: 
 
-## 
-
-**usage**: `python *.xyz sep len iter`
-
-**Outputs**: 
-
-## 
-
-**usage**: `python *.xyz sep len iter`
-
-**Outputs**: 
-
-## 
-
-**usage**: `python *.xyz sep len iter`
-
-**Outputs**: 
-
-## 
-
-**usage**: `python *.xyz sep len iter`
-
-**Outputs**: 
-
-## plot_2d_heat.py
-
-This will plot a 2D heatmap of either: 
-
-1. The distance between the two graphene plates (filename: runS_L_It_graph[0-1].data)
-2. The displacement of each carbon atom from the average x location of the plate
-(filename: runS_L_It_graph_sep0.data)
-
-**usage**: `python plot_2d_heat.py runS_L_It_graph*.dat` 
-
-**Outputs**: Will produce a series of plots, one for each snapshot in the dat file.
 
 ## plot_gr.py
 

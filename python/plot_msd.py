@@ -11,7 +11,6 @@ A2_TO_M2 = 1e-20
 PS_TO_S  = 1e12
 A2_PS_TO_M2_S = A2_TO_M2*PS_TO_S 
 
-
 def plot_scatter(plt_nm, csvL, loc, sep, ln, itr):
     '''Using data from a histogram, plot several'''
     f = plt.figure(1, figsize = (1.5, 1.5))
@@ -60,16 +59,6 @@ def plot_scatter(plt_nm, csvL, loc, sep, ln, itr):
     ax.set_xlabel("Time (ps)",fontsize=10); 
     ax.set_ylabel("$MSD_{||} \,\, (\AA^2)$",fontsize=10)
     plt.savefig(plt_nm+csvL[i][j][k].key[loc]+'.png', bbox_inches = 'tight',) 
-
-    fn = 'diffusion_coeff_2D.png'
-   #im = plt.imread(fn, format='png')
-   #xl = ax.get_xlim(); yl = ax.get_ylim()
-   #newax = f.add_axes([0.135, 0.40, 0.48, 0.97], anchor='SW',) # for flex
-   #newax = f.add_axes([0.295, 0.23, 0.60, 0.97], anchor='SW',) # rigid
-   #newax.imshow(im, extent=[0, 1,0., 1.]) #, zorder=19)
-   #newax.axis('off')
-   #plt.savefig(plt_nm+csvL[i][j][k].key[loc]+'_insert.png',bbox_inches='tight',)
-   #plt.close()
 
 def main():
     '''For a collection of data, get info from csv and then plot,
