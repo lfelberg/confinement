@@ -1,6 +1,7 @@
 # Python analysis scripts for confinement project
 
 This file contains an overview of files used for the confinement project.
+
 1.  compute_mean.py
 3.  csvfile.py
 3.  dics.py
@@ -11,32 +12,28 @@ This file contains an overview of files used for the confinement project.
 3.  fourier.py
 5.  g_of_r.py
 4.  gauss_fits.py
-3.  get_density.py
-2.  get_distances.py
 3.  msd_water.py
-3.  ntot_make.py
-3.  order_params_2D.py
+2.  order_params_2D.py
 3.  order_params_3D.py
-4.  plot_2d_heat.py
-5.  plot_3B_angles.py
-0.  plot_3B_angles_multi.py
-3.  plot_diffusion.py
-5.  plot_dist_gg.py
-4.  plot_dist_gg_all.py
-3.  plot_gr.py
-2.  plot_msd.py
-3.  plot_order.py
-3.  plot_vs_time.py
-3.  rmsd.py
+3.  plot_3B_angles.py
+3.  plot_3B_angles_multi.py
+3.  plot_dist_gg.py
+4.  plot_gr.py
+5.  plot_msd.py
+0.  plot_order.py
+3.  plot_vs_2D_density.py
+5.  plot_vs_time.py
+4.  rmsd.py
 3.  util.py
-3.  volfile.py
-4.  water_3B_angles.py
-5.  water_angles.py
-0.  water_angles2D.py
+2.  volfile.py
+3.  water_3B_angles.py
+3.  water_angles.py
+3.  water_angles2D.py
 3.  water_angles_util.py
-5.  water_deviation.py
+3.  water_deviation.py
 4.  write_pdb.py
-3.  xyzfile.py
+5.  xdensity.py
+0.  xyzfile.py
 
 
 ## compute_mean.py
@@ -221,21 +218,6 @@ parameters** by Wolfgang Lechner and Christoph Dellago (2008).
 
 **Outputs**: Csv file of q4 and q6 bar.
 
-3.  plot_diffusion.py
-5.  plot_dist_gg.py
-4.  plot_dist_gg_all.py
-3.  plot_gr.py
-2.  plot_msd.py
-3.  plot_order.py
-3.  plot_vs_time.py
-3.  rmsd.py
-3.  util.py
-4.  water_3B_angles.py
-5.  water_angles.py
-0.  water_angles2D.py
-3.  water_angles_util.py
-5.  water_deviation.py
-
 
 ## plot_3B_angles.py 
 
@@ -247,6 +229,7 @@ Plotting the distribution of 3-body angle.
 and distribution of distances between water nearest neighbors. Will also save
 the distribution of angles as a csv file.
 
+
 ## plot_3B_angles_multi.py
 
 **usage**: `python plot_3B_angles_multi.py csvStart nsep nlen iter sep1 sep2... len1 len2... ext`
@@ -255,60 +238,105 @@ all on one plot.
 
 **Outputs**: A plot of the angle distributions from 0 -> 180 for all systems input.
 
-## plot_vs_2D_density.py
 
-**usage**: `python plot_vs_2D_density.py *.xyz sep len iter`
+## plot_dist_gg.py 
 
-**Outputs**: 
+Plot a 2D histogram of the distance of graphene-graphene separation and the 
+water distances between them. Also plot a 1D histogram of dgg and xdist. X dist 
+is normalized with respect to dgg, so it will range from 0 - 1. Realistically,
+because of VDW, the true range ~0.25-0.75. This also sorts out any unrealistic 
+values, which are not all caught in the distance_graphene program. This can
+also calculate fits for d_gg and x.
 
-## 
-
-**usage**: `python *.xyz sep len iter`
-
-**Outputs**: 
-
-## 
-
-**usage**: `python *.xyz sep len iter`
-
-## 
-
-**usage**: `python *.xyz sep len iter`
-
-**Outputs**: 
-
-## 
-
-**usage**: `python *.xyz sep len iter`
-
-**Outputs**: 
-
-## 
-
-**usage**: `python *.xyz sep len iter`
-
-**Outputs**: 
-
-## 
-
-**usage**: `python *.xyz sep len iter`
-
-**Outputs**: 
-
-## 
-
-**usage**: `python *.xyz sep len iter`
-
-**Outputs**: 
+**usage**: `python plot_dist_gg.py *.csv sep len iter`
 
 
 ## plot_gr.py
 
 This will plot a series of curves for g(r). 
 
-**usage**: `python plot_gr.py csvStart nsep nlen niter sep1 sep2... len1 len2... iter1 iter2... ext datLoc`
+**usage**: `python plot_gr.py csvStart nsep nlen iter sep1 sep2... len1 len2... ext`
 
 Should output a plot of the multiple datasets.
+
+
+## plot_msd.py
+
+Will plot multiple curves for MSD, and will also approximate D_2D for many
+files. If you want to change from D_2D, you need to change the scaling factor.
+
+**usage**: `python plot_msd.py csvStart nsep nlen niter sep1 sep2... len1 len2... iter1 iter2... ext datLoc`
+
+
+## plot_order.py
+
+Plot the distribution of order parameters q or phi.
+
+**usage**: `python plot_order.py *.csv sep len iter`
+
+
+## plot_vs_2D_density.py
+
+Plot the values of something for rigid and flexible confinement versus 2D
+density. This is currently either the d_gg, the compressibility or the estimated
+D_{||}.
+
+**usage**: `python plot_vs_2D_density.py *.csv`
+
+
+## plot_vs_time.py
+
+Will plot multiple curves for an input csv file type. Assumes that the first
+column of the csv is some sort of sequential increase.
+
+**usage**: `python plot_vs_time.py csvStart nsep nlen niter sep1 sep2... len1 len2... iter1 iter2... ext datLoc`
+
+3.  rmsd.py
+3.  util.py
+4.  water_3B_angles.py
+5.  water_angles.py
+0.  water_angles2D.py
+3.  water_angles_util.py
+5.  water_deviation.py
+
+
+## 
+
+**usage**: `python *.xyz sep len iter`
+
+**Outputs**: 
+
+## 
+
+**usage**: `python *.xyz sep len iter`
+
+**Outputs**: 
+
+## 
+
+**usage**: `python *.xyz sep len iter`
+
+**Outputs**: 
+
+
+## 
+
+**usage**: `python *.xyz sep len iter`
+
+**Outputs**: 
+
+## 
+
+**usage**: `python *.xyz sep len iter`
+
+**Outputs**: 
+
+## 
+
+**usage**: `python *.xyz sep len iter`
+
+**Outputs**: 
+
 
 ## volfile.py
 

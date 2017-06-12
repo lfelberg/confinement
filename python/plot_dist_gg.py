@@ -9,8 +9,6 @@ MaxNLocator.default_params['nbins']=5
 from csvfile import CSVFile
 from gauss_fits import skew, double, triple
 
-colorL = [[0,0,0], [0,0,1], [1, 0,0], [.93, .53, .18]]
-
 def plot_scatter(csv, sep, ln, itr):
     '''Using data from a histogram, plot several'''
     nbins = 200
