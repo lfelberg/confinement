@@ -23,12 +23,10 @@ This file contains an overview of files used for the confinement project.
 0.  plot_order.py
 3.  plot_vs_2D_density.py
 5.  plot_vs_time.py
-4.  rmsd.py
 3.  util.py
 2.  volfile.py
 3.  water_3B_angles.py
 3.  water_angles.py
-3.  water_angles2D.py
 3.  water_angles_util.py
 3.  water_deviation.py
 4.  write_pdb.py
@@ -279,7 +277,7 @@ Plot the distribution of order parameters q or phi.
 
 Plot the values of something for rigid and flexible confinement versus 2D
 density. This is currently either the d_gg, the compressibility or the estimated
-D_{||}.
+$D_{||}$.
 
 **usage**: `python plot_vs_2D_density.py *.csv`
 
@@ -291,51 +289,35 @@ column of the csv is some sort of sequential increase.
 
 **usage**: `python plot_vs_time.py csvStart nsep nlen niter sep1 sep2... len1 len2... iter1 iter2... ext datLoc`
 
-3.  rmsd.py
-3.  util.py
-4.  water_3B_angles.py
-5.  water_angles.py
-0.  water_angles2D.py
-3.  water_angles_util.py
-5.  water_deviation.py
+
+##  util.py
+
+A file that contains some common methods for many of the python scripts.
+
+## water_3B_angles.py
+
+**usage**: `python water_3B_angles.py *.xyz sep len iter`
+
+**Outputs**:  A csv file with the distance between an oxygen and its nearest neighbors
+and the angle between them.
+
+## water_angles.py
+
+Program to compute pairwise angles and distance for waters in the system. This
+output is then used to calculate the entropy with the g(R) and the g(angles).
+
+**usage**: `python water_angles.py *.xyz sep len iter`
+
+**Outputs**: A csv file that has the distance and 5 descriptive angles
+for pairs of atoms in the system.
 
 
-## 
+## water_angles_util.py
 
-**usage**: `python *.xyz sep len iter`
-
-**Outputs**: 
-
-## 
-
-**usage**: `python *.xyz sep len iter`
-
-**Outputs**: 
-
-## 
-
-**usage**: `python *.xyz sep len iter`
-
-**Outputs**: 
-
-
-## 
-
-**usage**: `python *.xyz sep len iter`
-
-**Outputs**: 
-
-## 
-
-**usage**: `python *.xyz sep len iter`
-
-**Outputs**: 
-
-## 
-
-**usage**: `python *.xyz sep len iter`
-
-**Outputs**: 
+This file contains the methods for calculating pairwise distances and angles
+between waters in the system. Has equations for angle calculation, calculating 
+distances between pairs, finding n closest pairs. Some methods here are used for
+other programs as well.
 
 
 ## volfile.py
