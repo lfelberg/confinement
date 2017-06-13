@@ -18,12 +18,12 @@ def g_of_r(dists, rang):
     rd_rng = np.arange(0, LMAX, dr); low, upp = rd_rng[:-1], rd_rng[1:]
     bin_gr = len(rd_rng)
     if dim == 3: rd_mu = 4.0/3.0*np.pi*(np.power(upp,3.) - np.power(low,3.))
-    else: rd_mu = 2.0*np.pi*(np.power(upp,2.) - np.power(low,2.)) 
+    else: rd_mu = np.pi*(np.power(upp,2.) - np.power(low,2.)) 
 
     # number density normalization
     for d in range(dim): vl *= rang[d]
     his_den, benz = np.histogram(dists, bins=rd_rng)
-    return his_den*vl*2./rd_mu, len(dists) #DIVIDE BY TWO FOR NORM SCHEME
+    return his_den*vl/rd_mu, len(dists) #DIVIDE BY TWO FOR NORM SCHEME
 
 def gr_cal(crd1,crd0,rang,same):
     '''Given an array of molecules you would like to compute the distance 

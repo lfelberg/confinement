@@ -38,6 +38,7 @@ def get_gr_lst(csv_nm):
         columns to plot'''
     sep_siz = int(csv_nm.split("_")[3]); dim = csv_nm.split("_")[2]; nfct=1.0
 
+    if sep_siz == 6: nfct = 1.3
     # flexible
     if sep_siz == 91:  
          cls = [2,30]; nfct = 1.4
