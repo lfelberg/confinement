@@ -43,10 +43,31 @@ def plot_scatter(csv, sep, ln, itr):
     ax.yaxis.set_major_locator(MaxNLocator())
     matplotlib.rcParams['font.size'] = 5;
     plt.plot(x, y, color = "k")
+    plt.plot(np.ones(70)*10.5, np.linspace(0,2,70), color = "r")
     ax.set_xlabel("$d_{gg} \, (\AA$)",fontsize=7);ax.set_xlim([6.,20.])
     ax.set_ylabel("Probability $(1/\AA)$",fontsize=7);ax.set_ylim([0.,2.0])
     plt.savefig(csv.csvfname[:-3]+'g_sep_fit.png',bbox_inches = 'tight',)
     plt.close()
+
+   #ml = Y < 10.5
+   #bl = Y > 10.5
+   #Xml = X[ml]#/Y[ml].astype(float)
+   #Xbl = X[bl]#/Y[bl].astype(float)
+   #y_ml,x_ml = np.histogram(Xml, bins=nbins); dx = x_ml[1]-x_ml[0]
+   #x_ml = x_ml[:-1] + dx/2.;y_ml = y_ml/sum(y_ml.astype(float))/dx
+
+   #f = open("run121_46_1.diso_sep_fit.dat", "w")
+   #f.write("x_dgg,x_val\n")
+   #for i in range(len(x_ml)): f.write("{0:.5f},{1:.5f}\n".format(x_ml[i],y_ml[i]))
+   #f.close()
+
+   #y_bl,x_bl = np.histogram(Xbl, bins=nbins); dx = x_bl[1]-x_bl[0]
+   #x_bl = x_bl[:-1] + dx/2.;y_bl = y_bl/sum(y_bl.astype(float))/dx
+
+   #f = open("run122_46_1.diso_sep_fit.dat", "w")
+   #f.write("x_dgg,x_val\n")
+   #for i in range(len(x_bl)): f.write("{0:.5f},{1:.5f}\n".format(x_bl[i],y_bl[i]))
+   #f.close()
 
     y,x = np.histogram(X, bins=nbins); dx = x[1]-x[0]
     x = x[:-1] + dx/2.;y = y/sum(y.astype(float))/dx
@@ -60,6 +81,11 @@ def plot_scatter(csv, sep, ln, itr):
     ax.set_ylabel("Probability",fontsize=7);#ax.set_ylim([0.,15])
     plt.savefig(csv.csvfname[:-3]+'o_sep_fit.png',bbox_inches = 'tight',)
     plt.close()
+    f = open(csv.csvfname[:-3]+"o_sep_fit.dat", "w")
+    f.write("x_dgg,x_val\n")
+    for i in range(len(x)): f.write("{0:.5f},{1:.5f}\n".format(x[i],y[i]))
+    f.close()
+
 
     ## This is for 6A flex system which has some G-G contacts
    #nbins = 30

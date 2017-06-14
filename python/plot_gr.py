@@ -42,9 +42,9 @@ def plot_scatter(plt_nm, csvL, sep, ln):
    #    )
     ax.set_xlim([0,12.0]); ax.set_ylim([0,4.0])
     if "_1_2.csv" in csvL[i][j].csvfname:
-        ax.set_ylabel(r"$g_{{OH}}(R)$ (a.u.)",fontsize=12)
-    else: ax.set_ylabel(r"$g_{{OO}}$(R) (a.u.)",fontsize=12)
-    ax.set_xlabel("R ($\AA$)",fontsize=12)
+        ax.set_ylabel(r"$g_{{OH}}(r)$",fontsize=12)
+    else: ax.set_ylabel(r"$g_{{OO}}(r)$",fontsize=12)
+    ax.set_xlabel("$r \, (\AA)$",fontsize=12)
     ax.yaxis.labelpad = -0.6; ax.xaxis.labelpad = -0.6
     fname = plt_nm+mn+csvL[i][j].csvfname[-7:-4]+".png"
     plt.savefig(fname, format='png', bbox_inches = 'tight', dpi=300) 

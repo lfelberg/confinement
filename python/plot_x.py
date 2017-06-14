@@ -3,37 +3,44 @@ import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.ticker import *
-MaxNLocator.default_params['nbins']=2
+MaxNLocator.default_params['nbins']=4
 
 from csvfile import CSVFile
-from dics import colorL, dens
+from util import get_gr_lst
+from dics import colorL
+from dics import x_dgg as dens
 
 def plot_scatter(plt_nm, csvL, sep, ln):
     '''Using data from a histogram, plot several'''
     f = plt.figure(1, figsize = (1.5, 1.5))
     ax, ct, leg, mn = f.add_subplot(111), 0, [], ""
-    ax.yaxis.set_major_locator(MaxNLocator())
-    MaxNLocator.default_params['nbins']=5
+    matplotlib.rcParams.update({'font.size': 8})
     ax.xaxis.set_major_locator(MaxNLocator())
+    ax.yaxis.set_major_locator(MaxNLocator())
     for i in range(len(csvL)):
         for j in range(len(csvL[i])):
+           dat = csvL[i][j].dat
            fn = csvL[i][j].csvfname.split("_")
-           sep = int(fn[0][3:])
-           if "bulk" != dens[sep][0]: lg = "{0:.3f}".format(dens[sep][0])
-           else:                          lg = "bulk"
-           ax.plot(csvL[i][j].dat[0],csvL[i][j].dat[1],
-                   color = dens[sep][1], label=lg)
-           mn += fn[0][3:] + "_";  ct += 1
-   #ax.legend(ncol = 1, columnspacing = -0.4,
-   #    fontsize =  6 , handletextpad = -0.1,
-   #    handlelength = 1.2, borderaxespad = -0.9,
-   #    bbox_to_anchor = (0.32,0.91),
-   #    )
-    ax.set_xlim([0,180]); ax.set_ylim([0,0.02])
-    ax.set_xlabel(r"$\theta$",fontsize= 12)
-    ax.set_ylabel(r"$PDF$",fontsize= 12)
+           mn += fn[0][3:] + "_"; dn = int(fn[0][3:])
+
+           lg = dens[dn][0]
+           
+           if dens[dn][2] == "--": dsh = (2,1)
+           else:                   dsh = (None,None)
+           print(csvL[i][j].key)
+           ax.plot(dat[0], dat[1], dens[dn][2],
+                   color = dens[dn][1], dashes = dsh, label=lg)
+           ct += 1
+    ax.legend(ncol = 5, columnspacing = 0.4,
+        fontsize =  5, handletextpad = 0.2,
+        handlelength = 1.3, borderaxespad = -0.9,
+        bbox_to_anchor = (1.0,1.12),
+        )
+    ax.set_xlim([0.2,0.8]);#ax.set_ylim([0,10.0])
+    ax.set_ylabel(r"PDF",fontsize=12)
+    ax.set_xlabel("$x/d_{gg}$",fontsize=12)
     ax.yaxis.labelpad = -0.6; ax.xaxis.labelpad = -0.6
-    fname = "ang_3B_"+mn[:-1]+".png"
+    fname = plt_nm+mn+csvL[i][j].csvfname[-7:-4]+".png"
     plt.savefig(fname, format='png', bbox_inches = 'tight', dpi=300) 
     plt.close()
 

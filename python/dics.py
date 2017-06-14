@@ -30,10 +30,10 @@ dens = {
          16  :   [0.369, colorL[-4], "-"],
          20  :   [0.491, colorL[0], "-"],
          37  :   ["bulk", colorL[-1], "-"],   # for bulk
-         91  :   ["0.154 1L", colorL[0], "--"],
-         92  :   ["0.154 2L", colorL[0], "-"],
-         121 :   ["0.245 2L", colorL[0], "--"],
-         122 :   ["0.245 3L", colorL[0], "-"],
+         91  :   ["0.154 ML", colorL[0], "--"],
+         92  :   ["0.154 BL", colorL[0], "-"],
+         121 :   ["0.245 BL", colorL[0], "--"],
+         122 :   ["0.245 TL", colorL[0], "-"],
          131 :   ["0.276 mid", colorL[10], "--"],
          132 :   ["0.276 out", colorL[10], "-"],
          141 :   ["0.307 mid", colorL[1], "--"],
@@ -42,5 +42,15 @@ dens = {
          162 :   ["0.369 out", colorL[-4], "-"],
          201 :   ["0.491 mid", colorL[0], "--"],
          202 :   ["0.491 out", colorL[0], "-"],
+}
+
+x_dgg = {
+         8   :   ["Rigid", colorL[-4], "-"],
+         9   :   ["Rigid", colorL[-4], "-"],
+         12  :   ["Rigid", colorL[-4], "-"],
+         91  :   ["Flexible ML", colorL[1], "--"],
+         92  :   ["Flexible BL", colorL[1], "-"],
+         121 :   ["Flexible BL", colorL[1], "--"],
+         122 :   ["Flexible TL", colorL[1], "-"],
 }
 

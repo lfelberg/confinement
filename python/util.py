@@ -49,7 +49,8 @@ def get_gr_lst(csv_nm):
     elif sep_siz == 9:  cls = [5,15,18,27]
 
     elif sep_siz == 10 or sep_siz == 11: cls = [3,6,]
-    elif sep_siz == 12: cls = [7]
+    elif sep_siz == 12: 
+         cls = [7]; nfct = 1.1
     elif sep_siz == 131 or sep_siz == 141: cls =[5] # inner layer of 3L
     elif sep_siz == 132 or sep_siz == 142: cls =[3,7] # layer close to graph
     elif sep_siz == 161: cls =[5,7] #inner layer of 3/4

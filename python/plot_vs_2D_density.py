@@ -26,16 +26,19 @@ def plot_scatter(csv):
 
     # graphene graphene separation
     elif "d_gg" in csv.csvfname:
-        plt_l = 0; ff, df, flx, fl = [], [], [], []; bbox, ncl = (0.52,0.99), 1
+        plt_l = 0; ff,df,flx,fl,rt,rtx = [],[],[],[],[],[]; 
+        bbox, ncl = (0.52,0.99), 1
         flexb = csv.dat[csv.find_keyword('dgg_f')]
         for j in range(flexb.shape[1]): 
             if flexb[1][j] != 0.:
+                rtx.append(dens[j]); rt.append(rigid[j])
                 ff.append(dens[j]); fl.append(flexb[0][j])
                 ff.append(dens[j]); fl.append(flexb[1][j])
             else:  df.append(dens[j]); flx.append(flexb[0][j])
-        plt.plot(ff, fl, 'mD', label = "multi")
-        plt.plot(df, flx, 'k.', label = "flexible")
-        plt.plot(dens, rigid, 'b.',label = "rigid")
+        plt.plot(ff, fl, 'kD')#label = "multi")
+        plt.plot(rtx, rt, 'bo', markersize = 5.4)
+        plt.plot(df, flx, 'kD', fillstyle="none", label = "flexible")
+        plt.plot(dens, rigid, 'bo', markersize = 5.4, fillstyle = "none",label = "rigid")
         ax.set_xlim([0.,0.40]);ax.set_ylim([3,15])
         ax.set_ylabel(r"$\langle d_{gg} \rangle \,\, (\AA)$",fontsize= 10)
 
@@ -61,7 +64,7 @@ def plot_scatter(csv):
         plt.text(txl[ll],texty,str(ll)+'L',fontsize=10, color = clr)
 
     ax.legend(ncol = ncl, fontsize=6, columnspacing = 0.2,handletextpad= 0.25,
-              bbox_to_anchor = bbox, handlelength = 2.1,
+              bbox_to_anchor = bbox, handlelength = 2.1,numpoints = 1,
               borderaxespad= 0.2)
     ax.set_xlabel(r"$\rho_{2D}$",fontsize= 10)
     plt.savefig(csv.csvfname[:-4]+'.png',bbox_inches = 'tight')
