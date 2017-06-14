@@ -19,8 +19,8 @@ def plot_scatter(plt_nm, csvL, sep, ln):
         for j in range(len(csvL[i])):
            fn = csvL[i][j].csvfname.split("_")
            sep = int(fn[0][3:])
-           if "bulk" != dens[sep][0]: lg = "{0:.3f}".format(dens[sep][0])
-           else:                          lg = "bulk"
+           if type(dens[sep][0]) == float: lg = "{0:.3f}".format(dens[sep][0])
+           else:                         lg = dens[sep][0]
            ax.plot(csvL[i][j].dat[0],csvL[i][j].dat[1],
                    color = dens[sep][1], label=lg)
            mn += fn[0][3:] + "_";  ct += 1

@@ -36,7 +36,7 @@ def plot_scatter(plt_nm, csvL, sep, ln):
         handlelength = 1.3, borderaxespad = -0.9,
         bbox_to_anchor = (1.0,1.12),
         )
-    ax.set_xlim([0.2,0.8]);#ax.set_ylim([0,10.0])
+    ax.set_xlim([0.2,0.8]); ax.set_ylim([0,10.0])
     ax.set_ylabel(r"PDF",fontsize=12)
     ax.set_xlabel("$x/d_{gg}$",fontsize=12)
     ax.yaxis.labelpad = -0.6; ax.xaxis.labelpad = -0.6

@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.ticker import *
-MaxNLocator.default_params['nbins']=2
+MaxNLocator.default_params['nbins']=4
 
 from csvfile import CSVFile
 from gauss_fits import skew, double, normal
@@ -11,6 +11,7 @@ from gauss_fits import skew, double, normal
 def plot_scatter(csv):
     '''Using data from a histogram, plot several'''
     f = plt.figure(1, figsize = (1.5, 1.5)); ax = f.add_subplot(111)
+   #f = plt.figure(1, figsize = (3.3, 3.3)); ax = f.add_subplot(111)
     plt.rcParams.update({'font.size': 8}); ncl = 3
     ax.xaxis.set_major_locator(MaxNLocator())
     ax.yaxis.set_major_locator(MaxNLocator())
@@ -27,7 +28,7 @@ def plot_scatter(csv):
     # graphene graphene separation
     elif "d_gg" in csv.csvfname:
         plt_l = 0; ff,df,flx,fl,rt,rtx = [],[],[],[],[],[]; 
-        bbox, ncl = (0.52,0.99), 1
+        bbox, ncl = (0.99,0.29), 1
         flexb = csv.dat[csv.find_keyword('dgg_f')]
         for j in range(flexb.shape[1]): 
             if flexb[1][j] != 0.:
@@ -35,9 +36,9 @@ def plot_scatter(csv):
                 ff.append(dens[j]); fl.append(flexb[0][j])
                 ff.append(dens[j]); fl.append(flexb[1][j])
             else:  df.append(dens[j]); flx.append(flexb[0][j])
-        plt.plot(ff, fl, 'kD')#label = "multi")
+        plt.plot(ff, fl, 'rD', markeredgecolor ="none")#label = "multi")
         plt.plot(rtx, rt, 'bo', markersize = 5.4)
-        plt.plot(df, flx, 'kD', fillstyle="none", label = "flexible")
+        plt.plot(df, flx, 'rD', fillstyle="none", label = "flexible")
         plt.plot(dens, rigid, 'bo', markersize = 5.4, fillstyle = "none",label = "rigid")
         ax.set_xlim([0.,0.40]);ax.set_ylim([3,15])
         ax.set_ylabel(r"$\langle d_{gg} \rangle \,\, (\AA)$",fontsize= 10)
@@ -55,13 +56,14 @@ def plot_scatter(csv):
         x = np.linspace(0,1,70); y = np.ones(70)*bulk_v
         plt.plot(x,y, 'r--',dashes=(1.5,0.9),linewidth=0.7,label="bulk,\n298K")
         y=np.linspace(0,xm,70); ax.set_xlim([0.,0.55]); ax.set_ylim([0,xm])
-        lay = [0.1465, 0.245, 0.3525]; txl = [0.06,0.17,0.27, 0.405]
+        lay = [0.1465, 0.245, 0.3525]; txl = [0.05,0.16,0.27, 0.405]
         clr = [0.439, 0.502, 0.565]
         for ll in range(len(lay)):
             plt.plot(np.ones(70)*lay[ll],y,'--',color=clr,
                      dashes=(2.5,0.9),linewidth=0.7)
-            plt.text(txl[ll],texty,str(ll)+'L',fontsize=10, color = clr)
-        plt.text(txl[ll],texty,str(ll)+'L',fontsize=10, color = clr)
+            plt.text(txl[ll],texty,str(ll+1)+'L',fontsize=10, color = clr)
+        ll = 3
+        plt.text(txl[ll],texty,str(ll+1)+'L',fontsize=10, color = clr)
 
     ax.legend(ncol = ncl, fontsize=6, columnspacing = 0.2,handletextpad= 0.25,
               bbox_to_anchor = bbox, handlelength = 2.1,numpoints = 1,

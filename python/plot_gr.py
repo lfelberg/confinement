@@ -27,7 +27,7 @@ def plot_scatter(plt_nm, csvL, sep, ln):
           #    ax.plot(dat[0], dat[k], label=str(k), color = colorL[ct+3])
           #    ct += 1
 
-           if dn < 21: lg = "{0:.3f}".format(dens[dn][0])
+           if type(dens[dn][0]) == float: lg = "{0:.3f}".format(dens[dn][0])
            else:               lg = dens[dn][0]
            
            if dens[dn][2] == "--": dsh = (2,1)
