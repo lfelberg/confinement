@@ -40,7 +40,8 @@ def plot_scatter(csv):
         plt.plot(rtx, rt, 'bo', markersize = 5.4)
         plt.plot(df, flx, 'rD', fillstyle="none", label = "flexible")
         plt.plot(dens, rigid, 'bo', markersize = 5.4, fillstyle = "none",label = "rigid")
-        ax.set_xlim([0.,0.40]);ax.set_ylim([3,15])
+       #ax.set_xlim([0.,0.40]);ax.set_ylim([3,15])
+        ax.set_xlim([0.,0.50]);ax.set_ylim([3,20])
         ax.set_ylabel(r"$\langle d_{gg} \rangle \,\, (\AA)$",fontsize= 10)
 
     # diffusion coefficients

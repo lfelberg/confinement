@@ -15,14 +15,6 @@ This file contains an overview of files used for the confinement project.
 3.  msd_water.py
 2.  order_params_2D.py
 3.  order_params_3D.py
-3.  plot_3B_angles.py
-3.  plot_3B_angles_multi.py
-3.  plot_dist_gg.py
-4.  plot_gr.py
-5.  plot_msd.py
-0.  plot_order.py
-3.  plot_vs_2D_density.py
-5.  plot_vs_time.py
 3.  util.py
 2.  volfile.py
 3.  water_3B_angles.py
@@ -33,6 +25,16 @@ This file contains an overview of files used for the confinement project.
 5.  xdensity.py
 0.  xyzfile.py
 
+
+For plotting the following scripts are in the `plotting` directory:
+3.  plot_3B_angles.py
+3.  plot_3B_angles_multi.py
+3.  plot_dist_gg.py
+4.  plot_gr.py
+5.  plot_msd.py
+0.  plot_order.py
+3.  plot_vs_2D_density.py
+5.  plot_vs_time.py
 
 ## compute_mean.py
 

@@ -6,9 +6,8 @@ from matplotlib.ticker import *
 MaxNLocator.default_params['nbins']=4
 
 from csvfile import CSVFile
-from util import get_gr_lst
-from dics import colorL
-from dics import x_dgg as dens
+from plot_util import get_gr_lst
+from dics import colorL, dens
 
 def plot_scatter(plt_nm, csvL, sep, ln):
     '''Using data from a histogram, plot several'''
@@ -19,26 +18,33 @@ def plot_scatter(plt_nm, csvL, sep, ln):
     ax.yaxis.set_major_locator(MaxNLocator())
     for i in range(len(csvL)):
         for j in range(len(csvL[i])):
-           dat = csvL[i][j].dat
+           cls,nfct=get_gr_lst(csvL[i][j].csvfname); dat = csvL[i][j].dat
            fn = csvL[i][j].csvfname.split("_")
-           mn += fn[0][3:] + "_"; dn = int(fn[0][3:])
+           mn += fn[3] + "_"; dn = int(fn[3])
+           ct=0; print(cls)
+          #for k in cls:
+          #   #ax.plot(dat[0], dat[k], label="x="+csvL[i][j].key[k][1:-2], color = colorL[ct])
+          #    ax.plot(dat[0], dat[k], label=str(k), color = colorL[ct+3])
+          #    ct += 1
 
-           lg = dens[dn][0]
+           if type(dens[dn][0]) == float: lg = "{0:.3f}".format(dens[dn][0])
+           else:               lg = dens[dn][0]
            
            if dens[dn][2] == "--": dsh = (2,1)
            else:                   dsh = (None,None)
-           print(csvL[i][j].key)
-           ax.plot(dat[0], dat[1], dens[dn][2],
+           ax.plot(dat[0], np.mean(dat[cls],axis=0)/nfct, dens[dn][2],
                    color = dens[dn][1], dashes = dsh, label=lg)
            ct += 1
-    ax.legend(ncol = 5, columnspacing = 0.4,
-        fontsize =  5, handletextpad = 0.2,
-        handlelength = 1.3, borderaxespad = -0.9,
-        bbox_to_anchor = (1.0,1.12),
-        )
-    ax.set_xlim([0.2,0.8]); ax.set_ylim([0,10.0])
-    ax.set_ylabel(r"PDF",fontsize=12)
-    ax.set_xlabel("$x/d_{gg}$",fontsize=12)
+   #ax.legend(ncol = 5, columnspacing = 0.4,
+   #    fontsize =  5 , handletextpad = 0.2,
+   #    handlelength = 1.3, borderaxespad = -0.9,
+   #    bbox_to_anchor = (0.8,1.2),
+   #    )
+    ax.set_xlim([0,12.0]); ax.set_ylim([0,4.0])
+    if "_1_2.csv" in csvL[i][j].csvfname:
+        ax.set_ylabel(r"$g_{{OH}}(r)$",fontsize=12)
+    else: ax.set_ylabel(r"$g_{{OO}}(r)$",fontsize=12)
+    ax.set_xlabel("$r \, (\AA)$",fontsize=12)
     ax.yaxis.labelpad = -0.6; ax.xaxis.labelpad = -0.6
     fname = plt_nm+mn+csvL[i][j].csvfname[-7:-4]+".png"
     plt.savefig(fname, format='png', bbox_inches = 'tight', dpi=300) 
