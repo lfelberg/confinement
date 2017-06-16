@@ -27,6 +27,7 @@ This file contains an overview of files used for the confinement project.
 
 
 For plotting the following scripts are in the `plotting` directory:
+
 3.  plot_3B_angles.py
 3.  plot_3B_angles_multi.py
 3.  plot_dist_gg.py
