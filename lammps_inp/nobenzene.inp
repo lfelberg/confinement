@@ -69,6 +69,8 @@ compute 4 watgraph reduce sum c_3
 thermo          500
 thermo_style    custom step time temp press pe ke etotal evdwl ecoul epair ebond eangle edihed vol density lx ly lz xlo xhi ylo yhi zlo zhi pxx pyy pzz pxy pxz pyz c_2 c_4
 dump            11 all xyz 500 traj_sep_len_iter.xyz
+dump            1112 all custom 500 traj_sep_len_iter.velxyz id type vx vy vz
+dump_modify     1112 sort id
 restart         5000 restart.sep.len.iter.water
 
 # RUNS
@@ -87,4 +89,4 @@ unfix 12
 
 fix 20 water shake 0.0001 20 1000 b 1 a 1
 fix 21 all npt temp 298 298 100 x 1 1 1000
-run 5000000
+run 7500000

@@ -71,6 +71,8 @@ thermo_style    custom step time temp press pe ke etotal evdwl ecoul epair ebond
 #thermo_style    custom step temp pxx pyy pzz ebond eangle epair edihed etotal lx ly lz
 #dump            11 all dcd 250 trajectory.dcd
 dump            11 all xyz 500 traj_sep_len_iter.xyz
+dump            1112 all custom 500 traj_sep_len_iter.velxyz id type vx vy vz
+dump_modify     1112 sort id
 restart         5000 restart.sep.len.iter.water
 
 # RUNS

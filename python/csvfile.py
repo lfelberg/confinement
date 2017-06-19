@@ -12,21 +12,21 @@ class CSVFile:
 
     def get_dic(self, fname):
         '''Method to get dictionary from csv file'''
-        with open(fname) as csvfile:                                              
-            reader, rw_ct, rw, dt = csv.DictReader(csvfile), 0, 0, []              
-            rw = 0                                                                 
-            for row in reader:                                                     
-                dat, rk = [], row.keys()                                           
-                if rw == 0: 
+        with open(fname) as csvfile:
+            reader, rw_ct, rw, dt = csv.DictReader(csvfile), 0, 0, []
+            rw = 0
+            for row in reader:
+                dat, rk = [], row.keys()
+                if rw == 0:
                     self.key = sorted(rk)
-                for key in sorted(rk):                                             
+                for key in sorted(rk):
                     if "_" in row[key]:
                         tmp = row[key].split('_')
                         for i in range(len(tmp)): dat.append(float(tmp[i]))
                     elif key != "":
-                        dat.append(float(row[key]))                                    
-                dt.append(dat)                                                     
-                rw += 1 
+                        dat.append(float(row[key]))
+                dt.append(dat)
+                rw += 1
         self.dat = np.array((dt)).T
        #print("Keys: ", self.key, " and dat shape ", self.dat.shape)
 
