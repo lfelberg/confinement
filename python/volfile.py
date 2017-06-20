@@ -60,7 +60,6 @@ class VolFile:
 
     def print_quarters(self, volf_pref):
         '''For times in run file print out quarters'''
-        print(len(self.time))
         for q in range(4):
             f = open(volf_pref+"_q"+str(q+1)+".vol", "w")
             # always include the first snapshot

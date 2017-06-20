@@ -66,7 +66,7 @@ def main():
     ''' Given a list of pairs for g(r) calcs, do this as a function as 
         distance from wall, but only 2D and only for your wall side '''
     xyzname=sys.argv[1]; sep=sys.argv[2]; ln=sys.argv[3]; itr=sys.argv[4]
-    nm = str(sep)+"_"+str(ln)+"_"+itr; volC = VolFile("ms"+nm+".vol") 
+    nm = str(sep)+"_"+str(ln)+"_"+itr; volC = VolFile("run"+nm+".vol") 
     xyz_cl = XYZFile(xyzname, volC)
 
     msd = get_msd(xyz_cl, volC)

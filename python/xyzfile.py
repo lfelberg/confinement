@@ -1,3 +1,4 @@
+import sys
 import numpy as np
 
 from volfile import VolFile
@@ -35,21 +36,22 @@ class XYZFile:
         for line in f:
             if times != [] and t_ct >= len(times): break
 
-            if "ITEM: TIMESTEP" in line: t_grab = 1
-            if t_grab == 1 and times[t_ct][0] == int(line):
+            if ("ITEM" not in line and len(line.split())==1 and t_grab==1 
+                and times[t_ct][0]==int(line)):
                 time.append(int(line)); t_grab = 0
                 t_ct += 1; grab_snap = 1
+            if "ITEM: TIMESTEP" in line: t_grab = 1
 
             #Gets past # and atoms lines
             if line[0]=="A" or "ITEM: ATOMS" in line: # for vel or xyz file
                 if grab_snap == 1:
-                    atom+=[atoms]
+                    if len(atoms) > 0: atom+=[atoms]
                     atoms = []
-                if "vel" not in self.xyzfname and (times == [] or
-                    times[t_ct][0] == int(line.split()[-1])):
-                    time.append(int(line.split()[-1]))
-                    t_ct += 1; grab_snap = 1
-                else: grab_snap = 0
+                if "vel" not in self.xyzfname:
+                    if (times==[] or times[t_ct][0] == int(line.split()[-1])):
+                        time.append(int(line.split()[-1]))
+                        t_ct += 1; grab_snap = 1
+                    else: grab_snap = 0
 
             # Only grab snapshots that have volume data
             elif len(line.split()) > 3 and "ITEM" not in line and grab_snap == 1:
@@ -65,7 +67,7 @@ class XYZFile:
                                   float(crds[-2])-dims[t_ct][2],
                                   float(crds[-1])-dims[t_ct][4]])
         #For last timestep, since it doesn't have a line about Atoms after it.
-        if atoms != []: atom += [atoms]
+        if len(atoms) == len(atom[-1]): atom += [atoms]
         self.time  = np.array(time); self.atom = np.array(atom)
         self.types = np.array(types)
         print("xyz", filename, len(times), self.atom.shape, self.types.shape)
@@ -174,4 +176,11 @@ class XYZFile:
 
         return nm
 
+def main():
+    '''This is mostly for testing'''
+    filename=sys.argv[1]; volf=sys.argv[2]
+    vC = VolFile(volf)
+    zf = XYZFile(filename, vC)
 
+if __name__=="__main__":
+    main()

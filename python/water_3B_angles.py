@@ -26,7 +26,7 @@ def get_angles(xyz, volC):
         b_in = np.digitize(in_wat[:,0], min(in_wat[:,0])+nm)
         b_ou = np.digitize(ou_wat[:,0], min(ou_wat[:,0])+nm)
         
-        for j in range(len(in_bn)):
+        for j in range(len(nm)):
             if sum((b_in==j).astype(int))>10:
                d1,d2,t1=cal_ang_3B(in_wat[b_in == j],rng)
                di1+=d1;di2+=d2;th1+=t1;
