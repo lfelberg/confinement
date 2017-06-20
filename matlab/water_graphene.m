@@ -4,9 +4,10 @@ close all
 clc
 
 % inputs: dimensions of the system (approximate)
-Lx = 12.75;
-Ly = 46;
+d = 6;
+Ly = 48;
 Lz = Ly;
+ntimes = 2;
 ntrials = 1e7; % for water packing
 
 % monomer TIP4-Ew
@@ -30,24 +31,15 @@ Lz = nz*(b*sin(pi/3));
 doo = 2.6; % minimum oxygen-oxygen separation
 dex = 2; % excluded distance between graphene and water
 slack = 2;
-nwatercent = round(1/1e21/1.66e-24/18*((Lx-2*dex)*(Ly-slack)*(Lz-slack)/1e3));
+nwatercent = round(1/1e21/1.66e-24/18*((d-2*dex)*(Ly-slack)*(Lz-slack)/1e3));
 nwaterside = round(nwatercent/2);
 
-coordsLeft = xyz_packing(Lx/2-dex-slack,Ly-slack,Lz-slack,nwaterside,doo,ntrials);
-coordsLeft(:,1) = coordsLeft(:,1) - Lx/2 + slack;
-coordsCent = xyz_packing(Lx-2*dex,Ly-slack,Lz-slack,nwatercent,doo,ntrials);
-coordsCent(:,1) = coordsCent(:,1) + dex;
-coordsRight = xyz_packing(Lx/2-dex-slack,Ly-slack,Lz-slack,nwaterside,doo,ntrials);
-coordsRight(:,1) = coordsRight(:,1) + Lx + dex;
+coordsOxy = xyz_packing(d-2*dex,Ly-slack,Lz-slack,nwatercent,doo,ntrials);
+coordsOxy(:,1) = coordsOxy(:,1) + dex;
 
-coordsOxy = [coordsLeft; coordsCent; coordsRight];
 nwater = length(coordsOxy);
 
-% atom types
-type_water = repmat([1;2;2],nwater,1);
-
 % coordinates = [index molid type charge x y z]
-% monomer (OHH) 
 mon_xyz = [0  0  0; roh 0 0; roh*cos(theta) roh*sin(theta) 0];
 xyz_water = zeros(3*nwater,3);
 for i=1:nwater            
@@ -61,14 +53,6 @@ for i=1:nwater
     
     xyz_water(3*i-2:3*i,:) = mon_xyz*Rtot+repmat(coordsOxy(i,:),3,1);
 end
-
-% molecule index
-molid_water = zeros(3*nwater,1);
-for i=1:nwater
-    molid_water(3*i-2:3*i) = zeros(3,1)+i;
-end
-
-% bonds and angles
 
 % bonds = [index_b type ID1 ID2]
 mon_bonds = [1 2; 1 3];
@@ -85,6 +69,15 @@ anglesw = zeros(nanglesw,3);
 for i=1:nwater
     anglesw(i,:) = mon_angles + 3*(i-1);
 end
+
+% molecule index
+molid_water = zeros(3*nwater,1);
+for i=1:nwater
+    molid_water(3*i-2:3*i) = zeros(3,1)+i;
+end
+
+% atom types
+type_water = repmat([1;2;2],nwater,1);
 
 % graphene %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ngraph = nz*ny; % number of graphene atoms
@@ -117,19 +110,12 @@ for j=1:ny
     end
 end
 
-xyz_graph_l = [x y z];
-xyz_graph_r = [x+Lx y z];
+xyz_graph = [x y z];
 
-type_graph = zeros(2*ngraph,1)+3; % O-type1, H-type2
-molid_graph = [ones(ngraph,1)+nwater; ones(ngraph,1)+nwater+1];
+type_graph = zeros(ngraph,1)+3; % O-type1, H-type2
+molid_graph = ones(ngraph,1)+nwater;
 
-[bondsg_l,anglesg_l,dihedralsg_l,impropersg_l,dihtypel] = graph_topo(xyz_graph_l,b,Ly,Lz);
-[bondsg_r,anglesg_r,dihedralsg_r,impropersg_r,dihtyper] = graph_topo(xyz_graph_r,b,Ly,Lz);
-
-bondsg = [bondsg_l; bondsg_r+ngraph];
-anglesg = [anglesg_l; anglesg_r+ngraph];
-dihedralsg = [dihedralsg_l; dihedralsg_r+ngraph];
-impropersg = [impropersg_l; impropersg_r+ngraph];
+[bondsg,anglesg,dihedralsg,impropersg,dihtype] = graph_topo(xyz_graph,b,Ly,Lz);
 
 nbondsg = length(bondsg);
 nanglesg = length(anglesg);
@@ -137,33 +123,67 @@ ndihedralsg = length(dihedralsg);
 nimpropersg = length(impropersg);
 
 % put together coordinates
-xyz_total = [xyz_water; xyz_graph_l; xyz_graph_r];
+xyz_comb = [xyz_water; xyz_graph];
+nwatgraph = size(xyz_comb,1);
+type_comb = [type_water; type_graph];
+molid_comb = [molid_water; molid_graph];
+xyz_total = [];
+type_total =[];
+molid_total = [];
+for ii=1:ntimes
+    xyz_total = [xyz_total; xyz_comb(:,1)+(ii-1)*d xyz_comb(:,2:3)];
+    type_total = [type_total; type_comb];
+    molid_total = [molid_total; molid_comb+(ii-1)];
+end
 index_total = (1:length(xyz_total))';
 charge_total = zeros(length(xyz_total),1);
-type_total = [type_water; type_graph];
-molid_total = [molid_water; molid_graph];
 coordinates = [index_total molid_total type_total charge_total xyz_total];
 
+
 % put together bonds, angles, and dihedrals
-nbonds = nbondsw + nbondsg;
+nbonds = (nbondsw + nbondsg)*ntimes;
 index_b = (1:nbonds)';
-type_b = [ones(nbondsw,1); ones(nbondsg,1)+1];
-bonds = [index_b type_b [bondsw; bondsg+nwater*3]];
+type_b = repmat([ones(nbondsw,1); ones(nbondsg,1)+1],ntimes,1);
+bondsAt = [];
+for ii=1:ntimes
+    pluswat = (ii-1)*nwatgraph;
+    plusgraph = pluswat + 3*nwater;
+    bondsAt = [bondsAt; bondsw+pluswat; bondsg+plusgraph];
+end
+bonds = [index_b type_b bondsAt];
 
-nangles = nanglesw + nanglesg;
+nangles = (nanglesw + nanglesg)*ntimes;
 index_a = (1:nangles)';
-type_a = [ones(nanglesw,1); ones(nanglesg,1)+1];
-angles = [index_a type_a [anglesw; anglesg+nwater*3]];
+type_a = repmat([ones(nanglesw,1); ones(nanglesg,1)+1],ntimes,1);
+anglesAt = [];
+for ii=1:ntimes
+    pluswat = (ii-1)*nwatgraph;
+    plusgraph = pluswat + 3*nwater;
+    anglesAt = [anglesAt; anglesw+pluswat; anglesg+plusgraph];
+end
+angles = [index_a type_a anglesAt];
 
-ndihedrals = ndihedralsg;
+ndihedrals = ndihedralsg*ntimes;
 index_d = (1:ndihedrals)';
-type_d = [dihtypel; dihtyper];
-dihedrals = [index_d type_d dihedralsg+nwater*3];
+type_d = repmat(dihtype,ntimes,1);
+dihedralsAt = [];
+for ii=1:ntimes
+    pluswat = (ii-1)*nwatgraph;
+    plusgraph = pluswat + 3*nwater;
+    dihedralsAt = [dihedralsAt; dihedralsg+plusgraph];
+end
+dihedrals = [index_d type_d dihedralsAt];
 
-nimpropers = nimpropersg;
+nimpropers = nimpropersg*ntimes;
 index_i = (1:nimpropers)';
 type_i = ones(nimpropers,1);
-impropers = [index_i type_i impropersg+nwater*3];
+impropersAt = [];
+for ii=1:ntimes
+    pluswat = (ii-1)*nwatgraph;
+    plusgraph = pluswat + 3*nwater;
+    impropersAt = [impropersAt; impropersg+plusgraph];
+end
+impropers = [index_i type_i impropersAt];
 
 % inputs are: coordinates, bonds, angles, dihedrals, impropers
 % Write LAMMPS data file open the file with write permission
@@ -171,7 +191,7 @@ impropers = [index_i type_i impropersg+nwater*3];
 % bonds = [index_b type ID1 ID2]
 % angles = [index_a type ID1 ID2 ID3]
 
-name = strcat('d',num2str(Lx),'L',num2str(Ly),'_nobenzene.data');
+name = strcat('d',num2str(d),'L',num2str(round(Ly)),'nwat',num2str(nwater),'nrep',num2str(ntimes),'.data');
 fid = fopen(name, 'w');
 
 fprintf(fid,'%s\n\n','water box');
@@ -199,10 +219,10 @@ fprintf(fid,'%d dihedral types\n',ndihedraltypes);
 fprintf(fid,'%d improper types\n\n',nimpropertypes);
 
 % empty box padding in the x-dimension
-minx = -Lx/2; 
+minx = -d/2; 
 miny = 0;
 minz = 0;
-maxx = Lx+Lx/2;
+maxx = (ntimes-1)*d+d/2;
 maxy = Ly;
 maxz = Lz;
 

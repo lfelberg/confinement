@@ -86,7 +86,6 @@ def plot_scatter(csv, sep, ln, itr):
     for i in range(len(x)): f.write("{0:.5f},{1:.5f}\n".format(x[i],y[i]))
     f.close()
 
-
     ## This is for 6A flex system which has some G-G contacts
    #nbins = 30
    #y,x = np.histogram(Y[X==0.0], bins=nbins); dx = x[1]-x[0]
