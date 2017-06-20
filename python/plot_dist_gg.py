@@ -104,7 +104,7 @@ def main():
     '''For a collection of data, get info from csv and then plot,
        usage: plot_vs_x.py csvStart nsep nlen niter sep1 sep2... len1 len2... 
                            iter1 iter2... ext datLoc'''
-    csvname = sys.argv[1]; sep = int(sys.argv[2]); ln = int(sys.argv[3]);
+    csvname = sys.argv[1]; sep = float(sys.argv[2]); ln = int(sys.argv[3]);
     itr = sys.argv[4]
     
     plot_scatter(CSVFile(csvname), sep, ln, itr)

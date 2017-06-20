@@ -18,7 +18,7 @@ def plot_scatter(plt_nm, csvL, sep, ln):
     for i in range(len(csvL)):
         for j in range(len(csvL[i])):
            fn = csvL[i][j].csvfname.split("_")
-           sep = int(fn[0][3:])
+           sep = float(fn[0][3:])
            if type(dens[sep][0]) == float: lg = "{0:.3f}".format(dens[sep][0])
            else:                         lg = dens[sep][0]
            ax.plot(csvL[i][j].dat[0],csvL[i][j].dat[1],
@@ -44,7 +44,7 @@ def main():
     csvname = sys.argv[1]; nsep = int(sys.argv[2]); nlen = int(sys.argv[3]);
     itr=int(sys.argv[4]); spS=5; spE=spS+nsep; lnE=spE+nlen; sep,ln = [], []
     
-    for i in range(spS, spE): sep.append(int(sys.argv[i]))
+    for i in range(spS, spE): sep.append(float(sys.argv[i]))
     for i in range(spE, lnE): ln.append(int(sys.argv[i]))
     ext = sys.argv[lnE]
     csvL = []

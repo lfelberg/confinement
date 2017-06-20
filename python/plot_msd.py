@@ -69,7 +69,7 @@ def main():
     spE = spS + nsep; lnE = spE + nlen; itE = lnE + niter
     sep, ln, itr = [], [], []
     
-    for i in range(spS, spE): sep.append(int(sys.argv[i]))
+    for i in range(spS, spE): sep.append(float(sys.argv[i]))
     for i in range(spE, lnE): ln.append(int(sys.argv[i]))
     for i in range(lnE, itE): itr.append(sys.argv[i])
     

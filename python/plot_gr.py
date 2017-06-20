@@ -57,7 +57,7 @@ def main():
     csvname = sys.argv[1]; nsep = int(sys.argv[2]); nlen = int(sys.argv[3]);
     itr=int(sys.argv[4]); spS=5; spE=spS+nsep; lnE=spE+nlen; sep,ln = [], []
     
-    for i in range(spS, spE): sep.append(int(sys.argv[i]))
+    for i in range(spS, spE): sep.append(float(sys.argv[i]))
     for i in range(spE, lnE): ln.append(int(sys.argv[i]))
     ext = sys.argv[lnE]
     csvL = []
