@@ -2,14 +2,14 @@ import sys
 import re
 import numpy as np
 
-'''0. Step 1.Time 2.Temp 3.Press 4.PotEng 5.KinEng 6.TotEng 7.E_vdwl 
-   8.E_coul 9.E_pair 10.E_bond 11.E_angle 12.E_dihed 13.Volume 14.Density 
+'''0. Step 1.Time 2.Temp 3.Press 4.PotEng 5.KinEng 6.TotEng 7.E_vdwl
+   8.E_coul 9.E_pair 10.E_bond 11.E_angle 12.E_dihed 13.Volume 14.Density
    15.Lx 16.Ly 17.Lz 18.Xlo 19.Xhi 20.Ylo 21.Yhi 22.Zlo 23.Zhi '''
 
 class VolFile:
     '''A class for volume files'''
     volfname = ''
-        
+
     def __init__(self, fname):
          self.volfname = fname
 
@@ -20,14 +20,14 @@ class VolFile:
 
     def get_dim_from_vol(self, fname):
         '''Method to get dimensions from volume file'''
-        f = open(fname, "r")                                                         
-        time, dims = [], []                                                            
-        for line in f:                                                                 
-            tmp = line.split()                                                         
-            time.append([int(tmp[0]), int(tmp[1])])                                    
-            dims.append([float(tmp[2]),float(tmp[3]),float(tmp[4]),                    
-                         float(tmp[5]),float(tmp[6]),float(tmp[7])])                   
-        f.close()                                                                      
+        f = open(fname, "r")
+        time, dims = [], []
+        for line in f:
+            tmp = line.split()
+            time.append([int(tmp[0]), int(tmp[1])])
+            dims.append([float(tmp[2]),float(tmp[3]),float(tmp[4]),
+                         float(tmp[5]),float(tmp[6]),float(tmp[7])])
+        f.close()
         self.time = np.array(time)
         self.dims = np.array(dims)
 
@@ -39,9 +39,9 @@ class VolFile:
         for line in f:
            if (len(line) > 200) and bool(re.search(r'\d', line)) == True:
                tmp = line.split()
-              #if ((float(tmp[0])>=1500000) and (float(tmp[0])%1000==0)) or \
-               if ((float(tmp[0])<5000000) and (float(tmp[0])>=4000000) and (float(tmp[0])%500==0)) or \
-                    int(tmp[0])==0: 
+              #if ((float(tmp[0])<5000000) and (float(tmp[0])>=4000000) and (float(tmp[0])%500==0)) or \
+               if ((float(tmp[0])>=2500000) and (float(tmp[0])%500==0)) or \
+                    int(tmp[0])==0:
                    time.append([int(tmp[0]), int(tmp[1])])
                    dim = [float(tmp[x]) for x in range(18, 24)]
                    dims.append(dim)
@@ -57,6 +57,21 @@ class VolFile:
             f.write("{0} {1} {2} {3} {4} {5} {6} {7}\n".format(
                     *(self.time[i].tolist()+ self.dims[i].tolist())))
         f.close()
+
+    def print_quarters(self, volf_pref):
+        '''For times in run file print out quarters'''
+        print(len(self.time))
+        for q in range(4):
+            f = open(volf_pref+"_q"+str(q+1)+".vol", "w")
+            # always include the first snapshot
+            f.write("{0} {1} {2} {3} {4} {5} {6} {7}\n".format(
+                    *(self.time[0].tolist()+ self.dims[0].tolist())))
+            start = q*2500+1; stop = (q+1)*2500+1
+            for i in range(start,stop):
+                f.write("{0} {1} {2} {3} {4} {5} {6} {7}\n".format(
+                        *(self.time[i].tolist()+ self.dims[i].tolist())))
+            f.close()
+
 
     def get_x_max(self):
         '''Return range of x for first snap'''
@@ -84,7 +99,7 @@ class VolFile:
     def get_z_rng_i(self, i):
         '''Return range of z for ith snap'''
         return (self.dims[i][5] - self.dims[i][4])
-    
+
     def get_rng_i(self, i):
         '''Return array of range for xy and z for step i'''
         return np.array([self.get_x_rng_i(i), self.get_y_rng_i(i),
@@ -117,8 +132,8 @@ class VolFile:
 def main():
     filename=sys.argv[1]
     vC = VolFile(filename)
-    vC.print_box_dim("ms"+filename[3:-4]+".vol")
-   #vC.print_box_dim("run"+filename[3:-4]+".vol")
+    vC.print_quarters("run"+filename[3:-6])
+    vC.print_box_dim("run"+filename[3:-4]+".vol")
 
 if __name__=="__main__":
     main()
