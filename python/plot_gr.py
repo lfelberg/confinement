@@ -18,10 +18,18 @@ def plot_scatter(plt_nm, csvL, sep, ln):
     ax.yaxis.set_major_locator(MaxNLocator())
     for i in range(len(csvL)):
         for j in range(len(csvL[i])):
-           cls,nfct=get_gr_lst(csvL[i][j].csvfname); dat = csvL[i][j].dat
+           nfct = 1.0
+           cls,nfct=get_gr_lst(csvL[i][j].csvfname); 
+           dat = csvL[i][j].dat
            fn = csvL[i][j].csvfname.split("_")
-           mn += fn[3] + "_"; dn = int(fn[3])
-           ct=0; print(cls)
+           mn += fn[3] + "_"; dn = float(fn[3])
+           ct=0;#print(cls)
+
+          #cls = []; print(len(dat))
+          #for k in range(1,len(dat)):
+          #    if max(dat[k]) <25.5 and sum(dat[k]) > 0.1: cls.append(k)
+          #ct=0; print(cls)
+
           #for k in cls:
           #   #ax.plot(dat[0], dat[k], label="x="+csvL[i][j].key[k][1:-2], color = colorL[ct])
           #    ax.plot(dat[0], dat[k], label=str(k), color = colorL[ct+3])
@@ -55,16 +63,16 @@ def main():
        usage: plot_vs_x.py csvStart nsep nlen iter sep1 sep2... len1 len2... 
                            ext datLoc'''
     csvname = sys.argv[1]; nsep = int(sys.argv[2]); nlen = int(sys.argv[3]);
-    itr=int(sys.argv[4]); spS=5; spE=spS+nsep; lnE=spE+nlen; sep,ln = [], []
+    itr=sys.argv[4]; spS=5; spE=spS+nsep; lnE=spE+nlen; sep,ln = [], []
     
-    for i in range(spS, spE): sep.append(float(sys.argv[i]))
+    for i in range(spS, spE): sep.append(sys.argv[i])
     for i in range(spE, lnE): ln.append(int(sys.argv[i]))
     ext = sys.argv[lnE]
     csvL = []
     for i in range(nsep):
         csL = []
         for j in range(nlen):
-            csL.append(CSVFile(csvname+str(sep[i])+"_"+str(ln[j])+"_"+str(itr)+ext))
+            csL.append(CSVFile(csvname+sep[i]+"_"+str(ln[j])+"_"+itr+ext))
         csvL.append(csL)
     plot_scatter(csvname, csvL, sep, ln)
 

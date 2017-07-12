@@ -4,10 +4,14 @@ close all
 clc
 
 % inputs: dimensions of the system (approximate)
-d = 11.75;
+d = 9;
 Ly = 48;
 Lz = Ly;
 ntimes = 2;
+
+nsolutey = 4;
+nsolutez = 6;
+ 
 ntrials = 1e7; % for water packing
 
 % monomer TIP4-Ew
@@ -122,66 +126,143 @@ nanglesg = length(anglesg);
 ndihedralsg = length(dihedralsg);
 nimpropersg = length(impropersg);
 
+% benzene %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% single benzene
+
+xyz_benz_single = [0.000  1.396  0.000
+           1.209  0.698  0.000
+           1.209 -0.698  0.000
+           0.000 -1.396  0.000
+          -1.209 -0.698  0.000
+          -1.209  0.698  0.000
+           0.000  2.479  0.000
+           2.147  1.240  0.000
+           2.147 -1.240  0.000
+           0.000 -2.479  0.000
+          -2.147 -1.240  0.000
+          -2.147  1.240  0.000];
+
+rot_angle = pi/2;
+Ry = [cos(rot_angle) 0 sin(rot_angle); 0 1 0; -sin(rot_angle) 0 cos(rot_angle)];
+xyz_benz_single = xyz_benz_single*Ry;      
+natbenz = length(xyz_benz_single);
+
+type_benz_single = [zeros(natbenz/2,1)+4;zeros(natbenz/2,1)+5];
+molid_benz_single = ones(natbenz,1) + molid_graph(1);
+      
+bondsb_single = [1 2; 2 3; 3 4; 4 5; 5 6; 6 1; 1 7; 2 8; 3 9; 4 10; 5 11; 6 12];
+anglesb_single = [1 2 3; 2 3 4; 3 4 5; 4 5 6; 5 6 1; 6 1 2; 7 1 6; 7 1 2; 8 2 1; 8 2 3; 9 3 2; 9 3 4; 10 4 3; 10 4 5; 11 5 4; 11 5 6; 12 6 5; 12 6 1];
+dihedralsb_single = [1 2 3 4; 2 3 4 5; 3 4 5 6; 4 5 6 1; 5 6 1 2; 6 1 2 3];
+impropersb_single = [1 6 2 7; 2 1 3 8; 3 2 4 9; 4 3 5 10; 5 4 6 11; 6 5 1 12];
+
+% many benzene
+incrposy = Ly/nsolutey;
+incrposz = Lz/nsolutez;
+xyz_benz = [];
+
+xyz_benz_single = xyz_benz_single + [zeros(natbenz,1) zeros(natbenz,1)+incrposy/2 zeros(natbenz,1)+incrposz/2];
+
+count = 1;
+for ii=1:nsolutey
+    for jj=1:nsolutez
+        if mod(count,2)==0
+            incrz = 0.70*d;
+        else
+            incrz = 0.30*d;
+        end
+        xyz_benz =[ xyz_benz; xyz_benz_single + [zeros(natbenz,1)+incrz zeros(natbenz,1)+(ii-1)*incrposy zeros(natbenz,1)+(jj-1)*incrposz]];
+        count = count + 1;
+    end
+end
+
+nsolutetotal = nsolutey*nsolutez;
+bondsb = zeros(length(bondsb_single)*nsolutetotal,2);
+anglesb = zeros(length(anglesb_single)*nsolutetotal,3);
+dihedralsb = zeros(length(dihedralsb_single)*nsolutetotal,4);
+impropersb = zeros(length(impropersb_single)*nsolutetotal,4);
+molid_benz = zeros(length(molid_benz_single)*nsolutetotal,1);
+
+for ii=1:nsolutetotal
+    bondsb((ii-1)*length(bondsb_single)+1:ii*length(bondsb_single),:) = bondsb_single + (ii-1)*natbenz;
+    anglesb((ii-1)*length(anglesb_single)+1:ii*length(anglesb_single),:) = anglesb_single + (ii-1)*natbenz;
+    dihedralsb((ii-1)*length(dihedralsb_single)+1:ii*length(dihedralsb_single),:) = dihedralsb_single + (ii-1)*natbenz;
+    impropersb((ii-1)*length(impropersb_single)+1:ii*length(impropersb_single),:) = impropersb_single + (ii-1)*natbenz;
+    molid_benz((ii-1)*length(molid_benz_single)+1:ii*length(molid_benz_single),:) = molid_benz_single + (ii-1)*natbenz;
+end
+
+nbondsb = length(bondsb);
+nanglesb = length(anglesb);
+ndihedralsb = length(dihedralsb);
+nimpropersb = length(impropersb);
+
+type_benz = repmat(type_benz_single,nsolutetotal,1);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 % put together coordinates
-xyz_comb = [xyz_water; xyz_graph];
-nwatgraph = size(xyz_comb,1);
-type_comb = [type_water; type_graph];
-molid_comb = [molid_water; molid_graph];
+xyz_comb = [xyz_water; xyz_graph; xyz_benz];
+nwatgraphbenz = size(xyz_comb,1);
+type_comb = [type_water; type_graph; type_benz];
+molid_comb = [molid_water; molid_graph; molid_benz];
+
 xyz_total = [];
 type_total =[];
 molid_total = [];
 for ii=1:ntimes
     xyz_total = [xyz_total; xyz_comb(:,1)+(ii-1)*d xyz_comb(:,2:3)];
     type_total = [type_total; type_comb];
-    molid_total = [molid_total; molid_comb+(ii-1)];
+    molid_total = [molid_total; molid_comb+(ii-1)*max(molid_comb)];
 end
 index_total = (1:length(xyz_total))';
 charge_total = zeros(length(xyz_total),1);
 coordinates = [index_total molid_total type_total charge_total xyz_total];
 
-
 % put together bonds, angles, and dihedrals
-nbonds = (nbondsw + nbondsg)*ntimes;
+nbonds = (nbondsw + nbondsg + nbondsb)*ntimes;
 index_b = (1:nbonds)';
-type_b = repmat([ones(nbondsw,1); ones(nbondsg,1)+1],ntimes,1);
+type_b = repmat([zeros(nbondsw,1)+1; zeros(nbondsg,1)+2; repmat([zeros(6,1)+3; zeros(6,1)+4],nsolutetotal,1)],ntimes,1);
 bondsAt = [];
 for ii=1:ntimes
-    pluswat = (ii-1)*nwatgraph;
-    plusgraph = pluswat + 3*nwater;
-    bondsAt = [bondsAt; bondsw+pluswat; bondsg+plusgraph];
+    pluswat = (ii-1)*nwatgraphbenz;
+    plusgraph = pluswat + length(xyz_water);
+    plusbenz = plusgraph + length(xyz_graph);
+    bondsAt = [bondsAt; bondsw+pluswat; bondsg+plusgraph; bondsb+plusbenz];
 end
 bonds = [index_b type_b bondsAt];
 
-nangles = (nanglesw + nanglesg)*ntimes;
+nangles = (nanglesw + nanglesg + nanglesb)*ntimes;
 index_a = (1:nangles)';
-type_a = repmat([ones(nanglesw,1); ones(nanglesg,1)+1],ntimes,1);
+type_a = repmat([zeros(nanglesw,1)+1; zeros(nanglesg,1)+2; repmat([zeros(6,1)+3; zeros(12,1)+4],nsolutetotal,1)],ntimes,1);
 anglesAt = [];
 for ii=1:ntimes
-    pluswat = (ii-1)*nwatgraph;
-    plusgraph = pluswat + 3*nwater;
-    anglesAt = [anglesAt; anglesw+pluswat; anglesg+plusgraph];
+    pluswat = (ii-1)*nwatgraphbenz;
+    plusgraph = pluswat + length(xyz_water);
+    plusbenz = plusgraph + length(xyz_graph);
+    anglesAt = [anglesAt; anglesw+pluswat; anglesg+plusgraph; anglesb+plusbenz];
 end
 angles = [index_a type_a anglesAt];
 
-ndihedrals = ndihedralsg*ntimes;
+ndihedrals = (ndihedralsg + ndihedralsb)*ntimes;
 index_d = (1:ndihedrals)';
-type_d = repmat(dihtype,ntimes,1);
+type_d = repmat([dihtype; repmat(zeros(6,1)+3,nsolutetotal,1)],ntimes,1);
 dihedralsAt = [];
 for ii=1:ntimes
-    pluswat = (ii-1)*nwatgraph;
-    plusgraph = pluswat + 3*nwater;
-    dihedralsAt = [dihedralsAt; dihedralsg+plusgraph];
+    pluswat = (ii-1)*nwatgraphbenz;
+    plusgraph = pluswat + length(xyz_water);
+    plusbenz = plusgraph + length(xyz_graph);
+    dihedralsAt = [dihedralsAt; dihedralsg+plusgraph; dihedralsb+plusbenz];
 end
 dihedrals = [index_d type_d dihedralsAt];
 
-nimpropers = nimpropersg*ntimes;
+nimpropers = (nimpropersg + nimpropersb)*ntimes;
 index_i = (1:nimpropers)';
-type_i = ones(nimpropers,1);
+type_i = repmat([zeros(nimpropersg,1)+1; repmat(zeros(6,1)+2,nsolutetotal,1)],ntimes,1);
 impropersAt = [];
 for ii=1:ntimes
-    pluswat = (ii-1)*nwatgraph;
-    plusgraph = pluswat + 3*nwater;
-    impropersAt = [impropersAt; impropersg+plusgraph];
+    pluswat = (ii-1)*nwatgraphbenz;
+    plusgraph = pluswat + length(xyz_water);
+    plusbenz = plusgraph + length(xyz_graph);
+    impropersAt = [impropersAt; impropersg+plusgraph; impropersb+plusbenz];
 end
 impropers = [index_i type_i impropersAt];
 
@@ -191,7 +272,7 @@ impropers = [index_i type_i impropersAt];
 % bonds = [index_b type ID1 ID2]
 % angles = [index_a type ID1 ID2 ID3]
 
-name = strcat('d',num2str(d),'L',num2str(round(Ly)),'nwat',num2str(nwater),'nrep',num2str(ntimes),'.data');
+name = strcat('d',num2str(d),'L',num2str(round(Ly)),'nwat',num2str(nwater),'nrep',num2str(ntimes),'nsol',num2str(nsolutetotal),'.data');
 fid = fopen(name, 'w');
 
 fprintf(fid,'%s\n\n','water box');
@@ -207,11 +288,11 @@ fprintf(fid,'%d angles\n',nangles);
 fprintf(fid,'%d dihedrals\n',ndihedrals);
 fprintf(fid,'%d impropers\n\n',nimpropers);
 
-natomtypes = 3;
-nbondtypes = 2;
-nangletypes = 2;
-ndihedraltypes = 2;
-nimpropertypes = 1;
+natomtypes = 5;
+nbondtypes = 4;
+nangletypes = 4;
+ndihedraltypes = 3;
+nimpropertypes = 2;
 fprintf(fid,'%d atom types\n',natomtypes);
 fprintf(fid,'%d bond types\n',nbondtypes);
 fprintf(fid,'%d angle types\n',nangletypes);
@@ -232,8 +313,8 @@ fprintf(fid,'%.2f %.2f zlo zhi\n\n',minz,maxz);
 
 % O=1, H=2, C=3
 fprintf(fid,'%s\n\n','Masses');
-mass = [15.9994; 1.008; 12];
-id = [1; 2; 3];
+mass = [15.9994; 1.008; 12; 12; 1.008];
+id = [1; 2; 3; 4; 5];
 masses = [id mass];
 for i=1:length(id)
     prov = masses(i,:);

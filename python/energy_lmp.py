@@ -38,9 +38,9 @@ class Energy:
         for line in f:
            if (len(line) > 200) and bool(re.search(r'\d', line)) == True:
                tmp = line.split()
-               if ((float(tmp[0])>=3500000) and (float(tmp[0])%1000==0)) :
+               if ((float(tmp[0])>=500) and (float(tmp[0])%1000==0)) :
                    time.append(int(tmp[0]))
-                   dims.append([float(tmp[15]),float(tmp[16]),float(tmp[17])])
+                   dims.append([float(tmp[15]),float(tmp[16]),float(tmp[17]),float(tmp[24])])
         f.close()
 
         self.time = np.array(time); self.dims = np.array(dims)
@@ -58,9 +58,9 @@ class Energy:
         kT = 4.11e-21 # kT at 298 K in J
         print("{0:>4s},{1:.7f}".format(self.enfname.split("_")[0][3:],
                                      (a2*dx2*1e11)/(kT*xm)))
-        f = open(en_out, "w"); f.write("Atim,lx\n")
+        f = open(en_out, "w"); f.write("Atim,lx,pxx\n")
         for i in range(len(self.time)):
-            f.write("{0},{1}\n".format(self.time[i],*self.dims[i]))
+            f.write("{0},{1},{2}\n".format(self.time[i],self.dims[i][0], self.dims[i][-1]))
         f.close()
 
 def main():

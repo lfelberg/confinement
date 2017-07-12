@@ -18,13 +18,23 @@ colorL = [
 dens = {
          6   :   [0.062, colorL[0], "-"],
          7   :   [0.092, colorL[1], "-"],
-        #8   :   [0.123, colorL[-4], "-"],
-        #9   :   [0.154, colorL[0], "-"],
-         8   :   ["square", colorL[-4], "-"],     # for ice plots
-         9   :   ["hexagonal", colorL[1], "-"],   # for ice plots
+         8   :   [0.123, colorL[-4], "-"],
+         8.25:   [0.131, colorL[-4], "-"],
+         8.5 :   [0.138, colorL[-4], "-"],
+         8.75:   [0.146, colorL[-4], "-"],
+         9   :   [0.154, colorL[0], "-"],
+         9.25:   [0.161, colorL[-4], "-"],
+         9.5 :   [0.169, colorL[-4], "-"],
+        #8   :   ["square", colorL[-4], "-"],     # for ice plots
+        #9   :   ["hexagonal", colorL[1], "-"],   # for ice plots
          10  :   [0.185, colorL[1], "-"],
          11  :   [0.215, colorL[-4], "-"],
+         11.5:   [0.230, colorL[0], "-"],
+        11.75:   [0.238, colorL[0], "-"],
          12  :   [0.245, colorL[0], "-"],
+        12.25:   [0.253, colorL[0], "-"],
+         12.5:   [0.260, colorL[0], "-"],
+        12.75:   [0.268, colorL[0], "-"],
          13  :   [0.276, colorL[2], "-"],
          14  :   [0.307, colorL[1], "-"],
          16  :   [0.369, colorL[-4], "-"],

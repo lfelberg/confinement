@@ -49,7 +49,7 @@ def plot_scatter(plt_nm, csvL, loc, sep, ln, itr):
                #ax.plot(xd, xd*m + b, "r")
                #leg += [r'$\rho_{{2D}}=${0:.2f}'.format(dens[sep[i]])]
                 ct += 1
-            print("{0},{1:.7f}".format(dens[sep[i]][0],mav/nsam))
+            print("{0},{1:.7f}".format(dens[float(sep[i])][0],mav/nsam))
    #ax.set_xlim([0,800])
    #ax.set_ylim([0,800])
     bbox = [1.1, 0.95]
@@ -69,7 +69,7 @@ def main():
     spE = spS + nsep; lnE = spE + nlen; itE = lnE + niter
     sep, ln, itr = [], [], []
     
-    for i in range(spS, spE): sep.append(float(sys.argv[i]))
+    for i in range(spS, spE): sep.append(sys.argv[i])
     for i in range(spE, lnE): ln.append(int(sys.argv[i]))
     for i in range(lnE, itE): itr.append(sys.argv[i])
     
@@ -84,7 +84,7 @@ def main():
                 cs.append(CSVFile(csvn+ext))
             csL.append(cs)
         csvL.append(csL)
-    print("Ext {0}, loc {1} = {2}".format(ext, loc, cs[-1].key), sep, ln, itr)
+   #print("Ext {0}, loc {1} = {2}".format(ext, loc, cs[-1].key), sep, ln, itr)
     plot_scatter(csvname+"_", csvL, loc, sep, ln, itr)
 
 if __name__=="__main__":

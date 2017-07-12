@@ -13,7 +13,7 @@ colorL = [[0,0,0], [0,0,1], [1, 0,0], [.93, .53, .18]]
 
 def plot_scatter(csv, sep, ln, itr):
     '''Using data from a histogram, plot several'''
-    nbins = 70
+    nbins = 40
     f = plt.figure(1, figsize = (1.5, 1.5)); ax = f.add_subplot(111)
     ax.xaxis.set_major_locator(MaxNLocator())
     ax.yaxis.set_major_locator(MaxNLocator())
@@ -24,8 +24,8 @@ def plot_scatter(csv, sep, ln, itr):
     plt.plot(x, y, color = "k")
     ax.set_xlim(rng); ax.set_ylim([0,0.02])
 
-    ax.set_xlabel(r"3 body angle ($^{\circ}$)",fontsize= 12)
-    ax.set_ylabel(r"Probability (1/$^{\circ}$)",fontsize= 12)
+    ax.set_xlabel(r"$\theta$",fontsize= 12)
+    ax.set_ylabel(r"PDF",fontsize= 12)
     plt.savefig(csv.csvfname[:-4]+'.png',bbox_inches = 'tight',)
 
     plt.plot((90.,90.), (0,10), 'y-')
