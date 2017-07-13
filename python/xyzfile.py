@@ -162,10 +162,12 @@ class XYZFile:
         # depending on the system, there will be varying # interlayers
         if "_6_" in self.xyzfname or "_7_" in self.xyzfname or "_8_" in self.xyzfname:
              nm = np.array([0.0,10.0])
-        elif ("_10_" in self.xyzfname or "_11_" in self.xyzfname
+        elif ("_8." in self.xyzfname or "_9" in self.xyzfname or 
+              "_10_" in self.xyzfname or "_11_" in self.xyzfname
+               or "_11." in self.xyzfname 
                or "_12_" in self.xyzfname):
              nm = np.array([0,0.55,1.04,3.0,3.30,3.90,5.1,5.6,6.7,10.0])
-        elif ("_13_" in self.xyzfname or "_14_" in self.xyzfname):
+        elif ("_12." in self.xyzfname or "_13_" in self.xyzfname or "_14_" in self.xyzfname):
              nm = np.array([0,0.35,1.24,3.24,3.90,5.9,6.7,10.0])
         elif ("_16_" in self.xyzfname):#nm = 7
              nm = np.array([0,0.55,1.24,3.24,3.70,5.4,6.1,8.1,8.7,14.0])

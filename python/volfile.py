@@ -39,16 +39,15 @@ class VolFile:
         for line in f:
            if (len(line) > 200) and bool(re.search(r'\d', line)) == True:
                tmp = line.split()
-              #if ((float(tmp[0])<5000000) and (float(tmp[0])>=4000000) and (float(tmp[0])%500==0)) or \
-               if ((float(tmp[0])>=2500000) and (float(tmp[0])%500==0)) or \
+              #if ((float(tmp[0])>=1250000) and (float(tmp[0])%500==0)) or \
+               if ((float(tmp[0])>=8769500) and (float(tmp[0])%500==0)) or \
                     int(tmp[0])==0:
                    time.append([int(tmp[0]), int(tmp[1])])
                    dim = [float(tmp[x]) for x in range(18, 24)]
                    dims.append(dim)
         f.close()
 
-        self.time = np.array(time)
-        self.dims = np.array(dims)
+        self.time = np.array(time); self.dims = np.array(dims)
 
     def print_box_dim(self, vol_out):
         '''For all times in run file, print x, y, z min and max'''
@@ -60,16 +59,18 @@ class VolFile:
 
     def print_quarters(self, volf_pref):
         '''For times in run file print out quarters'''
-        for q in range(4):
+        start = 1; stop = start + 4000
+        print(len(self.dims))
+        for q in range(3):
             f = open(volf_pref+"_q"+str(q+1)+".vol", "w")
             # always include the first snapshot
             f.write("{0} {1} {2} {3} {4} {5} {6} {7}\n".format(
                     *(self.time[0].tolist()+ self.dims[0].tolist())))
-            start = q*2500+1; stop = (q+1)*2500+1
             for i in range(start,stop):
                 f.write("{0} {1} {2} {3} {4} {5} {6} {7}\n".format(
                         *(self.time[i].tolist()+ self.dims[i].tolist())))
             f.close()
+            start = stop; stop = start + 4000
 
 
     def get_x_max(self):
@@ -131,7 +132,8 @@ class VolFile:
 def main():
     filename=sys.argv[1]
     vC = VolFile(filename)
-    vC.print_quarters("run"+filename[3:-6])
+    nm = filename.split("_"); fnm = nm[0]+"_"+nm[1]
+    vC.print_quarters(fnm)
     vC.print_box_dim("run"+filename[3:-4]+".vol")
 
 if __name__=="__main__":

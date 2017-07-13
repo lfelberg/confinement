@@ -11,8 +11,8 @@ pair_style hybrid/overlay lj/cut/tip4p/long 1 2 1 1 0.125 9.5 9 lj/cut 9
 kspace_style pppm/tip4p 0.0001
 bond_style harmonic
 angle_style harmonic
-dihedral_style hybrid harmonic charmm
-improper_style hybrid harmonic cvff
+dihedral_style harmonic
+improper_style harmonic
 
 read_data dsepLlen_all.data
 
@@ -21,62 +21,62 @@ group oxy type 1
 group hyd type 2
 group water type 1 2
 group graph type 3
-group solute type 4 5
+group sodium type 4
+group chlorine type 5
+group ion union sodium chlorine
 group watgraph union water graph
-group org union solute graph
-group all_me union water org
-
-group Csolute type 4
-group Hsolute type 5
+group hphil union water ion
+group all_me union hphil graph
 
 # FORCE-FIELD PARAMETERS
 # O=1, H=2 charges
+# Sodium and chloride parameters taken from JPCB 2016, 120, 2460, Barbosa
 set group oxy charge -1.0484
 set group hyd charge 0.5242
-set group Csolute charge -0.115
-set group Hsolute charge 0.115
+set group sodium charge 0.885   # sodium ion charge, scaled w lambda
+set group chlorine charge -0.885  # chlorine ion charge, scaled w lambda
 
 # non-bonded interactions
-pair_coeff 2 2 lj/cut/tip4p/long 0.00000 0.00000
-pair_coeff 1 2 lj/cut/tip4p/long 0.00000 0.00000
 pair_coeff 1 1 lj/cut/tip4p/long 0.16275 3.16435
+pair_coeff 2 2 lj/cut/tip4p/long 0.00000 0.00000
 
 pair_coeff 3 3 lj/cut 0.07000 3.5500 # graphene
 # J. Am. Chem. SOC. 1990, 112, 4168-4114 
 # J. Am. Chem. Soc. 1996, 118, 11225-11236
-pair_coeff 4 4 lj/cut 0.07000 3.5500 # Benzene Carbon 
-pair_coeff 5 5 lj/cut 0.03000 2.4200 # Benzene Hydrogen
+pair_coeff 4 4 lj/cut 0.03052 2.52   # Na-Na eps = 17.44 * 0.00175
+pair_coeff 5 5 lj/cut 0.3367875 3.85 # Cl-Cl eps = 192.45 * 0.00175
 
-pair_coeff 1 3*4 lj/cut 0.107 3.35 # O-C
-pair_coeff 2 3*4 lj/cut 0.046 2.93 # H-C
-pair_coeff 1 5 lj/cut 0.07 2.767 # O-H
-pair_coeff 2 5 lj/cut 0.03 2.4200 # H-H
+pair_coeff 1 2 lj/cut/tip4p/long 0.00000 0.00000
+pair_coeff 1 3 lj/cut 0.107 3.35 # O-C
+pair_coeff 1 4 lj/cut 0.070 2.842175 # O-Na
+pair_coeff 1 5 lj/cut 0.23  3.507175 # O-Cl
+
+pair_coeff 2 3 lj/cut 0.046 2.93 # H-C, this is from C-C and H-H from benzene!
+pair_coeff 2 4 lj/cut 0.0  0.    # H-Na
+pair_coeff 2 5 lj/cut 0.0  0.    # H-Cl
+
+pair_coeff 3 4 lj/cut 0.046 2.99 # C-Na
+pair_coeff 4 5 lj/cut 0.15  3.70  # C-Cl
+
+pair_coeff 4 5 lj/cut 0.10  3.185  # Na-Cl
 
 pair_modify pair lj/cut mix geometric
 
-# bonded interactions; need definition but tip4p/ew is a rigid model!
 # bonded interactions; need definition but tip4p/ew is a rigid model!              
 # the columns are #, k [ energy/Dist^2 = kCal/mole/A^2], r0 [dist = A]             
 bond_coeff 1 450 0.9572  # TIP4P/ew water O-H                                      
 bond_coeff 2 938 1.4000  # C-C bonds graphene Nature, 2001, 414, 188               
-bond_coeff 3 469 1.4000 # CA-CA bond
-bond_coeff 4 367 1.0800 # CA-HA bond
                                                                                    
 # angle: #, k [ energy/rad^2 = kCal/mole/rad^2], theta0 [rad]                   
 angle_coeff 1 55  104.52 # Tip4P/ew water H-O-H                                    
 angle_coeff 2 126 120.00  # C-C-C angles graphene Nature, 2001, 414, 188           
-angle_coeff 3 63 120.00  # CA-CA-CA
-angle_coeff 4 35 120.00  # CA-CA-HA
                                                                                    
 # dihedral: #, k [energy = kCal/mole], d (+1 or -1), n (integer >= 0)           
-dihedral_coeff 1 harmonic 3.15 -1 2 # C-C-C-C graphene Nano Letters, 2009, 9, 3766          
-dihedral_coeff 2 harmonic 3.15 1 2  # C-C-C-C graphene Nano Letters, 2009, 9, 3766          
-dihedral_coeff 3 charmm 3.625 2 180 0.0 # CA-CA-CA-CA
+dihedral_coeff 1 3.15 -1 2 # C-C-C-C graphene Nano Letters, 2009, 9, 3766          
+dihedral_coeff 2 3.15 1 2  # C-C-C-C graphene Nano Letters, 2009, 9, 3766          
 
 # improper: #, k [energy = kCal/mole/rad^2], X0                                    
-improper_coeff 1 harmonic 15.0 0.0 # C-C-C-C graphene Soft Matter, 2014, 10, 4067
-# improper: #, k [energy = kCal/mole], d (+1 or -1), n (integer >= 0)  
-improper_coeff 2 cvff 1.1 -1 2  # CA-CA-CA-HA for benzene from Bill
+improper_coeff 1 15.0 0.0 # C-C-C-C graphene Soft Matter, 2014, 10, 4067
 
 # SETTINGS
 neighbor 2.0 bin
@@ -92,35 +92,34 @@ compute 6 all_me reduce sum c_5
 
 thermo          500
 thermo_style    custom step time temp press pe ke etotal evdwl ecoul epair ebond eangle edihed vol density lx ly lz xlo xhi ylo yhi zlo zhi pxx pyy pzz pxy pxz pyz c_2 c_4 c_6
-restart         5000 restart.sep.len.iter.benzene
+restart         5000 restart.sep.len.iter.ion
 
 # RUNS
 min_style        sd
 minimize         0.000001 0.0000001 5000 20000
 
+dump            11 all xyz 500 traj_sep_len_iter.xyz
+dump            1112 all custom 500 traj_sep_len_iter.velxyz id type vx vy vz
+dump_modify     1112 sort id
+
 fix 1 all momentum 10 linear 1 1 1 angular
-#fix 2 all nve/limit 0.1
-fix 2 water nve/limit 0.1
+fix 2 hphil nve/limit 0.1
 fix 3 all langevin 298 298 100.0 1
-fix 4 org rigid/nve molecule 
+fix 4 graph rigid/nve molecule 
 run 20000
 unfix 2
 unfix 3
 unfix 4
 
 fix 11 water shake 0.0001 20 1000 b 1 a 1
-fix 12 water nvt temp 298 298 100
+fix 12 hphil nvt temp 298 298 100
 fix 13 graph rigid/nvt molecule temp 298 298 100
 run 20000
 unfix 11
 unfix 12
 unfix 13
 
-dump            11 all xyz 500 traj_sep_len_iter.xyz
-dump            1112 all custom 500 traj_sep_len_iter.velxyz id type vx vy vz
-dump_modify     1112 sort id
-
 fix 20 water shake 0.0001 20 1000 b 1 a 1
-fix 21 water npt temp 298 298 100 x 1 1 1000 dilate all
-fix 22 org rigid/nvt molecule temp 298 298 100
+fix 21 hphil npt temp 298 298 100 x 1 1 1000 dilate all
+fix 22 graph rigid/nvt molecule temp 298 298 100
 run 12500000
