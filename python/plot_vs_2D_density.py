@@ -28,7 +28,8 @@ def plot_scatter(csv):
     # graphene graphene separation
     elif "d_gg" in csv.csvfname:
         plt_l = 0; ff,df,flx,fl,rt,rtx = [],[],[],[],[],[]; 
-        bbox, ncl = (0.99,0.29), 1
+       #bbox, ncl = (0.99,0.29), 1
+        bbox, ncl = (0.59,0.96), 1
         flexb = csv.dat[csv.find_keyword('dgg_f')]
         for j in range(flexb.shape[1]): 
             if flexb[1][j] != 0.:
@@ -36,12 +37,12 @@ def plot_scatter(csv):
                 ff.append(dens[j]); fl.append(flexb[0][j])
                 ff.append(dens[j]); fl.append(flexb[1][j])
             else:  df.append(dens[j]); flx.append(flexb[0][j])
-        plt.plot(ff, fl, 'rD', markeredgecolor ="none")#label = "multi")
-        plt.plot(rtx, rt, 'bo', markersize = 5.4)
+        plt.plot(ff, fl, 'rD', markeredgecolor ="k", markersize = 3.0)
+        plt.plot(rtx, rt, 'bo', markersize = 3.4, markeredgecolor ="none",)
         plt.plot(df, flx, 'rD', fillstyle="none", label = "flexible")
-        plt.plot(dens, rigid, 'bo', markersize = 5.4, fillstyle = "none",label = "rigid")
-       #ax.set_xlim([0.,0.40]);ax.set_ylim([3,15])
-        ax.set_xlim([0.,0.50]);ax.set_ylim([3,20])
+        plt.plot(dens, rigid, 'bo', markersize = 3.0, fillstyle = "none",label = "rigid")
+        ax.set_xlim([0.,0.30]);ax.set_ylim([6,13])
+       #ax.set_xlim([0.,0.50]);ax.set_ylim([3,20])
         ax.set_ylabel(r"$\langle d_{gg} \rangle \,\, (\AA)$",fontsize= 10)
 
     # diffusion coefficients
@@ -56,7 +57,7 @@ def plot_scatter(csv):
         plt.plot(dens,rigid,'b.--',dashes = (2,1),label = "rigid")
         x = np.linspace(0,1,70); y = np.ones(70)*bulk_v
         plt.plot(x,y, 'r--',dashes=(1.5,0.9),linewidth=0.7,label="bulk,\n298K")
-        y=np.linspace(0,xm,70); ax.set_xlim([0.,0.55]); ax.set_ylim([0,xm])
+        y=np.linspace(0,xm,70); ax.set_xlim([0.1,0.30]); ax.set_ylim([0,xm])
         lay = [0.1465, 0.245, 0.3525]; txl = [0.05,0.16,0.27, 0.405]
         clr = [0.439, 0.502, 0.565]
         for ll in range(len(lay)):

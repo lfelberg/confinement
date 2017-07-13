@@ -12,9 +12,9 @@ class CSVFile:
 
     def get_dic(self, fname):
         '''Method to get dictionary from csv file'''
+       #print("this is fname {0}".format(self.csvfname))
         with open(fname) as csvfile:
             reader, rw_ct, rw, dt = csv.DictReader(csvfile), 0, 0, []
-            rw = 0
             for row in reader:
                 dat, rk = [], row.keys()
                 if rw == 0:
