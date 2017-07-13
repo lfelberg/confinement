@@ -6,8 +6,8 @@ sep=6
 l=46
 iter=2
 
-ext=".xyz"
 ext=".velxyz"
+ext=".xyz"
 xyzf=`echo "traj_${sep}_${l}_${iter}${ext}"`
 xyz=`echo "traj_${sep}_${l}"`
 
