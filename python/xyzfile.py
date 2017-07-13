@@ -9,8 +9,11 @@ class XYZFile:
     '''A class for xyz files'''
     xyzfname = ''
 
-    def __init__(self, fname, VolFile = VolFile(""), xyz = [], ty = []):
+    def __init__(self, fname, VolFile = VolFile(""), xyz = [], ty = [],
+                 nsol = 0, sol_ty = ""):
         self.xyzfname = fname
+        self.nsol = nsol
+        self.sol_ty = sol_ty
         if xyz == []:
             if VolFile.volfname == '': self.get_coords_types(fname,[],[])
             else:
@@ -137,7 +140,7 @@ class XYZFile:
         return wall == False
 
     def get_inner_wat(self):
-        '''Get array of atoms (ox+h) that are inside 2 walls'''
+        '''Get array of water atoms (ox+h) that are inside 2 walls'''
         if "_37_" in self.xyzfname: return self.get_type_i(WOXY),self.get_type_i(WHYD)
 
         inside = self.get_inner_ats()
@@ -146,12 +149,53 @@ class XYZFile:
         return np.all(np.array([oxy, inside]),axis=0), np.all(np.array([hyd, inside]),axis=0)
 
     def get_outer_wat(self):
-        '''Get array of atoms (ox+h) that are outside 2 walls'''
+        '''Get array of water atoms (ox+h) that are outside 2 walls'''
         if "_37_" in self.xyzfname: return [False]*len(self.types),[False]*len(self.types)
         out = self.get_outer_ats()
         oxy = self.get_type_i(WOXY)
         hyd = self.get_type_i(WHYD)
         return np.all(np.array([oxy, out]),axis=0), np.all(np.array([hyd, out]),axis=0)
+
+    def get_inner_sol(self):
+        '''Get array of solute atoms that are inside 2 walls'''
+        if self.nsol == 0: return [False]*len(self.types)
+        if "_37_" in self.xyzfname: return self.get_sol()
+
+        inside = self.get_inner_ats()
+        sl = self.get_sol()
+        return np.all(np.array([sl, inside]),axis=0)
+
+    def get_outer_sol(self):
+        '''Get array of solute atoms that are outside 2 walls'''
+        if self.nsol == 0: return [False]*len(self.types)
+        if "_37_" in self.xyzfname: return [False]*len(self.types)
+
+        outside = self.get_outer_ats()
+        sl = self.get_sol()
+        return np.all(np.array([sl, outside]),axis=0)
+
+    def get_sol(self):
+        '''Depending on the type of solute, for now either ion or benz,
+           return either both types 4 and 5 (ion) or just 1 atom from each mol
+           (benz)'''
+        if self.sol_ty == "ion":
+           ion1 = self.get_type_i(4)
+           ion2 = self.get_type_i(5)
+           return np.any(np.array([ion1,ion2]),axis=0)
+        elif self.sol_ty == "benz":
+           return self.get_benzene()
+
+        return [False]*len(self.types)
+
+    def get_benzene(self):
+        '''Get a list len(nats) that is true just for the first C atom of each
+           benzene ring'''
+        benz_c = self.get_type_i(4); c_ct = 0
+        for i in range(len(benz_c)):
+            if benz_c[i] == True: 
+                c_ct += 1
+                if c_ct % 6 != 0: benz_c[i] = False
+        return benz_c
 
     def get_spacing_for_interlayer(self):
         '''Depending on the spacing of the graphene walls, return array of
