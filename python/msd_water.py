@@ -70,7 +70,7 @@ def main():
     xyz_cl = XYZFile(xyzname, volC)
 
     msd = get_msd(xyz_cl, volC)
-    print_msd(msd, xyz_cl.time[3]-xyz_cl.time[2], 'msd_'+nm+".csv")
+    print_msd(msd, xyz_cl.time[3]-xyz_cl.time[2], 'wmsd_'+nm+".csv")
 
 if __name__=="__main__":
     main()

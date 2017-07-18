@@ -38,7 +38,7 @@ class Energy:
         for line in f:
            if (len(line) > 200) and bool(re.search(r'\d', line)) == True:
                tmp = line.split()
-               if ((float(tmp[0])>=500) and (float(tmp[0])%1000==0)) :
+               if ((float(tmp[0])>=3000000) and (float(tmp[0])%1000==0)) :
                    time.append(int(tmp[0]))
                    dims.append([float(tmp[15]),float(tmp[16]),float(tmp[17]),float(tmp[24])])
         f.close()
@@ -51,13 +51,15 @@ class Energy:
         A2_TO_M2 = ANG_TO_METER * ANG_TO_METER
         ym = np.mean(self.dims[:,1]);#print(np.shape(self.dims[:,1]), ym)
         zm = np.mean(self.dims[:,2]);#print(np.shape(self.dims[:,2]), zm)
-        xx = self.dims[:,0]
+        nx = self.dims[:,0].shape[0]; trd = np.floor(nx/3)
+        xx = np.zeros((3,trd)); 
+        for i in range(3): xx[i]=self.dims[i*trd:(i+1)*trd,0]
         dx2 = (np.mean(np.power(xx,2)) - np.power(np.mean(xx),2))*A2_TO_M2
-        xm = np.mean(xx)*ANG_TO_METER
+        xm = np.mean(xx, axis = 1)*ANG_TO_METER
         a2 = ym*zm*A2_TO_M2  # Area in m^2
         kT = 4.11e-21 # kT at 298 K in J
-        print("{0:>4s},{1:.7f}".format(self.enfname.split("_")[0][3:],
-                                     (a2*dx2*1e11)/(kT*xm)))
+        print("{0:>9s},{1:.7f},{2:.7f},{3:.7f}".format(self.enfname.split(".")[0][3:],
+                                     *((a2*dx2*1e11)/(kT*xm))))
         f = open(en_out, "w"); f.write("Atim,lx,pxx\n")
         for i in range(len(self.time)):
             f.write("{0},{1},{2}\n".format(self.time[i],self.dims[i][0], self.dims[i][-1]))
