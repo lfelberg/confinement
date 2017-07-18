@@ -6,14 +6,16 @@ from xyzfile import XYZFile
 from volfile import VolFile
 
 WOXY = 1
-CUT = 8.50
+CUT = 6.20
 
 def get_angles_wats(xyz, volC):
     '''Method to get angles between y-z plane and benzene plane'''
     oo = xyz.get_type_i(WOXY); 
 
-    stats = np.zeros((2,len(xyz.atom),xyz.nsol))
+    stats = np.zeros((3,len(xyz.atom),xyz.nsol))
+    sol = np.zeros((1,1)); w1 = np.zeros((1,1))
     for i in range(1,len(xyz.atom)): # for each time snapshot, except first
+        w1[0,0] = np.mean(xyz.atom[i, xyz.get_graph_wall(0),0])
         rng = np.array([volC.get_x_rng_i(i), volC.get_y_rng_i(i),
                         volC.get_z_rng_i(i)]) # pbc range
 
@@ -21,7 +23,9 @@ def get_angles_wats(xyz, volC):
         if angs != []: stats[0,i] = angs
         for j in range(xyz.nsol):
             dst = d_pbc(coms[j][np.newaxis,:],xyz.atom[i,oo], rng)
-            stats[1,i] = sum((dst < CUT).astype(int))
+            sol = coms[j][np.newaxis,0]
+            stats[2,i,j] = d_pbc(sol,w1, rng[0])
+            stats[1,i,j] = sum((dst < CUT).astype(int))
     return stats[:,1:]
 
 def print_stats(angls, fname):
@@ -29,11 +33,12 @@ def print_stats(angls, fname):
        angls = [ [sol1_ang], [sol1_wneig], [sol2_ang], [sol2_wneig]... ]'''
     f = open(fname, 'w'); 
     nsnap, stn = len(angls[0]), ''
-    vals = ['ang','neigh']
+    vals = ['ang','neigh', 'dist']
     for sl in range(len(angls[0][0])):
         for j in range(len(vals)): stn += "sol{0}_{1},".format(sl,vals[j])
     f.write("time,"+stn[:-1]+'\n')
 
+    print(angls.shape)
     for j in range(nsnap):
         st = '{0},'.format(j)
         for k in range(len(angls[0][j])): # the number of solutes
