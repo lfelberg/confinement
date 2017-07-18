@@ -24,17 +24,24 @@ def plot_scatter(csv, sep, ln, itr):
     ax.yaxis.set_major_locator(MaxNLocator())
     matplotlib.rcParams['font.size'] = 5;
     nbins = int(neigh.max())+1; ra = (-0.5, nbins-0.5)
-    for i in range(16):
+    vac, surr = 0., 0.
+    for i in range(len(neigh)):
         y,x = np.histogram(neigh[i], bins=nbins, range=ra); dx = x[1]-x[0]
-        x = x[:-1] + dx/2.;y = y/sum(y.astype(float))/dx
-        print(i+345, " Neigh position maxes: ", x[argrelextrema(y, np.greater)])
-        plt.plot(x, y+0.4*i) #, color = "k")
+        neig_m = np.mean(x[argrelextrema(y, np.greater)])
+        print("sol {0}: neigh {1:.2f}".format(i, neig_m))
+        if neig_m > 18: surr += 1.
+        else:           vac  += 1.
+    print("{0},{1},{2},{3:.6f}".format(csv.csvfname,surr,vac,vac/(surr+vac)))
+        
+    y,x = np.histogram(neigh.flatten(), bins=nbins, range=ra); dx = x[1]-x[0]
+    x = x[:-1] + dx/2.;y = y/sum(y.astype(float))/dx
+    plt.plot(x, y, color = "k")
     ax.set_xlabel(r"$O_W < 10 \AA$",fontsize=7);#ax.set_xlim([0,1.0])
     ax.set_ylabel("Probability",fontsize=7);#ax.set_ylim([0.,2.0])
     plt.savefig(csv.csvfname[:-3]+'neigh.png',bbox_inches = 'tight',)
     plt.close()
 
-    nbins = 30
+    nbins = 50
     f = plt.figure(1, figsize = (1.0, 1.0))
     ax, ct, leg = f.add_subplot(111), 0, []
     ax.xaxis.set_major_locator(MaxNLocator())

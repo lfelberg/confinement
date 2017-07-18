@@ -51,12 +51,13 @@ def main():
     xyzname=sys.argv[1]; sep=sys.argv[2]; ln=sys.argv[3]; itr=sys.argv[4]
     sol_nm = sys.argv[5]; sol_ct = sys.argv[6]
     nm = str(sep)+"_"+str(ln)+"_"+itr; volC = VolFile("run"+nm+".vol") 
+    nm = str(sep)+"_"+str(ln)+"_"+sol_ct+"_"+itr
     xyz_cl = XYZFile(xyzname, volC)
     xyz_cl.sol_ty = sol_nm
     xyz_cl.nsol = int(sol_ct)
 
     stats = get_angles_wats(xyz_cl, volC)
-    print_stats(stats, "run"+nm+"_benz_stats.csv")
+    print_stats(stats, "run"+nm+"_sol_stats.csv")
 
 if __name__=="__main__":
     main()

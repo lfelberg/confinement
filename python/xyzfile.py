@@ -227,9 +227,9 @@ class XYZFile:
         nm = np.linspace(0,1000.,0.6)
 
         # depending on the system, there will be varying # interlayers
-        if "_6_" in self.xyzfname or "_7_" in self.xyzfname or "_8_" in self.xyzfname:
+        if "_6_" in self.xyzfname or "_7_" in self.xyzfname: # or "_8_" in self.xyzfname:
              nm = np.array([0.0,10.0])
-        elif ("_8." in self.xyzfname or "_9" in self.xyzfname or 
+        elif ("_8_" in self.xyzfname or "_9" in self.xyzfname or 
               "_10_" in self.xyzfname or "_11_" in self.xyzfname
                or "_11." in self.xyzfname 
                or "_12_" in self.xyzfname):
