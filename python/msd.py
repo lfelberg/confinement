@@ -29,21 +29,25 @@ def get_msd(xyz, volC):
     # find water oxygen atoms
     nOX = xyz.get_ct_i(OXY); nmol = xyz.nsol + nOX
     iOX,_ = xyz.get_inner_wat(); oOX,_ = xyz.get_outer_wat()
+    n_oin = sum(iOX.astype(int)); n_oou = sum(oOX.astype(int))
     if xyz.nsol > 0:
         iSL = xyz.get_inner_sol(); oSL = xyz.get_outer_sol()
-    oicd = trans_coords(xyz.atom[1:,iOX],volC.get_rng()[1:]) # don't use 1st snap
-    oocd = trans_coords(xyz.atom[1:,oOX],volC.get_rng()[1:]) # don't use 1st snap
-    sicd = trans_coords(xyz.atom[1:,iSL],volC.get_rng()[1:]) # don't use 1st snap
-    socd = trans_coords(xyz.atom[1:,oSL],volC.get_rng()[1:]) # don't use 1st snap
+    inn = np.any(np.array([iOX, iSL]), axis = 0)
+    ouu = np.any(np.array([oOX, oSL]), axis = 0); print(sum(inn.astype(int)), sum(ouu.astype(int)))
+
+    # don't use 1st snap
+    icd = trans_coords(xyz.atom[1:,inn],volC.get_rng()[1:]) 
+    ocd = trans_coords(xyz.atom[1:,ouu],volC.get_rng()[1:]) 
+    oicd=icd[:,:n_oin];sicd=icd[:,n_oin:];oocd=ocd[:,:n_oou];socd=ocd[:,n_oou:]
 
     msd = np.zeros((nsnaps,nmol,3)) #save msd for each oxy and solute molecule
     ms_mean = np.arange(nsnaps,0,-1.)[:, np.newaxis, np.newaxis]
     for i in range(nsnaps-1):
         ms = d3(oicd[np.newaxis,i], oicd[i+1:])
-        msd[1:nsnaps-i,:sum(iOX.astype(int))] += ms
+        msd[1:nsnaps-i,:n_oin] += ms
         if sum(oOX.astype(int)) > 0: # will be zero for bulk water
             ms = d3(oocd[np.newaxis,i], oocd[i+1:])
-            msd[1:nsnaps-i,sum(iOX.astype(int)):nOX] += ms
+            msd[1:nsnaps-i,n_oin:nOX] += ms
         if xyz.nsol > 0: # If there are solvent molecules
            ms = d3(sicd[np.newaxis,i], sicd[i+1:])
            msd[1:nsnaps-i,nOX:nOX+(xyz.nsol/2)] += ms

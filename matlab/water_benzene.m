@@ -4,12 +4,12 @@ close all
 clc
 
 % inputs: dimensions of the system (approximate)
-L = 20;
+L = 22.5;
 
 % nsolutex * nsolutey * nsoutez has to be even!
 nsolutex = 2;
-nsolutey = 2;
-nsolutez = 2;
+nsolutey = 1;
+nsolutez = 1;
  
 ntrials = 1e7; % for water packing
 

@@ -14,15 +14,15 @@ A2_PS_TO_M2_S = A2_TO_M2*PS_TO_S
 def plot_scatter(plt_nm, csvL, loc, sep, ln, itr):
     '''Using data from a histogram, plot several'''
     f = plt.figure(1, figsize = (1.5, 1.5))
-    ax, ct, leg = f.add_subplot(111), 0, []
+    ax, ct, leg, stn = f.add_subplot(111), 0, [], ""
     ax.xaxis.set_major_locator(MaxNLocator()); ax.yaxis.set_major_locator(MaxNLocator())
 
     for i in range(len(csvL)):
         for j in range(len(csvL[i])):
             mav = 0.0 
             for k in range(len(csvL[i][j])):
-                st = 400
-                en = 800
+                st = 800
+                en = 1600
                 xd = csvL[i][j][k].dat[0,st:en]; yd = csvL[i][j][k].dat[loc,st:en]
                 nsam = float(len(csvL[i][j]))
 
@@ -42,14 +42,15 @@ def plot_scatter(plt_nm, csvL, loc, sep, ln, itr):
                      nsam = len(csvL[i][j])*3.
 
                 m,b = np.polyfit(xd,yd,1)
-                print(m/4.*A2_PS_TO_M2_S*(1e9))
+                stn += ",{0:.7f}".format(m/4.*A2_PS_TO_M2_S*(1e9))
                 mav += m/4.*A2_PS_TO_M2_S*(1e9)
                 ax.plot(csvL[i][j][k].dat[0], 
                         csvL[i][j][k].dat[loc], color=colorL[ct])
                #ax.plot(xd, xd*m + b, "r")
                #leg += [r'$\rho_{{2D}}=${0:.2f}'.format(dens[sep[i]])]
                 ct += 1
-            print("{0},{1:.7f}".format(dens[float(sep[i])][0],mav/nsam))
+            p_all = "{0},{1},{2}{3}".format(sep[i],ln[j],itr[0].split("_")[0],stn)
+            print(p_all)  #mav/nsam
    #ax.set_xlim([0,800])
    #ax.set_ylim([0,800])
     bbox = [1.1, 0.95]
@@ -84,7 +85,7 @@ def main():
                 cs.append(CSVFile(csvn+ext))
             csL.append(cs)
         csvL.append(csL)
-   #print("Ext {0}, loc {1} = {2}".format(ext, loc, cs[-1].key), sep, ln, itr)
+   #print("Ext {0}, loc {1} = {2}".format(ext, loc, cs[-1].key[loc]), sep, ln, itr)
     plot_scatter(csvname+"_", csvL, loc, sep, ln, itr)
 
 if __name__=="__main__":

@@ -13,7 +13,7 @@ colorL = [[0,0,0], [0,0,1], [1, 0,0], [.93, .53, .18]]
 
 def plot_scatter(csv, sep, ln, itr):
     '''Using data from a histogram, plot several'''
-    nbins = 40
+    nbins = 50
     f = plt.figure(1, figsize = (1.5, 1.5)); ax = f.add_subplot(111)
     ax.xaxis.set_major_locator(MaxNLocator())
     ax.yaxis.set_major_locator(MaxNLocator())
