@@ -2,15 +2,21 @@ import sys
 import numpy as np
 
 from volfile import VolFile
+from util import translate_pbc
+from water_angles_util import plane_eq, angle_between
 
 WOXY = 1; WHYD = 2; GRAPHENE = 3
+RAD_TO_DEG = 57.2958
 
 class XYZFile:
     '''A class for xyz files'''
     xyzfname = ''
 
-    def __init__(self, fname, VolFile = VolFile(""), xyz = [], ty = []):
+    def __init__(self, fname, VolFile = VolFile(""), xyz = [], ty = [],
+                 nsol = 0, sol_ty = ""):
         self.xyzfname = fname
+        self.nsol = nsol
+        self.sol_ty = sol_ty
         if xyz == []:
             if VolFile.volfname == '': self.get_coords_types(fname,[],[])
             else:
@@ -137,7 +143,7 @@ class XYZFile:
         return wall == False
 
     def get_inner_wat(self):
-        '''Get array of atoms (ox+h) that are inside 2 walls'''
+        '''Get array of water atoms (ox+h) that are inside 2 walls'''
         if "_37_" in self.xyzfname: return self.get_type_i(WOXY),self.get_type_i(WHYD)
 
         inside = self.get_inner_ats()
@@ -146,12 +152,73 @@ class XYZFile:
         return np.all(np.array([oxy, inside]),axis=0), np.all(np.array([hyd, inside]),axis=0)
 
     def get_outer_wat(self):
-        '''Get array of atoms (ox+h) that are outside 2 walls'''
+        '''Get array of water atoms (ox+h) that are outside 2 walls'''
         if "_37_" in self.xyzfname: return [False]*len(self.types),[False]*len(self.types)
         out = self.get_outer_ats()
         oxy = self.get_type_i(WOXY)
         hyd = self.get_type_i(WHYD)
         return np.all(np.array([oxy, out]),axis=0), np.all(np.array([hyd, out]),axis=0)
+
+    def get_inner_sol(self):
+        '''Get array of solute atoms that are inside 2 walls'''
+        if self.nsol == 0: return [False]*len(self.types)
+        if "_37_" in self.xyzfname: return self.get_sol()
+
+        inside = self.get_inner_ats()
+        sl = self.get_sol()
+        return np.all(np.array([sl, inside]),axis=0)
+
+    def get_outer_sol(self):
+        '''Get array of solute atoms that are outside 2 walls'''
+        if self.nsol == 0: return [False]*len(self.types)
+        if "_37_" in self.xyzfname: return [False]*len(self.types)
+
+        outside = self.get_outer_ats()
+        sl = self.get_sol()
+        return np.all(np.array([sl, outside]),axis=0)
+
+    def get_sol(self):
+        '''Depending on the type of solute, for now either ion or benz,
+           return either both types 4 and 5 (ion) or just 1 atom from each mol
+           (benz)'''
+        if self.sol_ty == "ion":
+           ion1 = self.get_type_i(4)
+           ion2 = self.get_type_i(5)
+           return np.any(np.array([ion1,ion2]),axis=0)
+        elif self.sol_ty == "benz":
+           return self.get_benzene()
+
+        return [False]*len(self.types)
+
+    def get_benzene(self):
+        '''Get a list len(nats) that is true just for the first C atom of each
+           benzene ring'''
+        benz_c = self.get_type_i(4); c_ct = 0
+        for i in range(len(benz_c)):
+            if benz_c[i] == True: 
+                c_ct += 1
+                if c_ct % 6 != 0: benz_c[i] = False
+        return benz_c
+
+    def get_sol_crd_i(self, i, rng_i):
+        ''' Get positions of ion centers or the center of mass of benzene'''
+        if self.sol_ty == "ion": return self.atom[i,self.get_sol()], []
+
+        else:
+            coms = np.zeros((self.nsol,3))
+            angs = np.zeros((self.nsol))
+            benz_c = self.atom[i,self.get_type_i(4)]
+            for sl in range(self.nsol):
+                pos = np.zeros((6,3)); pos[0] = benz_c[sl*6]
+                pos[1:] = translate_pbc(pos[0],benz_c[sl*6+1:(sl+1)*6], rng_i)
+                coms[sl] = np.mean(pos,axis = 0)
+   
+                b_pln = plane_eq(pos[0,:,np.newaxis],pos[2,:,np.newaxis],
+                                 pos[4,:,np.newaxis]).T
+                angs[sl] = angle_between(np.array((1,0,0))[np.newaxis,:], 
+                                         b_pln)[0]*RAD_TO_DEG
+
+            return coms, angs
 
     def get_spacing_for_interlayer(self):
         '''Depending on the spacing of the graphene walls, return array of

@@ -5,13 +5,13 @@ clc
 
 % inputs: dimensions of the system (approximate)
 d = 9;
-Ly = 24;
+Ly = 48;
 Lz = Ly;
 ntimes = 2;
 
 % nsolutey*nsoutez has to be even!
 nsolutey = 4;
-nsolutez = 5;
+nsolutez = 8;
  
 ntrials = 1e7; % for water packing
 

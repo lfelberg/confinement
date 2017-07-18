@@ -10,6 +10,7 @@ dist_3B_*
 [0-9]A_*png
 [0-9][0-9]A_*png
 snap_unused/
+inkscape
 
 # Lmp files
 *.xyz
