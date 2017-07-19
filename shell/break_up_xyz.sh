@@ -23,7 +23,7 @@ fi
 
 echo "$nsnaps"
 echo "$nat"
-head -n $nat $xyzf > first.xyz
+#head -n $nat $xyzf > first.xyz
 
 incr=$((nat * 2500))
 fst=$((nat * 5000))
