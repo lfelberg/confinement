@@ -20,6 +20,7 @@ def plot_scatter(csv, sep, ln, itr):
     # finding solute-water oxygen within cutoff
     f = plt.figure(1, figsize = (1.0, 1.0))
     ax, ct, leg = f.add_subplot(111), 0, []
+    ax.yaxis.set_ticklabels([])
     ax.xaxis.set_major_locator(MaxNLocator())
     ax.yaxis.set_major_locator(MaxNLocator())
     matplotlib.rcParams['font.size'] = 5;
@@ -36,14 +37,15 @@ def plot_scatter(csv, sep, ln, itr):
     y,x = np.histogram(neigh.flatten(), bins=nbins, range=ra); dx = x[1]-x[0]
     x = x[:-1] + dx/2.;y = y/sum(y.astype(float))/dx
     plt.plot(x, y, color = "k")
-    ax.set_xlabel(r"$O_W < 10 \AA$",fontsize=7);#ax.set_xlim([0,1.0])
+    ax.set_xlabel(r"$O_W < 10 \AA$",fontsize=7); ax.set_xlim([0,25])
     ax.set_ylabel("Probability",fontsize=7);#ax.set_ylim([0.,2.0])
     plt.savefig(csv.csvfname[:-3]+'neigh.png',bbox_inches = 'tight',)
     plt.close()
 
-    nbins = 50
+    nbins = 25
     f = plt.figure(1, figsize = (1.0, 1.0))
     ax, ct, leg = f.add_subplot(111), 0, []
+    ax.yaxis.set_ticklabels([])
     ax.xaxis.set_major_locator(MaxNLocator())
     ax.yaxis.set_major_locator(MaxNLocator())
     y,x = np.histogram(ang, bins=nbins); dx = x[1]-x[0]
@@ -61,10 +63,11 @@ def plot_scatter(csv, sep, ln, itr):
     print("dgg position maxes: ", x[argrelextrema(y, np.greater)])
     f = plt.figure(1, figsize = (1.0, 1.0))
     ax, ct, leg = f.add_subplot(111), 0, []
+    ax.yaxis.set_ticklabels([])
     ax.xaxis.set_major_locator(MaxNLocator())
     ax.yaxis.set_major_locator(MaxNLocator())
     plt.plot(x, y, color = "k")
-    ax.set_xlabel(r"$d_{{gg}}^B$",fontsize=7); # ax.set_xlim([0,180])
+    ax.set_xlabel(r"$d_{{gg}}^B$",fontsize=7); ax.set_xlim([3,18])
     ax.set_ylabel("Probability",fontsize=7);#ax.set_ylim([0.,2.0])
     plt.savefig(csv.csvfname[:-3]+'dist.png',bbox_inches = 'tight',)
     plt.close()
