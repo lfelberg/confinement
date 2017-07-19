@@ -8,6 +8,11 @@ def get_gr_lst(csv_nm):
     if sep_siz == 6.: 
         nfct = 1.3; cls = [2]
     elif sep_siz >= 8.25 and sep_siz <= 8.75:  cls = [4]
+
+    elif sep_siz == 81: cls = [2,3]
+    elif sep_siz == 82: 
+         cls = [5,6]; nfct = 1.25
+
     # flexible
     elif sep_siz == 91.:  
          cls = [2,30]; nfct = 1.4
@@ -17,9 +22,6 @@ def get_gr_lst(csv_nm):
     # benzene
     elif sep_siz == 9.:
          cls = [3,5,6]; nfct = 1.1
-
-    # rigid
-   #elif sep_siz == 9.:  cls = [5,15,18,27]
 
     elif sep_siz == 10. or sep_siz == 11.: cls = [3,6,]
     elif sep_siz == 12.: 

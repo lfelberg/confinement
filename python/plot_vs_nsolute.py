@@ -52,9 +52,9 @@ def plot_scatter(csv):
                  label="{0:.3f}".format(rho))
                 #label=r"$\rho_{{2D}}^W={0:.3f}$".format(rho))
     ax.set_xlim([0,16])
-    ax.legend(ncol = ncl, fontsize=5, columnspacing = 0.2,handletextpad= 0.25,
-              bbox_to_anchor = bbox, handlelength = 1.1,numpoints = 1,
-              borderaxespad= 0.2)
+   #ax.legend(ncol = ncl, fontsize=5, columnspacing = 0.2,handletextpad= 0.25,
+   #          bbox_to_anchor = bbox, handlelength = 1.1,numpoints = 1,
+   #          borderaxespad= 0.2)
     ax.set_xlabel(r"$\rho_{2D}^B$",fontsize= 10)
     plt.savefig(csv.csvfname[:-4]+'.png',bbox_inches = 'tight')
     plt.close()

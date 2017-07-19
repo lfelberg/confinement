@@ -200,7 +200,7 @@ class XYZFile:
                 if c_ct % 6 != 0: benz_c[i] = False
         return benz_c
 
-    def get_sol_crd_i(self, i, rng_i):
+    def get_sol_crd_i(self, i, rng_i, ang = True):
         ''' Get positions of ion centers or the center of mass of benzene'''
         if self.sol_ty == "ion": return self.atom[i,self.get_sol()], []
 
@@ -213,6 +213,7 @@ class XYZFile:
                 pos[1:] = translate_pbc(pos[0],benz_c[sl*6+1:(sl+1)*6], rng_i)
                 coms[sl] = np.mean(pos,axis = 0)
    
+                if ang == False: continue
                 b_pln = plane_eq(pos[0,:,np.newaxis],pos[2,:,np.newaxis],
                                  pos[4,:,np.newaxis]).T
                 angs[sl] = angle_between(np.array((1,0,0))[np.newaxis,:], 

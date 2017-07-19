@@ -29,7 +29,6 @@ def plot_scatter(plt_nm, csvL, sep, ln):
           #for k in range(1,len(dat)):
           #    if max(dat[k]) <25.5 and sum(dat[k]) > 0.1: cls.append(k)
           #ct=0; print(cls)
-          #cls = [3,5,6,8]
           #for k in cls:
           #    print(csvL[i][j].key[k])
           #    ax.plot(dat[0], dat[k], label=str(k), color = colorL[ct+3])
@@ -43,7 +42,7 @@ def plot_scatter(plt_nm, csvL, sep, ln):
            ax.plot(dat[0], np.mean(dat[cls],axis=0)/nfct, dens[dn][2],
                    color = dens[dn][1], dashes = dsh, label=lg)
            ct += 1
-    if dn > 13:
+    if dn > 13 and len(sep) > 1: 
         ax.legend(ncol = 5, columnspacing = 0.4,
             fontsize =  5 , handletextpad = 0.2,
             handlelength = 1.3, borderaxespad = -0.9,

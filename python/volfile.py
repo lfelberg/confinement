@@ -74,9 +74,9 @@ class VolFile:
 
 
     def get_x_max(self):
-        '''Return range of x for first snap'''
-        xdif = self.dims[:,1] - self.dims[:,0]
-        return max(xdif)
+        '''Return largest x range'''
+        xdif = max(self.dims[:,1]) - min(self.dims[:,0])
+        return xdif
 
     def get_x_rng(self):
         '''Return range of x for first snap'''
