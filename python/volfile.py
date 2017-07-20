@@ -39,8 +39,8 @@ class VolFile:
         for line in f:
            if (len(line) > 200) and bool(re.search(r'\d', line)) == True:
                tmp = line.split()
-              #if ((float(tmp[0])>=2500000) and (float(tmp[0])%500==0)) or \
-               if ((float(tmp[0])>=21540000) and (float(tmp[0])%500==0)) or \
+              #if ((float(tmp[0])>=21540000) and (float(tmp[0])%500==0)) or \
+               if ((float(tmp[0])>=5000000) and (float(tmp[0])%500==0)) or \
                     int(tmp[0])==0:
                    time.append([int(tmp[0]), int(tmp[1])])
                    dim = [float(tmp[x]) for x in range(18, 24)]
@@ -59,7 +59,7 @@ class VolFile:
 
     def print_quarters(self, volf_pref):
         '''For times in run file print out quarters'''
-        start = 1; inc = 4000; stop = start + inc
+        start = 1; inc = 2500; stop = start + inc
         print(len(self.dims))
         for q in range(3):
             f = open(volf_pref+"_q"+str(q+1)+".vol", "w")

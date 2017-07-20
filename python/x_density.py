@@ -23,16 +23,13 @@ type_wt = {
 
 def histog_dist(xyzC, volC):
     ''' Get a histogram of distances and transform into distance from plate'''
-    xm = np.ceil(volC.get_x_max()/2)
-    h_rng = (-xm,xm); bns = int((2.*xm)/0.1)
-   #bns = 100
+    xm = np.ceil(volC.get_x_max()/2); h_rng = (-xm,xm); bns = int((2.*xm)/0.1)
     kk = 0
 
     # use wall atoms as reference points
     w0 = xyzC.get_graph_wall(0); w1 = xyzC.get_graph_wall(1)
     ox = xyzC.get_type_i(OXY); hy = xyzC.get_type_i(HYD)
     nox = xyzC.get_ct_i(OXY); nhy = xyzC.get_ct_i(HYD)
-    
     w0_wrap = np.zeros((1,1)); c_wl = np.zeros((3,1))
 
     # histogram of density for each type
@@ -44,10 +41,10 @@ def histog_dist(xyzC, volC):
         w0_m=np.mean(coords[w0]); w0_s=np.std(coords[w0])
         w1_m=np.mean(coords[w1]); w1_s=np.std(coords[w1])
 
-       #print(" w1 mean: {0:.2f}, w1 std: {1:.2f} and w2 m: {2:.2f}, w2 s: {3:.3f}".
-       #      format(w0_m, w0_s, w1_m, w1_s))
+        print(" w1 mean: {0:.2f}, w1 std: {1:.2f} and w2 m: {2:.2f}, w2 s: {3:.3f}".
+              format(w0_m, w0_s, w1_m, w1_s))
 
-        if w0_s > 0.25 or w1_s > 0.25: continue #wall is right at edge, so skip
+        if w0_s > 0.35 or w1_s > 0.35: continue #wall is right at edge, so skip
 
         coords = coords - w0_m # recenter so w0 is at x = 0
         w_o = translate_pbc(w0_wrap, coords[ox], xj)

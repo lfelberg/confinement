@@ -26,14 +26,13 @@ def get_dist(xyz, dims):
         # for both walls, check if they are wrapped
         mnc = min(c1[:,0]); mxc = max(c1[:,0])
         if mxc - mnc > 2:
-            onxon[0,0] = mn; c1[:,0] = translate_pbc(onxon, c1[:,0], rng[0])
+            onxon[0,0] = mnc; c1[:,0] = translate_pbc(onxon, c1[:,0], rng[0])
 
         mnc = min(c2[:,0]); mxc = max(c2[:,0])
         if mxc - mnc > 2:
             onxon[0,0] = mnc; c2[:,0] = translate_pbc(onxon, c2[:,0], rng[0])
 
         m1 = np.mean(c1[:,0]); m2 = np.mean(c2[:,0])
-        print("This is m1: {0:.4f} and m2: {1:.4f}".format(m1,m2))
         if m2 < m1 : continue # skip frame if second wall now comes before first
 
         #move all so that 1st wall is at x=0
