@@ -19,8 +19,9 @@ def plot_scatter(csv, sep, ln, itr):
 
     leg = str(sep)+r'$\AA$ Sep, '+'L='+str(ln)+r'$\AA$'
     Y = csv.dat[csv.key.index("dgg")]; yr = [5,17] #REST #[10,20]
-    yy = np.all(np.array([Y > 5.8, Y < float(sep) + float(sep)*0.3]),axis =0); Y=Y[yy]
-    X = csv.dat[csv.key.index("dg1"),yy]/Y.astype(float)
+   #yy = np.all(np.array([Y > 5.8, Y < float(sep) + float(sep)*0.3]),axis =0); Y=Y[yy]
+   #X = csv.dat[csv.key.index("dg1"),yy]/Y.astype(float)
+    X = abs(csv.dat[csv.key.index("dg1")]/Y.astype(float))
     xx = X > 1.0; X[xx] = X[xx] - 1
     xx = X > 1.0; X[xx] = X[xx] - 1
    #print(min(Y), max(Y), min(X), max(X))
