@@ -28,15 +28,17 @@ def plot_scatter(plt_nm, csvL, sep, ln):
            dat = csvL[i][j].dat
            fn = csvL[i][j].csvfname.split("_")
            mn += fn[0][3:] + "_"; dn = int(fn[0][3:])
-           lg = dens[dn][0]
            
-           if dens[dn][2] == "--": dsh = (2,1)
-           else:                   dsh = (None,None)
+           xmx = dat[0,dat[1] > 1.1][-1]
 
-           
-           print(csvL[i][j].key)
            for l in range(len(loc)):
-              ax.plot(dat[0], dat[loc[l]]/lscl[l], dens[dn][2], 
+              hlf = np.where(dat[0]==0.05)[0][0]
+              dt = dat[loc[l]][hlf:]
+              dt += dat[loc[l]][hlf:0:-1]
+              scl = max(dat[loc[l]])*1.25 if loc[l] > 1 else 1.0
+              if scl == 0: scl = 1.0
+
+              ax.plot(dat[0,hlf:]/xmx, dt/scl,
                       color = loco[l], 
                       label=locl[l])
            ct += 1
@@ -45,7 +47,10 @@ def plot_scatter(plt_nm, csvL, sep, ln):
         handlelength = 1.3, borderaxespad = -0.9,
         bbox_to_anchor = (1.0,1.12),
         )
-    ax.set_xlim([-10,10]); ax.set_ylim([0,1.0])
+
+    xm = max(csvL[-1][-1].dat[0]) + 1
+
+    ax.set_xlim([0.0,1.0]); ax.set_ylim([0,1.0])
    #ax.set_ylabel(r"PDF",fontsize=12)
    #ax.set_xlabel("$x/d_{gg}$",fontsize=12)
     ax.yaxis.labelpad = -0.6; ax.xaxis.labelpad = -0.6

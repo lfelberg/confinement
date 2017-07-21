@@ -15,7 +15,15 @@ def plot_scatter(csv, sep, ln, itr):
     ang  = csv.dat[csv.find_keyword("ang")].flatten()
     dist = csv.dat[csv.find_keyword("dist")].flatten()
 
-   #print(min(neigh), max(neigh), min(ang), max(ang))
+    nbins = 100; yr = [0,180]; xr = [0,10.42]
+    f = plt.figure(1, figsize = (1.0, 1.0))
+    ax, ct, leg = f.add_subplot(111), 0, []
+    ax.xaxis.set_major_locator(MaxNLocator())
+    ax.yaxis.set_major_locator(MaxNLocator())
+    plt.hist2d(dist,ang,bins=(nbins,nbins),range=(xr, yr),cmap=plt.get_cmap('plasma'))
+    ax.set_xlim([0.5,10.]); ax.set_ylim(yr)
+    plt.savefig(csv.csvfname[:-3]+'2D.png',bbox_inches = 'tight',)
+    plt.close()
 
     # finding solute-water oxygen within cutoff
     f = plt.figure(1, figsize = (1.0, 1.0))
@@ -26,7 +34,7 @@ def plot_scatter(csv, sep, ln, itr):
     matplotlib.rcParams['font.size'] = 5;
     nbins = int(neigh.max())+1; ra = (-0.5, nbins-0.5)
     vac, surr = 0., 0.
-    for i in range(len(neigh)):
+    for i in range(13,len(neigh)):
         y,x = np.histogram(neigh[i], bins=nbins, range=ra); dx = x[1]-x[0]
         neig_m = np.mean(x[argrelextrema(y, np.greater)])
         print("sol {0}: neigh {1:.2f}".format(i, neig_m))
@@ -67,7 +75,7 @@ def plot_scatter(csv, sep, ln, itr):
     ax.xaxis.set_major_locator(MaxNLocator())
     ax.yaxis.set_major_locator(MaxNLocator())
     plt.plot(x, y, color = "k")
-    ax.set_xlabel(r"$d_{{gg}}^B$",fontsize=7); ax.set_xlim([3,18])
+    ax.set_xlabel(r"$d_{{gg}}^B$",fontsize=7); ax.set_xlim([0,10.24])
     ax.set_ylabel("Probability",fontsize=7);#ax.set_ylim([0.,2.0])
     plt.savefig(csv.csvfname[:-3]+'dist.png',bbox_inches = 'tight',)
     plt.close()

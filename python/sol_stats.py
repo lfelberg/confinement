@@ -10,23 +10,30 @@ CUT = 6.20
 
 def get_angles_wats(xyz, volC):
     '''Method to get angles between y-z plane and benzene plane'''
-    oo = xyz.get_type_i(WOXY); 
+    oo = xyz.get_type_i(WOXY); ct = 0
 
     stats = np.zeros((3,len(xyz.atom),xyz.nsol))
     sol = np.zeros((1,1)); w1 = np.zeros((1,1))
     for i in range(1,len(xyz.atom)): # for each time snapshot, except first
         w1[0,0] = np.mean(xyz.atom[i, xyz.get_graph_wall(0),0])
+        w_s = np.std(xyz.atom[i, xyz.get_graph_wall(0),0])
+        if w_s > 0.35: continue
         rng = np.array([volC.get_x_rng_i(i), volC.get_y_rng_i(i),
                         volC.get_z_rng_i(i)]) # pbc range
 
         coms, angs = xyz.get_sol_crd_i(i, rng)
-        if angs != []: stats[0,i] = angs
+
+        # computing distance from wall to each center   
+        stats[2,ct] = d_pbc(coms[:,0][:,np.newaxis], w1, rng[0], [1.0])
+
+        # saving angle distribtion
+        if angs != []: stats[0,ct] = angs
         for j in range(xyz.nsol):
             dst = d_pbc(coms[j][np.newaxis,:],xyz.atom[i,oo], rng)
             sol = coms[j][np.newaxis,0]
-            stats[2,i,j] = d_pbc(sol,w1, rng[0])
-            stats[1,i,j] = sum((dst < CUT).astype(int))
-    return stats[:,1:]
+            stats[1,ct,j] = sum((dst < CUT).astype(int))
+        ct += 1
+    return stats[:,:ct]
 
 def print_stats(angls, fname):
     '''Print file of data in csv-like format, angls is a list of values:
@@ -43,7 +50,7 @@ def print_stats(angls, fname):
         st = '{0},'.format(j)
         for k in range(len(angls[0][j])): # the number of solutes
             for i in range(len(vals)):
-                st += "{0:.5f},".format(angls[i][j][k])
+                st += "{0:.2f},".format(angls[i][j][k])
         f.write("{0}\n".format(st[:-1]))
     f.close()
 

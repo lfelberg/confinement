@@ -38,7 +38,7 @@ def plot_scatter(csv):
     else:
         ymx = 5; bbox = (1.00,0.65); texty = 6.4; plt_l = 1; bulk_v = 2.4725
         ax.set_ylabel(r"$\mathcal{D}_{||} \times 10^9\, (m^2/s)$",fontsize= 10)
-        ax.set_yscale("log", nonposy='clip'); ncl = 1; ymin = 1e-4
+        ax.set_yscale("log", nonposy='clip'); ncl = 1; ymin = 1e-6
 
    ## PLotting the delineation between layers 1-2 (rho=0.1465), 2-3 (0.265),3-4
     if plt_l == 1:
