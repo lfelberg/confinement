@@ -4,12 +4,12 @@ close all
 clc
 
 % inputs: dimensions of the system (approximate)
-L = 22.5;
+L = 22.0;
 
 % nsolutex * nsolutey * nsoutez has to be even!
 nsolutex = 2;
-nsolutey = 1;
-nsolutez = 1;
+nsolutey = 4;
+nsolutez = 4;
  
 ntrials = 1e7; % for water packing
 
@@ -163,10 +163,10 @@ anglesAt = [anglesw; anglesb + length(xyz_water)];
 angles = [index_a type_a anglesAt];
 
 type_d = repmat(zeros(6,1)+1,nsolutetotal,1);
-dihedrals = [(1:ndihedralsb)' type_d dihedralsb];
+dihedrals = [(1:ndihedralsb)' type_d dihedralsb+length(xyz_water)];
 
 type_i = repmat(zeros(6,1)+1,nsolutetotal,1);
-impropers = [(1:nimpropersb)' type_i impropersb];
+impropers = [(1:nimpropersb)' type_i impropersb+length(xyz_water)];
 
 % inputs are: coordinates, bonds, angles, dihedrals, impropers
 % Write LAMMPS data file open the file with write permission

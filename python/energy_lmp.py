@@ -26,8 +26,8 @@ class Energy:
             if int(tmp[0]) == 0: continue
             time.append(int(tmp[0]))
            #dims.append([float(tmp[1]),float(tmp[2])])
-            dims.append([float(tmp[3])-float(tmp[2]), float(tmp[5])-float(tmp[4]),
-                         float(tmp[7])-float(tmp[6])])
+           #dims.append([float(tmp[3])-float(tmp[2]), float(tmp[5])-float(tmp[4]),
+           #             float(tmp[7])-float(tmp[6])])
         f.close()
         self.time = np.array(time); self.dims  = np.array(dims)
 
@@ -36,11 +36,16 @@ class Energy:
            from lammps .out file'''
         f=open(filename, "r"); time, dims = [], []
         for line in f:
+           if line.startswith("Step Time"): 
+               tmp = line.split()
+               print(tmp[0], tmp[15],tmp[16],tmp[17],tmp[3],tmp[24],tmp[25],tmp[26])
            if (len(line) > 200) and bool(re.search(r'\d', line)) == True:
                tmp = line.split()
-               if ((float(tmp[0])>=3000000) and (float(tmp[0])%1000==0)) :
-                   time.append(int(tmp[0]))
-                   dims.append([float(tmp[15]),float(tmp[16]),float(tmp[17]),float(tmp[24])])
+              #if ((float(tmp[0])>=3000000) and (float(tmp[0])%1000==0)) :
+               time.append(int(tmp[0]))
+              #dims.append([float(tmp[15]),float(tmp[16]),float(tmp[17]),float(tmp[24])])
+               dims.append([float(tmp[15]),float(tmp[16]),float(tmp[17]),float(tmp[3]), 
+                            float(tmp[24]), float(tmp[25]), float(tmp[26]), float(tmp[29])])
         f.close()
 
         self.time = np.array(time); self.dims = np.array(dims)
@@ -58,16 +63,24 @@ class Energy:
         xm = np.mean(xx, axis = 1)*ANG_TO_METER
         a2 = ym*zm*A2_TO_M2  # Area in m^2
         kT = 4.11e-21 # kT at 298 K in J
-        print("{0:>9s},{1:.7f},{2:.7f},{3:.7f}".format(self.enfname.split(".")[0][3:],
-                                     *((a2*dx2*1e11)/(kT*xm))))
-        f = open(en_out, "w"); f.write("Atim,lx,pxx\n")
+       #print("{0:>9s},{1:.7f},{2:.7f},{3:.7f}".format(self.enfname.split(".")[0][3:],
+       #                             *((a2*dx2*1e11)/(kT*xm))))
+       #f = open(en_out, "w"); f.write("Atim,lx,pxx\n")
+       #for i in range(len(self.time)):
+       #    f.write("{0},{1},{2}\n".format(self.time[i],self.dims[i][0], self.dims[i][-1]))
+       #f.close()
+        f = open(en_out, "w"); f.write("Atim,lx,ly,lz,p,pxx,pyy,pzz,pyz\n")
         for i in range(len(self.time)):
-            f.write("{0},{1},{2}\n".format(self.time[i],self.dims[i][0], self.dims[i][-1]))
+            f.write("{0},".format(self.time[i])); st = ""
+            for j in range(self.dims.shape[1]):
+                st+="{0},".format(self.dims[i][j])
+            f.write(st[:-1]+"\n")
         f.close()
+
 
 def main():
     filename=sys.argv[1]; enC = Energy(filename)
-    enC.print_energies(filename[:-3]+"lx")
+    enC.print_energies(filename[:-3]+"press")
 
 if __name__=="__main__":
     main()

@@ -10,7 +10,7 @@ Lz = Ly;
 ntimes = 2;
 
 % nsolutey*nsoutez has to be even!
-nsolutey = 4;
+nsolutey = 6;
 nsolutez = 8;
  
 ntrials = 1e7; % for water packing

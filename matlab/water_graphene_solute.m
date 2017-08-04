@@ -4,13 +4,13 @@ close all
 clc
 
 % inputs: dimensions of the system (approximate)
-d = 8;
+d = 9;
 Ly = 48;
 Lz = Ly;
 ntimes = 2;
 
-nsolutey = 3;
-nsolutez = 1;
+nsolutey = 6;
+nsolutez = 4;
  
 ntrials = 1e7; % for water packing
 

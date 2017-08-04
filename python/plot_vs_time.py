@@ -4,8 +4,7 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import *
 MaxNLocator.default_params['nbins']=5
 
-from xyzfile import XYZFile
-from volfile import VolFile
+from csvfile import CSVFile
 
 NWALLS = 2
 colorL = [[0,0,0], [0,0,1], [1, 0,0], [.93, .53, .18]]
@@ -20,12 +19,13 @@ def plot_scatter(plt_nm, xyzL, loc, sep, ln, itr):
     for i in range(len(xyzL)):
         for j in range(len(xyzL[i])):
             for k in range(len(xyzL[i][j])):
-                shft = max(xyzL[i][j][k].dat[0])/2.0
-                ax.plot(xyzL[i][j][k].dat[0]-shft, 
-                        xyzL[i][j][k].dat[loc], color=colorL[ct])
+                dt = xyzL[i][j][k].dat[:,500:]
+                print(xyzL[i][j][k].key)
+                ax.plot(dt[1]*dt[2]*dt[3], 
+                        dt[loc]*1.01325e-4, color=colorL[ct])
                 leg += [str(sep[i])+r'$\AA$ Sep, '+'L='+str(ln[j])+r'$\AA$']
                 ct += 1
-    ax.set_xlim([-9,9])
+   #if loc > 2: ax.set_ylim([-1.0,1.0]) 
     ax.legend(leg, loc = 9, ncol = 1,
         columnspacing = 0.4,
         fontsize =  7 ,
@@ -34,7 +34,7 @@ def plot_scatter(plt_nm, xyzL, loc, sep, ln, itr):
         borderaxespad = -0.9,
        #bbox_to_anchor = bbox
         )
-    plt.savefig(plt_nm+str(loc)+'.png', format='png',                       
+    plt.savefig(plt_nm+"_"+xyzL[i][j][k].key[loc]+'.png', format='png',                       
                     bbox_inches = 'tight', dpi=300) 
     plt.close()
 
@@ -49,20 +49,19 @@ def main():
     spE = spS + nsep; lnE = spE + nlen; itE = lnE + niter
     sep, ln, itr = [], [], []
     
-    for i in range(spS, spE): sep.append(float(sys.argv[i]))
+    for i in range(spS, spE): sep.append(int(sys.argv[i]))
     for i in range(spE, lnE): ln.append(int(sys.argv[i]))
     for i in range(lnE, itE): itr.append(int(sys.argv[i]))
     
     ext = sys.argv[itE]; loc = int(sys.argv[itE+1])
     print("Ext {0}, loc {1}".format(ext, loc))
     xyzL = []
-    volF = VolFile('')
     for i in range(nsep):
         xyL = []
         for j in range(nlen):
             xy = []
             for k in range(niter):
-                xy.append(XYZFile(xyzname+str(sep[i])+"_"+str(ln[j])+"_"
+                xy.append(CSVFile(xyzname+str(sep[i])+"_"+str(ln[j])+"_"
                                   +str(itr[k])+ext))
             xyL.append(xy)
         xyzL.append(xyL)
